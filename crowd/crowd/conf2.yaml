@@ -1,0 +1,38 @@
+fields:
+  - name: name
+    required: true
+  - name: info
+    required: false
+  - name: structure
+    required: true
+    select_fields:
+      - name: file
+        fields: 
+        - name: path
+          required: true
+        - name : type
+          required: true
+          values: nodes_only | nodes_edges
+        - name: header
+          required: false
+          default: false
+      - name: random
+        fields:
+          - name: seed
+            required: false
+            default: 123
+      - name: twitter
+      - name: facebook
+  - name: info
+    required: false
+  - name: definitions
+    required: false
+    fields:
+      - name: functions
+        required: false
+      - name: nodetypes
+        required: false
+      - name: node_actions
+        required: false
+  - name: statfunctions
+    required: false

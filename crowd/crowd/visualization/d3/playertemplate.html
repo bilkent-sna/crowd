@@ -1,0 +1,136 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        //To store timeout id
+        var timeoutId;
+
+        var slideImage = function (step) {
+
+            if (step == undefined) step = 1;
+
+            //Clear timeout if any
+            clearTimeout(timeoutId);
+
+            //Get current image's index
+            var indx = $('.item:visible').index('.item');
+
+            //If step == 0, we don't need to do any fadein our fadeout
+            if (step != 0) {
+                //Fadeout this item
+                $('.item:visible').fadeOut();
+            }
+
+            //Increment for next item
+            indx = indx + step;
+
+            //Check bounds for next item
+            if (indx >= $('.item').length) {
+                indx = 0;
+            } else if (indx < 0) {
+                indx = $('.item').length - 1;
+            }
+
+            //If step == 0, we don't need to do any fadein our fadeout
+            if (step != 0) {
+                //Fadein next item
+                $('.item:eq(' + indx + ')').fadeIn(0);
+            }
+
+            //Set Itmeout
+            timeoutId = setTimeout(slideImage, 750);
+        };
+
+        //Start sliding
+        slideImage(0);
+
+        //When clicked on prev
+        $('#prev').click(function () {
+            //slideImage with step = -1
+            slideImage(-1);
+        });
+
+        //When clicked on next
+        $('#next').click(function () {
+
+            //slideImage with step = 1
+            slideImage(1);
+        });
+
+        //When clicked on Pause
+        $('#pause').click(function () {
+
+            //Clear timeout
+            clearTimeout(timeoutId);
+
+            //Hide Pause and show Play
+            $(this).hide();
+            $('#play').show();
+        });
+
+        //When clicked on Play
+        $('#play').click(function () {
+
+            //Start slide image
+            slideImage(0);
+
+            //Hide Play and show Pause
+            $(this).hide();
+            $('#pause').show();
+        });
+
+    </script>
+    <style>
+        #items {
+            position: relative;
+            width: 1260px;
+            height: 700px;
+            top: 20px;
+            left: 20px;
+        }
+
+        .item {
+            position: absolute;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            width: 1280px;
+            height: 720px;
+            display: none;
+            text-align: center;
+            font-size: 72px;
+        }
+
+        .first {
+            display: block;
+        }
+
+        #controls {
+            margin-top: 30px;
+        }
+
+        li {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid #ccc;
+            background-color: #eee;
+            cursor: pointer;
+        }
+
+        #play {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id='items'>
+        {{frames}}
+    </div>
+    <ul id='controls'>
+        <li id='prev'>Prev</li>
+        <li id='play'>Play</li>
+        <li id='pause'>Pause</li>
+        <li id='next'>Next</li>
+    </ul>
+</body>
+
+</html>

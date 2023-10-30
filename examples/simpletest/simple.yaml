@@ -1,0 +1,31 @@
+name : simple
+
+info:
+    total_count: 1000
+    w: 0.01
+    b: 25
+    c: 2
+
+
+definitions:
+    source: simple
+
+    nodetypes:
+        Type1:
+            color : red
+        Type2:
+            color : blue
+        Type3:
+            color : grey
+
+    node_actions:
+        - update:
+              -args:
+                  - nodetype
+
+structure:
+    random:
+        degree: 4
+
+
+
