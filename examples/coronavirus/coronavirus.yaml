@@ -1,0 +1,9 @@
+name : coronavirus
+info:
+    total_count: 1000
+structure: 
+  file: 
+    type: nodes_only
+    path: network.tsv
+    header: true
+    

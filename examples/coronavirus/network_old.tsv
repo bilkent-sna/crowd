@@ -1,0 +1,483 @@
+Id	Province/State	Country/Region	Lat	Long
+0		Thailand	15	101
+1		Japan	36	138
+2		Singapore	1.2833	103.8333
+3		Nepal	28.1667	84.25
+4		Malaysia	2.5	112.5
+5	British Columbia	Canada	49.2827	-123.1207
+6	New South Wales	Australia	-33.8688	151.2093
+7	Victoria	Australia	-37.8136	144.9631
+8	Queensland	Australia	-28.0167	153.4
+9		Cambodia	11.55	104.9167
+10		Sri Lanka	7	81
+11		Germany	51	9
+12		Finland	64	26
+13		United Arab Emirates	24	54
+14		Philippines	13	122
+15		India	21	78
+16		Italy	43	12
+17		Sweden	63	16
+18		Spain	40	-4
+19	South Australia	Australia	-34.9285	138.6007
+20		Belgium	50.8333	4
+21		Egypt	26	30
+22	From Diamond Princess	Australia	35.4437	139.638
+23		Lebanon	33.8547	35.8623
+24		Iraq	33	44
+25		Oman	21	57
+26		Afghanistan	33	65
+27		Bahrain	26.0275	50.55
+28		Kuwait	29.5	47.75
+29		Algeria	28.0339	1.6596
+30		Croatia	45.1	15.2
+31		Switzerland	46.8182	8.2275
+32		Austria	47.5162	14.5501
+33		Israel	31	35
+34		Pakistan	30.3753	69.3451
+35		Brazil	-14.235	-51.9253
+36		Georgia	42.3154	43.3569
+37		Greece	39.0742	21.8243
+38		North Macedonia	41.6086	21.7453
+39		Norway	60.472	8.4689
+40		Romania	45.9432	24.9668
+41		Estonia	58.5953	25.0136
+42		San Marino	43.9424	12.4578
+43		Belarus	53.7098	27.9534
+44		Iceland	64.9631	-19.0208
+45		Lithuania	55.1694	23.8813
+46		Mexico	23.6345	-102.5528
+47		New Zealand	-40.9006	174.886
+48		Nigeria	9.082	8.6753
+49	Western Australia	Australia	-31.9505	115.8605
+50		Ireland	53.1424	-7.6921
+51		Luxembourg	49.8153	6.1296
+52		Monaco	43.7333	7.4167
+53		Qatar	25.3548	51.1839
+54		Ecuador	-1.8312	-78.1834
+55		Azerbaijan	40.1431	47.5769
+56		Armenia	40.0691	45.0382
+57		Dominican Republic	18.7357	-70.1627
+58		Indonesia	-0.7893	113.9213
+59		Portugal	39.3999	-8.2245
+60		Andorra	42.5063	1.5218
+61	Tasmania	Australia	-41.4545	145.9707
+62		Latvia	56.8796	24.6032
+63		Morocco	31.7917	-7.0926
+64		Saudi Arabia	24	45
+65		Senegal	14.4974	-14.4524
+66		Argentina	-38.4161	-63.6167
+67		Chile	-35.6751	-71.543
+68		Jordan	31.24	36.51
+69		Ukraine	48.3794	31.1656
+70		Hungary	47.1625	19.5033
+71	Northern Territory	Australia	-12.4634	130.8456
+72		Liechtenstein	47.14	9.55
+73		Poland	51.9194	19.1451
+74		Tunisia	34	9
+75		Bosnia and Herzegovina	43.9159	17.6791
+76		Slovenia	46.1512	14.9955
+77		South Africa	-30.5595	22.9375
+78		Bhutan	27.5142	90.4336
+79		Cameroon	3.848	11.5021
+80		Colombia	4.5709	-74.2973
+81		Costa Rica	9.7489	-83.7534
+82		Peru	-9.19	-75.0152
+83		Serbia	44.0165	21.0059
+84		Slovakia	48.669	19.699
+85		Togo	8.6195	0.8248
+86		Malta	35.9375	14.3754
+87		Martinique	14.6415	-61.0242
+88		Bulgaria	42.7339	25.4858
+89		Maldives	3.2028	73.2207
+90		Bangladesh	23.685	90.3563
+91		Paraguay	-23.4425	-58.4438
+92	Ontario	Canada	51.2538	-85.3232
+93	Alberta	Canada	53.9333	-116.5765
+94	Quebec	Canada	52.9399	-73.5491
+95		Albania	41.1533	20.1683
+96		Cyprus	35.1264	33.4299
+97		Brunei	4.5353	114.7277
+98	Washington	US	47.4009	-121.4905
+99	New York	US	42.1657	-74.9481
+100	California	US	36.1162	-119.6816
+101	Massachusetts	US	42.2302	-71.5301
+102	Diamond Princess	US	35.4437	139.638
+103	Grand Princess	US	37.6489	-122.6655
+104	Georgia	US	33.0406	-83.6431
+105	Colorado	US	39.0598	-105.3111
+106	Florida	US	27.7663	-81.6868
+107	New Jersey	US	40.2989	-74.521
+108	Oregon	US	44.572	-122.0709
+109	Texas	US	31.0545	-97.5635
+110	Illinois	US	40.3495	-88.9861
+111	Pennsylvania	US	40.5908	-77.2098
+112	Iowa	US	42.0115	-93.2105
+113	Maryland	US	39.0639	-76.8021
+114	North Carolina	US	35.6301	-79.8064
+115	South Carolina	US	33.8569	-80.945
+116	Tennessee	US	35.7478	-86.6923
+117	Virginia	US	37.7693	-78.17
+118	Arizona	US	33.7298	-111.4312
+119	Indiana	US	39.8494	-86.2583
+120	Kentucky	US	37.6681	-84.6701
+121	District of Columbia	US	38.8974	-77.0268
+122	Nevada	US	38.3135	-117.0554
+123	New Hampshire	US	43.4525	-71.5639
+124	Minnesota	US	45.6945	-93.9002
+125	Nebraska	US	41.1254	-98.2681
+126	Ohio	US	40.3888	-82.7649
+127	Rhode Island	US	41.6809	-71.5118
+128	Wisconsin	US	44.2685	-89.6165
+129	Connecticut	US	41.5978	-72.7554
+130	Hawaii	US	21.0943	-157.4983
+131	Oklahoma	US	35.5653	-96.9289
+132	Utah	US	40.15	-111.8624
+133		Burkina Faso	12.2383	-1.5616
+134		Holy See	41.9029	12.4534
+135		Mongolia	46.8625	103.8467
+136		Panama	8.538	-80.7821
+137	Kansas	US	38.5266	-96.7265
+138	Louisiana	US	31.1695	-91.8678
+139	Missouri	US	38.4561	-92.2884
+140	Vermont	US	44.0459	-72.7107
+141	Alaska	US	61.3707	-152.4044
+142	Arkansas	US	34.9697	-92.3731
+143	Delaware	US	39.3185	-75.5071
+144	Idaho	US	44.2405	-114.4788
+145	Maine	US	44.6939	-69.3819
+146	Michigan	US	43.3266	-84.5361
+147	Mississippi	US	32.7416	-89.6787
+148	Montana	US	46.9219	-110.4544
+149	New Mexico	US	34.8405	-106.2485
+150	North Dakota	US	47.5289	-99.784
+151	South Dakota	US	44.2998	-99.4388
+152	West Virginia	US	38.4912	-80.9545
+153	Wyoming	US	42.756	-107.3025
+154	Hubei	China	30.9756	112.2707
+155		Iran	32	53
+156		Korea, South	36	128
+157	France	France	46.2276	2.2137
+158	Guangdong	China	23.3417	113.4244
+159	Henan	China	33.882	113.614
+160	Zhejiang	China	29.1832	120.0934
+161	Hunan	China	27.6104	111.7088
+162	Anhui	China	31.8257	117.2264
+163	Jiangxi	China	27.614	115.7221
+164	Shandong	China	36.3427	118.1498
+165	Diamond Princess	Cruise Ship	35.4437	139.638
+166	Jiangsu	China	32.9711	119.455
+167	Chongqing	China	30.0572	107.874
+168	Sichuan	China	30.6171	102.7103
+169	Heilongjiang	China	47.862	127.7615
+170	Denmark	Denmark	56.2639	9.5018
+171	Beijing	China	40.1824	116.4142
+172	Shanghai	China	31.202	121.4491
+173	Hebei	China	39.549	116.1306
+174	Fujian	China	26.0789	117.9874
+175	Guangxi	China	23.8298	108.7881
+176	Shaanxi	China	35.1917	108.8701
+177	Yunnan	China	24.974	101.487
+178	Hainan	China	19.1959	109.7453
+179	Guizhou	China	26.8154	106.8748
+180	Tianjin	China	39.3054	117.323
+181	Shanxi	China	37.5777	112.2922
+182	Gansu	China	37.8099	101.0583
+183	Hong Kong	China	22.3	114.2
+184	Liaoning	China	41.2956	122.6085
+185	Jilin	China	43.6661	126.1923
+186		Czechia	49.8175	15.473
+187	Xinjiang	China	41.1129	85.2401
+188	Inner Mongolia	China	44.0935	113.9448
+189	Ningxia	China	37.2692	106.1655
+190		Taiwan*	23.7	121
+191		Vietnam	16	108
+192		Russia	60	90
+193	Qinghai	China	35.7452	95.9956
+194	Macau	China	22.1667	113.55
+195		Moldova	47.4116	28.3699
+196		Bolivia	-16.2902	-63.5887
+197	Faroe Islands	Denmark	61.8926	-6.9118
+198	St Martin	France	18.0708	-63.0501
+199		Honduras	15.2	-86.2419
+200	Channel Islands	United Kingdom	49.3723	-2.3644
+201	New Brunswick	Canada	46.5653	-66.4619
+202	Tibet	China	31.6927	88.0924
+203		Congo (Kinshasa)	-4.0383	21.7587
+204		Cote d'Ivoire	7.54	-5.5471
+205	Saint Barthelemy	France	17.9	-62.8333
+206		Jamaica	18.1096	-77.2975
+207		Turkey	38.9637	35.2433
+208	Gibraltar	United Kingdom	36.1408	-5.3536
+209	Kitsap, WA	US	47.6477	-122.6413
+210	Solano, CA	US	38.3105	-121.9018
+211	Santa Cruz, CA	US	37.0454	-121.958
+212	Napa, CA	US	38.5025	-122.2654
+213	Ventura, CA	US	34.3705	-119.1391
+214	Worcester, MA	US	42.4097	-71.8571
+215	Gwinnett, GA	US	33.9191	-84.0167
+216	DeKalb, GA	US	33.7956	-84.2279
+217	Floyd, GA	US	37.5455	-82.7779
+218	Fayette, GA	US	33.4502	-84.4803
+219	Gregg, TX	US	32.4893	-94.8521
+220	Monmouth, NJ	US	40.2589	-74.124
+221	Burlington, NJ	US	40.0712	-74.8649
+222	Camden, NJ	US	39.9259	-75.1196
+223	Passaic, NJ	US	40.8568	-74.1285
+224	Union, NJ	US	40.6976	-74.2632
+225	Eagle, CO	US	39.6553	-106.8287
+226	Larimer, CO	US	40.6956	-105.5943
+227	Arapahoe, CO	US	39.6203	-104.3326
+228	Gunnison, CO	US	38.5458	-106.9253
+229	Kane, IL	US	41.9879	-88.4016
+230	Monroe, PA	US	41.0458	-75.2479
+231	Philadelphia, PA	US	39.9526	-75.1652
+232	Norfolk, VA	US	36.8508	-76.2859
+233	Arlington, VA	US	38.8816	-77.091
+234	Spotsylvania, VA	US	38.2042	-77.6078
+235	Loudoun, VA	US	39.0768	-77.6536
+236	Prince George's, MD	US	38.7849	-76.8721
+237	Pottawattamie, IA	US	41.3912	-95.4778
+238	Camden, NC	US	34.2465	-80.607
+239	Pima, AZ	US	32.0575	-111.6661
+240	Noble, IN	US	41.4277	-85.355
+241	Adams, IN	US	39.8522	-77.2865
+242	Boone, IN	US	40.0106	-86.4997
+243	Dane, WI	US	43.0186	-89.5498
+244	Pierce, WI	US	44.7509	-92.3814
+245	Cuyahoga, OH	US	41.4339	-81.6758
+246	Weber, UT	US	41.2603	-111.9522
+247	Bennington County, VT	US	43.0279	-73.135
+248	Carver County, MN	US	44.8254	-93.7842
+249	Charlotte County, FL	US	26.8946	-81.9098
+250	Cherokee County, GA	US	34.2515	-84.4803
+251	Collin County, TX	US	33.1795	-96.493
+252	Jefferson County, KY	US	38.1938	-85.6435
+253	Jefferson Parish, LA	US	29.6499	-90.1121
+254	Shasta County, CA	US	40.7909	-121.8474
+255	Spartanburg County, SC	US	34.8606	-81.9535
+256	Harrison County, KY	US	38.4333	-84.3542
+257	Johnson County, IA	US	41.6699	-91.5984
+258	Berkshire County, MA	US	42.3118	-73.1822
+259	Davidson County, TN	US	36.1343	-86.822
+260	Douglas County, OR	US	43.1261	-123.2492
+261	Fresno County, CA	US	36.9859	-119.2321
+262	Harford County, MD	US	39.5839	-76.3637
+263	Hendricks County, IN	US	39.8065	-86.5401
+264	Hudson County, NJ	US	40.7453	-74.0535
+265	Johnson County, KS	US	38.8454	-94.8521
+266	Kittitas County, WA	US	47.175	-120.9319
+267	Manatee County, FL	US	27.4799	-82.3452
+268	Marion County, OR	US	44.8446	-122.5927
+269	Okaloosa County, FL	US	30.5773	-86.6611
+270	Polk County, GA	US	34.0132	-85.1479
+271	Riverside County, CA	US	33.9533	-117.3961
+272	Shelby County, TN	US	35.1269	-89.9253
+273	St. Louis County, MO	US	38.6103	-90.4125
+274	Suffolk County, NY	US	40.9849	-72.6151
+275	Ulster County, NY	US	41.8586	-74.3118
+276	Volusia County, FL	US	29.028	-81.0755
+277	Fairfax County, VA	US	38.9085	-77.2405
+278	Rockingham County, NH	US	42.9931	-71.0498
+279	Washington, D.C.	US	38.9072	-77.0369
+280	Montgomery County, PA	US	40.229	-75.3879
+281	Alameda County, CA	US	37.6017	-121.7195
+282	Broward County, FL	US	26.1901	-80.3659
+283	Lee County, FL	US	26.663	-81.9535
+284	Pinal County, AZ	US	32.8162	-111.2845
+285	Rockland County, NY	US	41.1489	-73.983
+286	Saratoga County, NY	US	43.0324	-73.936
+287	Charleston County, SC	US	32.7957	-79.7848
+288	Clark County, WA	US	45.7466	-122.5194
+289	Cobb County, GA	US	33.8999	-84.5641
+290	Davis County, UT	US	40.9629	-112.0953
+291	El Paso County, CO	US	38.9108	-104.4723
+292	Honolulu County, HI	US	21.307	-157.8584
+293	Jackson County, OR 	US	42.3345	-122.7647
+294	Jefferson County, WA	US	47.7425	-123.304
+295	Kershaw County, SC	US	34.3672	-80.5883
+296	Klamath County, OR	US	42.6953	-121.6142
+297	Madera County, CA	US	37.2519	-119.6963
+298	Pierce County, WA	US	47.0676	-122.1295
+299	Tulsa County, OK	US	36.1593	-95.941
+300	Douglas County, CO	US	39.2587	-104.9389
+301	Providence County, RI	US	41.8882	-71.4774
+302	Chatham County, NC	US	35.7211	-79.1781
+303	Delaware County, PA	US	39.9078	-75.3879
+304	Douglas County, NE	US	41.3148	-96.1951
+305	Fayette County, KY	US	38.0606	-84.4803
+306	Marion County, IN	US	39.8362	-86.1752
+307	Middlesex County, MA	US	42.4672	-71.2874
+308	Nassau County, NY	US	40.6546	-73.5594
+309	Ramsey County, MN	US	44.9964	-93.0616
+310	Washoe County, NV	US	40.5608	-119.6035
+311	Wayne County, PA	US	41.6739	-75.2479
+312	Yolo County, CA	US	38.7646	-121.9018
+313	Santa Clara County, CA	US	37.3541	-121.9552
+314	Clark County, NV	US	36.0796	-115.094
+315	Fort Bend County, TX	US	29.5693	-95.8143
+316	Grant County, WA	US	47.1981	-119.3732
+317	Santa Rosa County, FL	US	30.769	-86.9824
+318	Williamson County, TN	US	35.9179	-86.8622
+319	New York County, NY	US	40.7128	-74.006
+320	Montgomery County, MD	US	39.1547	-77.2405
+321	Suffolk County, MA	US	42.3601	-71.0589
+322	Denver County, CO	US	39.7392	-104.9903
+323	Summit County, CO	US	39.5912	-106.064
+324	Bergen County, NJ	US	40.9263	-74.077
+325	Harris County, TX	US	29.7752	-95.3103
+326	San Francisco County, CA	US	37.7749	-122.4194
+327	Contra Costa County, CA	US	37.8534	-121.9018
+328	Orange County, CA	US	33.7879	-117.8531
+329	Norfolk County, MA	US	42.1767	-71.1449
+330	Maricopa County, AZ	US	33.2918	-112.4291
+331	Wake County, NC	US	35.8032	-78.5661
+332	Westchester County, NY	US	41.122	-73.7949
+333	Grafton County, NH	US	43.9088	-71.826
+334	Hillsborough, FL	US	27.9904	-82.3018
+335	Placer County, CA	US	39.0916	-120.8039
+336	San Mateo, CA	US	37.563	-122.3255
+337	Sonoma County, CA	US	38.578	-122.9888
+338	Umatilla, OR	US	45.775	-118.7606
+339	Fulton County, GA	US	33.8034	-84.3963
+340	Washington County, OR	US	45.547	-123.1386
+341	Snohomish County, WA	US	48.033	-121.8339
+342	Humboldt County, CA	US	40.745	-123.8695
+343	Sacramento County, CA	US	38.4747	-121.3542
+344	San Diego County, CA	US	32.7157	-117.1611
+345	San Benito, CA	US	36.5761	-120.9876
+346	Los Angeles, CA	US	34.0522	-118.2437
+347	King County, WA	US	47.6062	-122.3321
+348	Cook County, IL	US	41.7377	-87.6976
+349	Skagit, WA	US	48.4242	-121.7114
+350	Thurston, WA	US	46.8646	-122.7696
+351	Island, WA	US	48.1976	-122.5795
+352	Whatcom, WA	US	48.8787	-121.9719
+353	Marin, CA	US	38.0834	-122.7633
+354	Calaveras, CA	US	38.196	-120.6805
+355	Stanislaus, CA	US	37.5091	-120.9876
+356	San Joaquin, CA	US	36.6066	-120.189
+357	Essex, MA	US	42.632	-70.7829
+358	Charlton, GA	US	30.7917	-82.0843
+359	Collier, FL	US	26.07	-81.4279
+360	Pinellas, FL	US	27.8764	-82.7779
+361	Alachua, FL	US	29.7938	-82.4944
+362	Nassau, FL	US	30.5927	-81.8224
+363	Pasco, FL	US	28.3232	-82.4319
+364	Dallas, TX	US	32.7767	-96.797
+365	Tarrant, TX	US	32.7732	-97.3517
+366	Montgomery, TX	US	30.3883	-95.6963
+367	Middlesex, NJ	US	40.5726	-74.4927
+368	Jefferson, CO	US	39.58	-105.2663
+369	Multnomah, OR	US	45.5146	-122.5863
+370	Polk, OR	US	44.9267	-123.4919
+371	Deschutes, OR	US	43.8325	-121.2617
+372	McHenry, IL	US	42.3334	-88.2668
+373	Lake, IL	US	42.3689	-87.8272
+374	Bucks, PA	US	40.4108	-75.2479
+375	Hanover, VA	US	37.7772	-77.5161
+376	Lancaster, SC	US	34.7253	-80.6771
+377	Sullivan, TN	US	36.4933	-82.3452
+378	Johnson, IN	US	39.4638	-86.1345
+379	Howard, IN	US	40.4483	-86.1345
+380	St. Joseph, IN	US	41.6228	-86.3377
+381	Knox, NE	US	42.6712	-97.8722
+382	Stark, OH	US	40.8685	-81.2519
+383	Anoka, MN	US	45.3293	-93.2197
+384	Olmsted, MN	US	43.9952	-92.3814
+385	Summit, UT	US	40.8298	-110.9984
+386	Fairfield, CT	US	41.256	-73.3709
+387	Litchfield, CT	US	41.7866	-73.2765
+388	Orleans, LA	US	29.9511	-90.0715
+389	Pennington, SD	US	43.8901	-102.2548
+390	Beadle, SD	US	44.4797	-98.2213
+391	Charles Mix, SD	US	43.0985	-98.3965
+392	Davison, SD	US	43.7242	-98.2213
+393	Minnehaha, SD	US	43.6632	-96.8351
+394	Bon Homme, SD	US	42.9815	-97.8722
+395	Socorro, NM	US	33.8837	-106.7235
+396	Bernalillo, NM	US	35.0178	-106.6291
+397	Oakland, MI	US	42.5922	-83.3362
+398	Wayne, MI	US	42.2791	-83.3362
+399	New Castle, DE	US	39.5393	-75.6674
+400		Cuba	22	-80
+401		Guyana	5	-58.75
+402	Australian Capital Territory	Australia	-35.4735	149.0124
+403	United Kingdom	United Kingdom	55.3781	-3.436
+404		Kazakhstan	48.0196	66.9237
+405	French Polynesia	France	-17.6797	149.4068
+406	Manitoba	Canada	53.7609	-98.8139
+407	Saskatchewan	Canada	52.9399	-106.4509
+408		Ethiopia	9.145	40.4897
+409		Sudan	12.8628	30.2176
+410		Guinea	9.9456	-9.6966
+411	Grand Princess	Canada	37.6489	-122.6655
+412		Kenya	-0.0236	37.9062
+413		Antigua and Barbuda	17.0608	-61.7964
+414	Alabama	US	32.3182	-86.9023
+415		Uruguay	-32.5228	-55.7658
+416		Ghana	7.9465	-1.0232
+417	Puerto Rico	US	18.2208	-66.5901
+418		Namibia	-22.9576	18.4904
+419		Seychelles	-4.6796	55.492
+420		Trinidad and Tobago	10.6918	-61.2225
+421		Venezuela	6.4238	-66.5897
+422		Eswatini	-26.5225	31.4659
+423		Gabon	-0.8037	11.6094
+424		Guatemala	15.7835	-90.2308
+425		Mauritania	21.0079	10.9408
+426		Rwanda	-1.9403	29.8739
+427		Saint Lucia	13.9094	-60.9789
+428		Saint Vincent and the Grenadines	12.9843	-61.2872
+429		Suriname	3.9193	-56.0278
+430	French Guiana	France	3.9339	-53.1258
+431	Guam	US	13.4443	144.7937
+432		Kosovo	42.6026	20.903
+433	Newfoundland and Labrador	Canada	53.1355	-57.6604
+434	Prince Edward Island	Canada	46.5107	-63.4168
+435		Central African Republic	6.6111	20.9394
+436		Congo (Brazzaville)	-4.0383	21.7587
+437		Equatorial Guinea	1.5	10
+438	Mayotte	France	-12.8275	45.1662
+439		Uzbekistan	41.3775	64.5853
+440	Netherlands	Netherlands	52.1326	5.2913
+441	Nova Scotia	Canada	44.682	-63.7443
+442	Guadeloupe	France	16.25	-61.5833
+443		Benin	9.3077	2.3158
+444		Liberia	6.4281	-9.4295
+445	Curacao	Netherlands	12.1696	-68.99
+446		Somalia	5.1521	46.1996
+447		Tanzania	-6.369	34.8888
+448	Virgin Islands	US	18.3358	-64.8963
+449	Cayman Islands	United Kingdom	19.3133	-81.2546
+450	Reunion	France	-21.1351	55.2471
+451		Barbados	13.1939	-59.5432
+452		Montenegro	42.5	19.3
+453		Kyrgyzstan	41.2044	74.7661
+454		Mauritius	-20.2	57.5
+455	Aruba	Netherlands	12.5186	-70.0358
+456		Zambia	-15.4167	28.2833
+457		Djibouti	11.8251	42.5903
+458		Gambia, The	13.4432	-15.3101
+459	Montserrat	United Kingdom	16.7425	-62.1874
+460		Bahamas, The	25.0343	-77.3963
+461	Greenland	Denmark	71.7069	-42.6043
+462	New Caledonia	France	-20.9043	165.618
+463	Bermuda	United Kingdom	32.3078	-64.7505
+464		Chad	15.4542	18.7322
+465		El Salvador	13.7942	-88.8965
+466		Fiji	-17.7134	178.065
+467		Nicaragua	12.8654	-85.2072
+468		Madagascar	-18.7669	46.8691
+469		Haiti	18.9712	-72.2852
+470		Angola	-11.2027	17.8739
+471		Cabo Verde	16.5388	-23.0418
+472	Sint Maarten	Netherlands	18.0425	-63.0548
+473		Niger	17.6078	8.0817
+474		Papua New Guinea	-6.315	143.9555
+475	Isle of Man	United Kingdom	54.2361	-4.5481
+476		Zimbabwe	-20	30
+477	Northwest Territories	Canada	64.8255	-124.8457
+478		Cape Verde	15.1111	-23.6167
+479		East Timor	-8.55	125.56
+480		Eritrea	15.1794	39.7823
+481		Uganda	1	32
