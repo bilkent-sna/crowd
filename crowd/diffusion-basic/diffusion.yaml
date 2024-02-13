@@ -1,0 +1,35 @@
+name: SIR
+
+info:
+  total_count: 1000
+  fraction_infected: 0.1
+
+definitions:
+  pd-model:
+    diffusion:
+      fields:
+        nodetypes:
+          - Susceptible
+          - Infected
+          - Removed
+        compartments:
+          c1:
+            type: node-stochastic
+            ratio: 0.02
+            triggering_status: Infected
+          c2:
+            type: node-stochastic
+            ratio: 0.01
+        rules:
+          r1:
+            - Susceptible
+            - Infected
+            - c1
+          r2:
+            - Infected
+            - Removed
+            - c2
+
+structure:
+  random:
+    degree: 4

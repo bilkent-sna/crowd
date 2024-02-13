@@ -1,0 +1,4 @@
+[console_scripts]
+NDQL_execute = scripts.NDQL_execute:execute
+NDQL_translate = scripts.NDQL_translate:translate
+

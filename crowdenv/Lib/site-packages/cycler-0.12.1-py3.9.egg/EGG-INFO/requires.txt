@@ -1,0 +1,11 @@
+
+[docs]
+ipython
+matplotlib
+numpydoc
+sphinx
+
+[tests]
+pytest
+pytest-cov
+pytest-xdist

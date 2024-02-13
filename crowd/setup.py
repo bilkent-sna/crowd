@@ -14,7 +14,8 @@ setup(
         "pyyaml",
         "python-louvain",
         "imageio",
-        "matplotlib"  
+        "matplotlib",
+        "ndlib"  
     ],
     	
     author="Tolga Yilmaz",

@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: netdispatch
+Version: 0.1.0
+Summary: Network Dispatcher
+Home-page: https://github.com/GiulioRossetti/netdispatch
+Author: Giulio Rossetti
+Author-email: giulio.rossetti@gmail.com
+License: BSD-Clause-2
+Keywords: complex-networks
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: python-igraph
+Requires-Dist: networkx (>=2.4)
+
+# netdispatch
+

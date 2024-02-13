@@ -26,40 +26,81 @@ class Random(Structure):
             #else:
             #    self.G = nx.read_edgelist(self.structure, create_using = nx.Graph(), nodetype=int)            
 
-            nodetype_counts = {}
-            for nodetype in list(self.conf["definitions"]["nodetypes"].keys()):
-                nodetype_counts[nodetype] = 0
-                
-            if "source" in self.conf["definitions"]:
-                new_module = importlib.import_module(self.conf["definitions"]["source"], package=None)
-                
-                weights = [0.1, 0.1, 0.8]
-                #random_nodetypes = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), cum_weights=[20,40,100], k=count)
-                
-                random_nodetypes = []
-                keys = list(self.conf["definitions"]["nodetypes"].keys())
-                for i in range(0,len(keys)):
-                    random_nodetypes.extend([keys[i]]*int(weights[i]*count))
+            #if it is a diffusion model do this
+            #else still needs to be changed bc we changed the conf file 
+            if(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"] != None):
+                nodetype_counts = {}
+                for nodetype in list(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"]):
+                    nodetype_counts[nodetype] = 0
+                    
+                if "source" in self.conf["definitions"]:
+                    new_module = importlib.import_module(self.conf["definitions"]["source"], package=None)
+                    
+                    weights = [0.1, 0.1, 0.8]
+                    #random_nodetypes = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), cum_weights=[20,40,100], k=count)
+                    
+                    random_nodetypes = []
+                    keys = list(self.conf["definitions"]["nodetypes"].keys())
+                    for i in range(0,len(keys)):
+                        random_nodetypes.extend([keys[i]]*int(weights[i]*count))
 
-                random.seed(12)
-                random.shuffle(random_nodetypes)
-                #print("--->", random_nodetypes)
-                for i in range(0, count):    
-                    #random_nodetype = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), weights=[20,20,60], k=1)[0]
-                    #cls = getattr(new_module, definitions)
-                    random_nodetype = random_nodetypes[i]
-                    nodetype_counts[random_nodetype] +=1
-                    nodetype = getattr(new_module, random_nodetype)
-                    nodeobject = nodetype()
-                    nx.set_node_attributes(self.G, {i:{"node": nodetype()}})
-            else:
+                    random.seed(12)
+                    random.shuffle(random_nodetypes)
+                    #print("--->", random_nodetypes)
+                    for i in range(0, count):    
+                        #random_nodetype = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), weights=[20,20,60], k=1)[0]
+                        #cls = getattr(new_module, definitions)
+                        random_nodetype = random_nodetypes[i]
+                        nodetype_counts[random_nodetype] +=1
+                        nodetype = getattr(new_module, random_nodetype)
+                        nodeobject = nodetype()
+                        nx.set_node_attributes(self.G, {i:{"node": nodetype()}})
                 
-                for i in range(0, count):
-                    random_nodetype = random.choice(list(self.conf["definitions"]["nodetypes"].keys()))
-                    nodetype_counts[random_nodetype] +=1
-                    nx.set_node_attributes(self.G, {i:{"node": random_nodetype}})
-            
-            print("NODE COUNTS-->", nodetype_counts)   
+                #currently we expect this part to be executed
+                else:
+                    
+                    for i in range(0, count):
+                        #deleted [].keys() here
+                        random_nodetype = random.choice(list(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"]))
+                        nodetype_counts[random_nodetype] +=1
+                        nx.set_node_attributes(self.G, {i:{"node": random_nodetype}})
+                
+                print("NODE COUNTS-->", nodetype_counts)  
+            else:
+                nodetype_counts = {}
+                for nodetype in list(self.conf["definitions"]["nodetypes"].keys()):
+                    nodetype_counts[nodetype] = 0
+                    
+                if "source" in self.conf["definitions"]:
+                    new_module = importlib.import_module(self.conf["definitions"]["source"], package=None)
+                    
+                    weights = [0.1, 0.1, 0.8]
+                    #random_nodetypes = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), cum_weights=[20,40,100], k=count)
+                    
+                    random_nodetypes = []
+                    keys = list(self.conf["definitions"]["nodetypes"].keys())
+                    for i in range(0,len(keys)):
+                        random_nodetypes.extend([keys[i]]*int(weights[i]*count))
+
+                    random.seed(12)
+                    random.shuffle(random_nodetypes)
+                    #print("--->", random_nodetypes)
+                    for i in range(0, count):    
+                        #random_nodetype = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), weights=[20,20,60], k=1)[0]
+                        #cls = getattr(new_module, definitions)
+                        random_nodetype = random_nodetypes[i]
+                        nodetype_counts[random_nodetype] +=1
+                        nodetype = getattr(new_module, random_nodetype)
+                        nodeobject = nodetype()
+                        nx.set_node_attributes(self.G, {i:{"node": nodetype()}})
+                else:
+                    
+                    for i in range(0, count):
+                        random_nodetype = random.choice(list(self.conf["definitions"]["nodetypes"].keys()))
+                        nodetype_counts[random_nodetype] +=1
+                        nx.set_node_attributes(self.G, {i:{"node": random_nodetype}})
+                
+                print("NODE COUNTS-->", nodetype_counts)   
             
         else:
             preprocessing = self.conf["preprocessing"]

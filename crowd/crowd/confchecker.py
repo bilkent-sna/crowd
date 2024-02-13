@@ -16,7 +16,10 @@ class ConfChecker:
         'preprocessing': {'required': False},
         'statfunctions': {'required': False}
     }
-    CONF_FILE = os.path.join(os.path.dirname(__file__), 'conf3.yaml')
+
+    #CONF_FILE = os.path.join(os.path.dirname(__file__), 'conf3.yaml')
+    CONF_FILE = os.path.join(os.path.dirname(__file__), 'conf4.yaml')
+    #CONF_FILE = 'conf4.yaml'
 
     def __init__(self, network_file):
         self.logger = logging.getLogger()
@@ -77,13 +80,15 @@ class ConfChecker:
         return True
 
     def parse(self, network_file):
+        print("HELLO INSIDE PARSE METHOD")
+        #print(ConfChecker.CONF_FILE)
         with open(ConfChecker.CONF_FILE) as f:
-            module_conf = yaml.load(f, Loader=yaml.FullLoader)
-        #self.logger.info("module_conf:" + str(module_conf))
+           module_conf = yaml.load(f, Loader=yaml.FullLoader)
+        self.logger.info("module_conf:" + str(module_conf))
         
         with open(network_file) as f:
             nconf = yaml.load(f, Loader=yaml.FullLoader)
-        #self.logger.info("module_conf:" + str(nconf))
+        self.logger.info("module_conf:" + str(nconf))
 
         try: 
             if self.check_conf(module_conf, nconf):

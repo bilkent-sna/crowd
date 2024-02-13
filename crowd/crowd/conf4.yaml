@@ -1,0 +1,72 @@
+fields:
+  name:
+    required: true
+  info:
+    required: false
+  structure:
+    required: true
+    select_fields:
+      file: 
+        fields:
+          path:
+            required: true
+          type:
+            required: true
+            values: nodes_only | nodes_edges
+          header:
+            required: false
+            default: false
+      random:
+        fields:
+          seed:
+            required: false
+            default: 123
+          degree:
+            required: false
+            default: 4
+      barabasi-albert:
+        fields:
+          seed:
+            required: false
+            default: 123
+          degree:
+            required: false
+            default: 4
+      watts-strogatz:
+        fields:
+          seed:
+            required: false
+            default: 123
+          degree:
+            required: false
+            default: 4
+      twitter:
+      facebook:
+  info:
+    required: false
+  definitions:
+    required: false
+    select-fields: 
+      pd-model: 
+        diffusion: 
+          fields:
+            nodetypes:
+              required: true
+            compartments:
+              required: false
+              default: none 
+      custom:
+        required: false
+        fields:
+          source:
+            required: false
+          functions:
+            required: false
+          nodetypes:
+            required: false
+          node_actions:
+            required: false
+          statfunctions:
+            required: false
+  statfunctions:
+    required: false
