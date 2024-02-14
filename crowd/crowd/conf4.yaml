@@ -48,13 +48,26 @@ fields:
     required: false
     select-fields: 
       pd-model: 
-        diffusion: 
-          fields:
-            nodetypes:
-              required: true
-            compartments:
-              required: false
-              default: none 
+        name: 
+          required: true
+        nodetypes:
+          required: false
+          default: 
+            - Susceptible
+            - Infected
+            - Recovered
+        node-parameters:
+          required: false
+          default: none
+        edge-parameters:
+          required: false
+          default: none  
+        model-parameters:
+          required: false
+          default: none    
+        compartments:
+          required: false
+          default: none 
       custom:
         required: false
         fields:

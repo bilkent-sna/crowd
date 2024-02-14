@@ -28,9 +28,12 @@ class Random(Structure):
 
             #if it is a diffusion model do this
             #else still needs to be changed bc we changed the conf file 
-            if(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"] != None):
+            #next step: instead of 3 conditions make it 1 and add else's
+            if("pd-model" in self.conf["definitions"]
+               and self.conf["definitions"]["pd-model"]["name"] == "diffusion"
+               and self.conf["definitions"]["pd-model"]["nodetypes"] != None):
                 nodetype_counts = {}
-                for nodetype in list(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"]):
+                for nodetype in list(self.conf["definitions"]["pd-model"]["nodetypes"]):
                     nodetype_counts[nodetype] = 0
                     
                 if "source" in self.conf["definitions"]:
@@ -61,7 +64,7 @@ class Random(Structure):
                     
                     for i in range(0, count):
                         #deleted [].keys() here
-                        random_nodetype = random.choice(list(self.conf["definitions"]["pd-model"]["diffusion"]["fields"]["nodetypes"]))
+                        random_nodetype = random.choice(list(self.conf["definitions"]["pd-model"]["nodetypes"]))
                         nodetype_counts[random_nodetype] +=1
                         nx.set_node_attributes(self.G, {i:{"node": random_nodetype}})
                 
