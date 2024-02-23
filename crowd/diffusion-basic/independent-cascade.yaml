@@ -1,0 +1,29 @@
+name: Independent-Cascade
+
+info:
+  total_count: 1000
+
+definitions:
+  pd-model:
+    name: diffusion
+    nodetypes:
+      - Inactive
+      - Active
+    #node-parameters:
+    #edge-parameters:
+    model-parameters:
+      fraction_active: 0.1
+    compartments:
+      c1:
+        type: edge-stochastic
+        treshold: 0.05
+        triggering_status: Active
+    rules:
+      r1:
+        - Inactive
+        - Active
+        - c1
+
+structure:
+  random:
+    degree: 5

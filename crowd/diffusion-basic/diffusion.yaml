@@ -3,7 +3,7 @@ name: SIR-example
 info:
   total_count: 1000
 
-definitions:
+definitions:ta
   pd-model:
     name: diffusion
     nodetypes:
