@@ -56,6 +56,12 @@ fields:
             - Susceptible
             - Infected
             - Recovered
+        type-weights:
+          required: false
+          default: 
+            - 0.9
+            - 0.1
+            - 0.0   
         node-parameters:
           required: false
           default: none

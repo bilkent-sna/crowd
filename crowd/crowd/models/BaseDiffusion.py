@@ -19,14 +19,26 @@ class BaseDiffusion(gc.CompositeModel):
 
         self.actual_iteration = 0
         self.graph = AGraph(graph)
-        print(self.graph.nodes[0])
+
         self.status = {}
+
+        for node in self.graph.nodes:
+            #print("node", node)
+            #print("node-type", type(node))
+            node_state = self.graph.nodes[node]['node']
+            if(node_state == "Inactive"):
+                self.status[node] = 0
+            else:
+                self.status[node] = 1
+            #print("Done current")
+        """
         for i in range(len(self.graph.nodes)):
             node_state = self.graph.nodes[i]['node'] #{node: Active}
             if(node_state == "Inactive"):
                 self.status[i] = 0
             else:
                 self.status[i] = 1
+        """
         #self.initial_status = {}
         self.initial_status = self.status
 
@@ -62,7 +74,7 @@ class BaseDiffusion(gc.CompositeModel):
         :param configuration: a ```ndlib.models.ModelConfig.Configuration``` object
         """
 
-        self.__validate_configuration(configuration)
+        #self.__validate_configuration(configuration)
 
         nodes_cfg = configuration.get_nodes_configuration()
         # Set additional node information
