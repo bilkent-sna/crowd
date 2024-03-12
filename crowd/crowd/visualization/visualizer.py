@@ -12,4 +12,5 @@ class Visualizer():
         self.digress = digress
 
     def generate_artifact_path(self, file, epoch):
-        return self.artifact_path + "/" +str(datetime.now().strftime("%Y-%m-%d-%H:%M:%S")) +  "_"+file + "_" + str(epoch)
+        # ':' not allowed in windows file names
+        return self.artifact_path + "\\" +str(datetime.now().strftime("%Y-%m-%d-%H-%M-%S")) +  "_"+file + "_" + str(epoch)

@@ -4,8 +4,6 @@ import os
 
 yaml_path = os.path.join(os.path.dirname(__file__), 'independent-cascade.yaml')
 mysimplenetwork = n.DiffusionNetwork(yaml_path)
-#visualizer = bv.Basic("artifacts")
+visualizer = bv.Basic(os.path.join(os.path.dirname(__file__), 'artifacts'))
 
-trends = mysimplenetwork.run(5)
-
-print(trends)
+mysimplenetwork.run(10, visualizers=[visualizer], snapshot_period=2)

@@ -9,7 +9,7 @@ class ConfigurationException(Exception):
 
 class BaseDiffusion(gc.CompositeModel):
 
-    def __init__(self, graph, seed=None):
+    def __init__(self, graph, conf, seed=None):
         #from diffusion model
         np.random.seed(seed)
         self.discrete_state = True
@@ -22,15 +22,22 @@ class BaseDiffusion(gc.CompositeModel):
 
         self.status = {}
 
+        self.conf = conf
+        self.possible_node_states = list(conf['definitions']['pd-model']['nodetypes'].keys()) #get nodetypes dict
         for node in self.graph.nodes:
+            node_state = self.graph.nodes[node]['node']
+            self.status[node] = self.possible_node_states.index(node_state)
+            """
             #print("node", node)
             #print("node-type", type(node))
             node_state = self.graph.nodes[node]['node']
-            if(node_state == "Inactive"):
+            if(node_state == "Inactive" or node_state == "Susceptible"):
                 self.status[node] = 0
-            else:
+            elif(node_state == "Active" or node_state == "Infected"):
                 self.status[node] = 1
-            #print("Done current")
+            else:
+                self.status[node] = 2
+            #print("Done current") """
         """
         for i in range(len(self.graph.nodes)):
             node_state = self.graph.nodes[i]['node'] #{node: Active}
@@ -109,3 +116,61 @@ class BaseDiffusion(gc.CompositeModel):
             self.params["model"][param] = val
 
         self.initial_status = self.status
+
+
+    def iteration(self, node_status=True):
+        """
+        Execute a single model iteration
+
+        Originally :return: Iteration_id, Incremental node status (dictionary node->status)
+        Currently :return: Graph, node_count
+        """
+        self.clean_initial_status(list(self.available_statuses.values()))
+        actual_status = {node: nstatus for node, nstatus in future.utils.iteritems(self.status)}
+
+        if self.actual_iteration == 0:
+            self.actual_iteration += 1
+            delta, node_count, status_delta = self.status_delta(actual_status)
+            if node_status:
+                '''
+                return {"iteration": 0, "status": actual_status.copy(),
+                        "node_count": node_count.copy(), "status_delta": status_delta.copy()}
+                '''
+                return self.graph.graph, node_count.copy()
+            else:
+                return {"iteration": 0, "status": {},
+                        "node_count": node_count.copy(), "status_delta": status_delta.copy()}
+
+        for u in self.graph.nodes:
+            u_status = self.status[u]
+            for i in range(0, self.compartment_progressive):
+
+                if u_status == self.available_statuses[self.compartment[i][0]]:
+                    rule = self.compartment[i][2]
+                    test = rule.execute(node=u, graph=self.graph, status=self.status,
+                                        status_map=self.available_statuses, params=self.params)
+                    if test:
+                        actual_status[u] = self.available_statuses[self.compartment[i][1]]
+                        self.graph.nodes[u]['node'] = self.possible_node_states[actual_status[u]]
+                        '''
+                        if(actual_status[u] == 0):
+                            self.graph.nodes[u]['node'] = 'Susceptible'
+                        elif(actual_status[u] == 1):
+                            self.graph.nodes[u]['node'] = 'Infected'
+                        else:
+                            self.graph.nodes[u]['node'] = 'Removed'
+                        break
+                        '''
+
+        delta, node_count, status_delta = self.status_delta(actual_status)
+        self.status = actual_status
+        self.actual_iteration += 1
+
+        if node_status:
+            '''return {"iteration": self.actual_iteration - 1, "status": delta.copy(),
+                    "node_count": node_count.copy(), "status_delta": status_delta.copy()}'''
+            return self.graph.graph, node_count.copy()
+        else:
+            return {"iteration": self.actual_iteration - 1, "status": {},
+                    "node_count": node_count.copy(), "status_delta": status_delta.copy()}
+    

@@ -104,7 +104,8 @@ class Network:
                         visualizer.draw(self, epoch)
 
                 if digress is not None:
-                    digress.save(str(epoch) +":"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
+                    #":" changed to "-" since windows does not allow : in file names
+                    digress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
 
                 #for node, data in self.G.nodes.data():
                 #    print(node, type(data["node"]))

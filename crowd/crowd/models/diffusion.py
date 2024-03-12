@@ -15,7 +15,7 @@ class DiffusionNetwork(netw.Network):
 
         #get model status from conf to an array
         pd_conf = self.conf["definitions"]["pd-model"]
-        node_types = pd_conf["nodetypes"]
+        node_types = pd_conf["nodetypes"] #this is a dictionary
 
         #Setting node attribute if given
         if("node-parameters" in pd_conf):
@@ -43,10 +43,10 @@ class DiffusionNetwork(netw.Network):
 
         
         #ndlib model
-        self.ndlib_model = bd.BaseDiffusion(self.G)
+        self.ndlib_model = bd.BaseDiffusion(self.G, self.conf)
         
         #for each item in array
-        for item in node_types:
+        for item in node_types.keys():
             self.ndlib_model.add_status(item)
 
         print("Available Status For Custom Diffusion")
@@ -130,6 +130,29 @@ class DiffusionNetwork(netw.Network):
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
         self.ndlib_model.set_initial_status(self.ndlib_config)
-        iterations = self.ndlib_model.iteration_bunch(epochs)
-        trends = self.ndlib_model.build_trends(iterations)
-        return trends
+
+        for epoch in range(0, epochs): #for each epoch
+            #execute one iteration with ndlib
+            self.G, status_delta = self.ndlib_model.iteration(node_status=True)
+
+            if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
+                print("Epoch:", epoch)
+                if visualizers is not None:
+                    for visualizer in visualizers:
+                        visualizer.draw(self, epoch)
+
+                '''
+                if digress is not None:
+                    #":" changed to "-" since windows does not allow : in file names
+                    digress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
+                '''
+                #for node, data in self.G.nodes.data():
+                #    print(node, type(data["node"]))
+            print(status_delta)
+
+        if visualizers is not None:
+            for visualizer in visualizers:
+                visualizer.animate()
+
+        #trends = self.ndlib_model.build_trends(iterations)
+        

@@ -19,8 +19,7 @@ class ConfChecker:
 
     #CONF_FILE = os.path.join(os.path.dirname(__file__), 'conf3.yaml')
     CONF_FILE = os.path.join(os.path.dirname(__file__), 'conf4.yaml')
-    #CONF_FILE = 'conf4.yaml'
-
+    
     def __init__(self, network_file):
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.INFO)

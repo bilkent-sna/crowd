@@ -1,0 +1,39 @@
+name: SIR-example
+
+info:
+  total_count: 400
+
+definitions:
+  pd-model:
+    name: diffusion
+    nodetypes:
+      Susceptible:
+        initial-weight: 0.9
+        color: blue
+      Infected:
+        initial-weight: 0.1
+        color: red
+      Removed:
+        initial-weight: 0
+        color: green
+    compartments:
+      c1:
+        type: node-stochastic
+        ratio: 0.02
+        triggering_status: Infected
+      c2:
+        type: node-stochastic
+        ratio: 0.01
+    rules:
+      r1:
+        - Susceptible
+        - Infected
+        - c1
+      r2:
+        - Infected
+        - Removed
+        - c2
+
+structure:
+  random:
+    degree: 4

@@ -28,7 +28,7 @@ definitions:
 
 structure:
   file:
-    #path: "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/netsim/crowd/diffusion-basic/datasets/higgs-social_network.edgelist"
+    #path: "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/datasets/higgs-social_network.edgelist"
     #path: "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/netsim/crowd/diffusion-basic/datasets/lastfm_asia_edges.csv"
     path: "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/netsim/crowd/diffusion-basic/datasets/higgs-small.edgelist"
     type: nodes_edges
