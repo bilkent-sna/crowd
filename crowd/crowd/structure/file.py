@@ -63,20 +63,16 @@ class File(Structure):
                 count = self.G.number_of_nodes()
 
                 nodetype_counts = {}
-                #for nodetype in list(self.conf["definitions"]["nodetypes"].keys()):
-                #take out [pd-model] if code works like this
-                for nodetype in list(self.conf["definitions"]["pd-model"]["nodetypes"]):
+                for nodetype in list(self.conf["definitions"]["nodetypes"].keys):
                     nodetype_counts[nodetype] = 0
                     
                 #weights = [0.1, 0.1, 0.8]
                 #we should read weights from conf file instead
-                weights = self.conf["definitions"]["pd-model"]["type-weights"]
+                weights = self.conf["definitions"]["type-weights"]
                 #random_nodetypes = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), cum_weights=[20,40,100], k=count)
                 
                 random_nodetypes = []
-                #keys = list(self.conf["definitions"]["nodetypes"].keys())
-                 #take out [pd-model] if code works like this
-                keys = list(self.conf["definitions"]["pd-model"]["nodetypes"])
+                keys = list(self.conf["definitions"]["nodetypes"].keys())
                 for i in range(0,len(keys)):
                     random_nodetypes.extend([ keys[i] ] * int(math.ceil(weights[i]*count)))
 
