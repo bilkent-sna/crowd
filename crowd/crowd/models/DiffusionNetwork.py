@@ -9,8 +9,8 @@ from ndlib.models.compartments.enums.NumericalType import NumericalType
 
 class DiffusionNetwork(netw.Network):
 
-    def __init__(self, network_file):
-        super().__init__(network_file)
+    def __init__(self, conf_dict):
+        super().__init__(conf_dict)
 
         #everything about configuration is stored at self.conf
 
@@ -48,14 +48,21 @@ class DiffusionNetwork(netw.Network):
                 print(parameter, value)
                 self.ndlib_config.add_model_parameter(parameter, value)
 
+        #initialize the watch methods to None
+        #this variable will hold a list of method names that will be called in every iteration of the simulation
+        #to record the values of user-requested parameters or do a certain calculation with them
+        self.watch_methods = None
 
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
         self.ndlib_model.set_initial_status(self.ndlib_config)
 
+        # Iteration data dictionary
+        simulation_data = {}
+
         for epoch in range(0, epochs): #for each epoch
             #execute one iteration with ndlib
-            self.G, status_delta = self.ndlib_model.iteration(node_status=True)
+            self.G, self.status_delta = self.ndlib_model.iteration(node_status=True)
 
             if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                 print("Epoch:", epoch)
@@ -63,19 +70,33 @@ class DiffusionNetwork(netw.Network):
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
 
-                '''
                 if digress is not None:
-                    #":" changed to "-" since windows does not allow : in file names
-                    digress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
-                '''
-                #for node, data in self.G.nodes.data():
-                #    print(node, type(data["node"]))
-            print(status_delta)
+                    digress.save_graph(str(epoch), self.G, 'graph.json')
+                    digress.save_statusdelta(str(epoch), self.status_delta, 'statusdelta.json')
+                    
+
+                #save iteration data for parameters that user wants to track
+                #in this case, we say that user can't pass any parameters to these functions
+                for method in self.watch_methods:
+                    #if method in self.predefined_models:
+                    #call each method
+                    #next line of code is assumed to be running the following way:
+                    #simulation_data["percent_infected"][0] = percent_infected()
+                    #print(method.__name__, type(method))
+                    key_to_save = method.__name__ + " iteration " + str(epoch)
+                    simulation_data[key_to_save] = method(self)
+                
+                
+                    
+            print(self.status_delta)
 
         if visualizers is not None:
             for visualizer in visualizers:
                 visualizer.animate()
 
+        if digress is not None and self.watch_methods is not None:
+            digress.save_iteration_data(simulation_data, 'parameters.json')
+            
         #trends = self.ndlib_model.build_trends(iterations)
                 
     def add_node_parameters(self, pd_conf):

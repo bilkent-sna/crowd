@@ -15,9 +15,8 @@ from crowd.digress import file_digress as fd
 
 class Network:
     
-    def __init__(self, network_file):
-        conf_checker = ConfChecker(network_file)
-        self.conf = conf_checker.get_conf()
+    def __init__(self, conf):
+        self.conf = conf
         print("Got conf")
         if self.conf is not None:
             network_creator = NetworkCreator(self.conf)            

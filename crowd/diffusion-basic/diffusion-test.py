@@ -1,4 +1,4 @@
-from crowd.models import diffusion as n
+from crowd.models import DiffusionNetwork as n
 from crowd.visualization import basic as bv
 import os
 
