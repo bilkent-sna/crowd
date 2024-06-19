@@ -11,8 +11,9 @@ from .structure import Structure
 class File(Structure):
     def __init__(self, structure, conf):
         super().__init__(structure)
-        super().__init__(structure)
+        # super().__init__(structure)
         self.conf = conf
+        #print("CONF FROM FILE", conf, "\n\n\n\n\n\n")
 
     def create(self):
         print("Creating file structure")
@@ -57,31 +58,41 @@ class File(Structure):
                 
                 elif file_extension == ".edgelist":
                     self.G = nx.read_edgelist(self.structure['path'], create_using = nx.Graph(), nodetype=int)
-                    print(self.G)
+                    print("Printing an edgelist file info check: ", self.G)
                     
                 #count = self.conf["info"]["total_count"]
                 count = self.G.number_of_nodes()
 
                 nodetype_counts = {}
-                for nodetype in list(self.conf["definitions"]["nodetypes"].keys):
+                for nodetype in list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()):
                     nodetype_counts[nodetype] = 0
                     
+                print("FILE_PASS2")
+
                 #weights = [0.1, 0.1, 0.8]
                 #we should read weights from conf file instead
-                weights = self.conf["definitions"]["type-weights"]
+                #weights = self.conf["definitions"]["pd-model"]["type-weights"]
                 #random_nodetypes = random.choices(list(self.conf["definitions"]["nodetypes"].keys()), cum_weights=[20,40,100], k=count)
                 
                 random_nodetypes = []
-                keys = list(self.conf["definitions"]["nodetypes"].keys())
+                keys = list(self.conf["definitions"]["pd-model"]["nodetypes"].keys())
+                print("AFTER PASS2, KEYS LIST:", keys)
                 for i in range(0,len(keys)):
-                    random_nodetypes.extend([ keys[i] ] * int(math.ceil(weights[i]*count)))
-
+                    #random_nodetypes.extend([ keys[i] ] * int(math.ceil(weights[i]*count)))
+                    curr_weight = float(self.conf["definitions"]["pd-model"]["nodetypes"][keys[i]]['initial-weight'])
+                    print("AFTER PASS2, NO PROBLEM WITH WEIGHT")
+                    random_nodetypes.extend([ keys[i] ] * int(math.ceil(curr_weight*count)))
+                    print("RANDOM NODETYPES SET")
                 #if less than count nodetypes assigned, add 1 of last type
                 if len(random_nodetypes) < count:
+                    print("AFTER PASS 2, IF1")
                     random_nodetypes.append(keys[len(keys) - 1])
+                    print("AFTER PASS 2, IF2")
                 #if more than count nodetypes assigned, take out the last element
                 elif len(random_nodetypes) > count:
+                    print("AFTER PASS 2, ELSE1")
                     random_nodetypes.pop() #pop removes the last by default
+                    print("AFTER PASS 2, ELSE2")
 
                 random.seed(19)
                 
@@ -89,6 +100,8 @@ class File(Structure):
                 #random.shuffle(random_nodetypes)
                 #print(random.getstate())
                 print("--->", str(len(random_nodetypes)))
+
+                print("FILE_PASS3")
 
                 if "source" in self.conf["definitions"]:
                     new_module = importlib.import_module(self.conf["definitions"]["source"], package=None)
@@ -114,6 +127,7 @@ class File(Structure):
                     #so it is better to loop through every node instead of 0 to count
                     #but we will still have i for random_nodetypes array
 
+                    print("FILE_PASS4")
                     i = 0
                     for node in self.G.nodes:
                         #node variable here is not the node itself, but an int
@@ -123,12 +137,15 @@ class File(Structure):
                         nx.set_node_attributes(self.G, {node:{"node": random_nodetype}})
                         i += 1 #increment i for next iteration
 
+                    print("FILE_PASS5")
+
             except:
-                raise("Specified network file "+self.structure["path"] +" does not exist")
+                raise("Specified network file " + self.structure["path"] +" does not exist")
             
         #print("-- GRAPH DETAILS---->", nx.info(self.G)) => Networkx 3.0 removed info method
         print('Number of nodes', len(self.G.nodes))
         print('Number of edges', len(self.G.edges))
         degrees = [val for (node, val) in self.G.degree()]
         print(sum(degrees)/float(len(self.G.nodes)))
+        print(self.G.nodes())
         return self.G

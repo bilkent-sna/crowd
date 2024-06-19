@@ -2,11 +2,13 @@ Metadata-Version: 2.1
 Name: crowd
 Version: 0.1
 Summary: Crowd:a social network simulation framework
-Home-page: UNKNOWN
+Home-page: 
 Author: Tolga Yilmaz
-License: UNKNOWN
 Keywords: social networks,network,simulation
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: pandas
+Requires-Dist: networkx
+Requires-Dist: pyyaml
+Requires-Dist: python-louvain
+Requires-Dist: imageio
+Requires-Dist: matplotlib
+Requires-Dist: ndlib

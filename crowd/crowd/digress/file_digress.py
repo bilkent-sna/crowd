@@ -29,32 +29,24 @@ class file_digress(d.digress):
 
 
     def save_graph(self, epoch_num, current_graph, file_name):
+        path = os.path.join(self.artifact_path, file_name)
         data = nx.node_link_data(current_graph)
-        data = json.dumps(data)
 
-        # Remove single quotes from the beginning and end of the data string
-        data = data[1:-1]
-        #print("data: ", data)
-        #print(("\"" + epoch_num + "\""))
-        data = data.replace(',', ',\n')
-        to_write = ("\"" + epoch_num + "\": ") + "{\n" + data + "},"
+        # Load existing data if the file already exists
+        try:
+            with open(path, 'r') as f:
+                existing_data = json.load(f)
+                # print(existing_data)
+        except (FileNotFoundError, json.JSONDecodeError):
+            existing_data = {}
 
-        '''
-        save the graph to file in the format: 
-        {
-            "1" : { 
-                "nodes": [
-                    {"id": "Myriel", "group": 1},
-                    ...}
-                ],
-                "links": [
-                    {"source": "Napoleon", "target": "Myriel", "value": 1},
-                    ...}
-                ]
-            } 
-        '''
-        self.save(to_write, file_name)
-    
+        # Add new data to the existing data
+        existing_data[epoch_num] = data
+
+        # Write back to file
+        with open(path, 'w') as f:
+            json.dump(existing_data, f, indent=4)
+
     def save_as_gexf(self, graph, file_name = None):
         #if file name given, save it as that. if not, either time or project.gexf
         print("TO-DO")

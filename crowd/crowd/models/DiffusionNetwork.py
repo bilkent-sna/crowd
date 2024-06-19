@@ -80,11 +80,22 @@ class DiffusionNetwork(netw.Network):
                 for method in self.watch_methods:
                     #if method in self.predefined_models:
                     #call each method
-                    #next line of code is assumed to be running the following way:
-                    #simulation_data["percent_infected"][0] = percent_infected()
-                    #print(method.__name__, type(method))
-                    key_to_save = method.__name__ + " iteration " + str(epoch)
-                    simulation_data[key_to_save] = method(self)
+                    if isinstance(method, list): #then it is a method with parameters
+                        #first value in the list is the name of the function
+                        #following ones are parameters
+                        key_to_save = method[0].__name__ + " iteration " + str(epoch)
+                        parameters = [self]
+                        for i in range(1, len(method)):
+                            parameters.append(method[i])
+                        print("Parameters:", parameters)
+                        #too similar to mesa?
+                        simulation_data[key_to_save] = method[0](*parameters)
+                    else:
+                        #next line of code is assumed to be running the following way:
+                        #simulation_data["percent_infected"][0] = percent_infected()
+                        #print(method.__name__, type(method))
+                        key_to_save = method.__name__ + " iteration " + str(epoch)
+                        simulation_data[key_to_save] = method(self)
                 
                 
                     
@@ -106,23 +117,25 @@ class DiffusionNetwork(netw.Network):
             
             #setting numerical node parameters if given
             if("numerical" in pd_conf["node-parameters"]):
-                print("TO-DO: NOT COMPLETE")
+                print("TO-DO: is it possible to give user more options")
                 params = pd_conf["node-parameters"]["numerical"]
-                for param_name, param_values in params.items():
-                    #setting the numerical attribute randomly between 2 numbers
-                    #we expect user to enter these 2 numbers in a list format
-                    attr = {n: {param_name: random.choice(range(param_values[0], param_values[1]))} for n in self.G.nodes()}
-                    nx.set_node_attributes(self.G, attr)
+                if params != []:
+                    for param_name, param_values in params.items():
+                        #setting the numerical attribute randomly between 2 numbers
+                        #we expect user to enter these 2 numbers in a list format
+                        attr = {n: {param_name: random.choice(range(int(param_values[0]), int(param_values[1])))} for n in self.G.nodes()}
+                        nx.set_node_attributes(self.G, attr)
 
             #setting categorical node parameters if given
             if("categorical" in pd_conf["node-parameters"]):
                 params = pd_conf["node-parameters"]["categorical"]
-                for param_name, param_values in params.items():
-                    #setting the categorical attribute randomly
-                    #ndlib does not provide a method for this so we can add
-                    #to conf file if user has any requirements
-                    attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
-                    nx.set_node_attributes(self.G, attr)
+                if params != []:
+                    for param_name, param_values in params.items():
+                        #setting the categorical attribute randomly
+                        #ndlib does not provide a method for this so we can add
+                        #to conf file if user has any requirements
+                        attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
+                        nx.set_node_attributes(self.G, attr)
 
     def add_edge_parameters(self, pd_conf):
        #Setting edge attribute if given
@@ -130,26 +143,29 @@ class DiffusionNetwork(netw.Network):
             #set edge parameters depending on the type
             if("numerical" in pd_conf["edge-parameters"]):
                 params = pd_conf["edge-parameters"]["numerical"]
-                for param_name, param_value in params.items():
-                    '''
-                    ndlib's example:
-                    attr = {(u, v): {"weight": int((u+v) % 10)} for (u, v) in g.edges()}
-                    our case: we take "weight: int((u+v) % 10)" in the yaml file?  
-                    '''
-                    #would this work? param_values will be a string but we want it to be a calculation
-                    #attr = {(u, v) : {param_name: param_values} for (u, v) in self.G.edges()}
-                    attr = {(u, v) : {param_name: int((u+v) % 10)} for (u, v) in self.G.edges()}
-                    nx.set_edge_attributes(self.G, attr)
+
+                if params != []:
+                    for param_name, param_value in params.items():
+                        '''
+                        ndlib's example:
+                        attr = {(u, v): {"weight": int((u+v) % 10)} for (u, v) in g.edges()}
+                        our case: we take "weight: int((u+v) % 10)" in the yaml file?  
+                        '''
+                        #would this work? param_values will be a string but we want it to be a calculation
+                        #attr = {(u, v) : {param_name: param_values} for (u, v) in self.G.edges()}
+                        attr = {(u, v) : {param_name: int((u+v) % 10)} for (u, v) in self.G.edges()}
+                        nx.set_edge_attributes(self.G, attr)
             
             if("categorical" in pd_conf["edge-parameters"]):
                 params = pd_conf["edge-parameters"]["categorical"]
-                for param_name, param_value in params.items():
-                    #setting the categorical attribute randomly
-                    #ndlib does not provide a method for this so we can add
-                    #to conf file if user has any requirements
-                    attr = {(u, v): {param_name: random.choice(param_value)} for (u, v) in self.G.edges()}
-                    attr.update({(v, u): attr[(u, v)] for (u, v) in self.G.edges()})
-                    nx.set_edge_attributes(self.G, attr)
+                if params != []:
+                    for param_name, param_value in params.items():
+                        #setting the categorical attribute randomly
+                        #ndlib does not provide a method for this so we can add
+                        #to conf file if user has any requirements
+                        attr = {(u, v): {param_name: random.choice(param_value)} for (u, v) in self.G.edges()}
+                        attr.update({(v, u): attr[(u, v)] for (u, v) in self.G.edges()})
+                        nx.set_edge_attributes(self.G, attr)
 
     def add_compartments(self, pd_conf):
         #create compartments dictionary
@@ -157,7 +173,7 @@ class DiffusionNetwork(netw.Network):
         for compartment_name, compartment_values in pd_conf["compartments"].items():
             #for all type of compartments, except ConditionalComposition,
             #check if there is cascading composition
-            if("composed" in compartment_values):
+            if("composed" in compartment_values and compartment_values["composed"] != ''):
                 composed = compartment_values["composed"]
             else:
                 composed = None
@@ -165,9 +181,10 @@ class DiffusionNetwork(netw.Network):
             #NODE COMPARTMENTS
             #1. Node Stochastic
             if(compartment_values["type"] == "node-stochastic"):
-                ratio = compartment_values["ratio"]
+                ratio = float(compartment_values["ratio"])
                 #triggering status is not a mandatory field. So it may be empty.
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -176,8 +193,9 @@ class DiffusionNetwork(netw.Network):
             elif(compartment_values["type"] == "node-categorical"):
                 attribute = compartment_values["attribute"]
                 value = compartment_values["value"]
-                if("probability" in compartment_values):
-                    probability = compartment_values["probability"]
+                if("probability" in compartment_values 
+                   and compartment_values["probability"] != ''):
+                    probability = float(compartment_values["probability"])
                     if(probability < 0 and probability > 1): #invalid probability
                         print("Invalid probability given: setting to 1")
                         probability = 1
@@ -187,18 +205,20 @@ class DiffusionNetwork(netw.Network):
             #3. Node Numerical Attribute
             elif(compartment_values["type"] == "node-numerical-attribute"):
                 attribute = compartment_values["attribute"] #attribute name
-                value = compartment_values["value"] #attribute testing value
+                value = int(compartment_values["value"]) #attribute testing value
                 op = compartment_values["operator"] #logic operator
                 #setting probability if valid
-                if("probability" in compartment_values):
-                    probability = compartment_values["probability"]
+                if("probability" in compartment_values
+                   and compartment_values["probability"] != ''):
+                    probability = float(compartment_values["probability"])
                     if(probability < 0 and probability > 1): #invalid probability
                         print("Invalid probability given: setting to 1")
                         probability = 1
                 else:
                     probability = 1
                 #setting trigerring status if given
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -218,21 +238,24 @@ class DiffusionNetwork(netw.Network):
                 #when operator is IN, "value" is expected to be a tuple of two elements identifying a closed interval
                 value = compartment_values["value"]
                 #value-type does not have to be specified. if not specified, ndlib takes it as number
-                if("value-type" in compartment_values):
+                if("value-type" in compartment_values
+                   and compartment_values["value-type"] != ''):
                     value_type = self.setValueType(compartment_values["value-type"])
                 else:
                     value_type = None
                 op = compartment_values["operator"]
                 #setting probability if valid
-                if("probability" in compartment_values):
-                    probability = compartment_values["probability"]
+                if("probability" in compartment_values
+                   and compartment_values["probability"] != ''):
+                    probability = float(compartment_values["probability"])
                     if(probability < 0 and probability > 1): #invalid probability
                         print("Invalid probability given: setting to 1")
                         probability = 1
                 else:
                     probability = 1
                 #setting trigerring status if given
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -240,8 +263,9 @@ class DiffusionNetwork(netw.Network):
                 
             #5. Node Treshold    
             elif(compartment_values["type"] == "node-treshold"):
-                if("treshold" in compartment_values):
-                    treshold = compartment_values["treshold"]
+                if("treshold" in compartment_values
+                   and compartment_values["treshold"] != ''):
+                    treshold = float(compartment_values["treshold"])
                     if(treshold < 0 or treshold > 1):
                         #it is not a valid treshold
                         print("Given treshold value is not valid. Setting it to 1.")
@@ -255,9 +279,10 @@ class DiffusionNetwork(netw.Network):
             #EDGE COMPARTMENTS
             #1. Edge Stochastic
             elif(compartment_values["type"] == "edge-stochastic"):
-                treshold = compartment_values["treshold"]
+                treshold = float(compartment_values["treshold"])
                 #triggering status is not a mandatory field. So it may be empty.
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -266,14 +291,16 @@ class DiffusionNetwork(netw.Network):
             elif(compartment_values["type"] == "edge-categorical"):
                 attribute = compartment_values["attribute"]
                 value = compartment_values["value"]
-                if("probability" in compartment_values):
-                    probability = compartment_values["probability"]
+                if("probability" in compartment_values
+                   and compartment_values["probability"] != ''):
+                    probability = float(compartment_values["probability"])
                     if(probability < 0 and probability > 1): #invalid probability
                         print("Invalid probability given: setting to 1")
                         probability = 1
                 else:
                     probability = 1
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -281,16 +308,18 @@ class DiffusionNetwork(netw.Network):
             #3. Edge Numerical
             elif(compartment_values["type"] == "edge-numerical"):
                 attribute = compartment_values["attribute"]
-                value = compartment_values["value"]
+                value = int(compartment_values["value"])
                 op = compartment_values["operator"]
-                if("probability" in compartment_values):
-                    probability = compartment_values["probability"]
+                if("probability" in compartment_values
+                   and compartment_values["probability"] != ''):
+                    probability = float(compartment_values["probability"])
                     if(probability < 0 and probability > 1): #invalid probability
                         print("Invalid probability given: setting to 1")
                         probability = 1
                 else:
                     probability = 1
-                if("triggering_status" in compartment_values):
+                if("triggering_status" in compartment_values
+                   and compartment_values["triggering_status"] != ''):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
@@ -301,7 +330,7 @@ class DiffusionNetwork(netw.Network):
             #1. Count Down
             elif(compartment_values["type"] == "count-down"):
                 name = compartment_values["name"]
-                iterations = compartment_values["iteration-count"]
+                iterations = int(compartment_values["iteration-count"])
                 compartments[compartment_name] = cpm.CountDown(name, iterations, composed = composed) #does composing other types with countdown make sense?
             #TIME COMPARTMENTS COMPLETE
                 

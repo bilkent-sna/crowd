@@ -73,7 +73,7 @@ class Project:
         # Using the project name provided, load the project
         # If does not exist, print error message
         self.project_name = project_name
-        self.project_dir = os.path.join(os.getcwd(), project_name)
+        self.project_dir = os.path.join(os.getcwd(), "/projects/" + project_name)
         self.conf_file = os.path.join(self.project_dir, 'conf.yaml')
         self.results_dir = os.path.join(self.project_dir, 'results')
 
@@ -158,6 +158,11 @@ class Project:
         #these methods can be user-defined or predefined
         #as they are written in Python for now, we can just pass it by name
         self.netw.watch_methods = methods
+        watch_methods_save = {}
+        #temp code
+        for method in self.netw.watch_methods:
+            watch_methods_save[str(method.__name__)] = str(method.__code__)
+
         
         #modify networks run method for new digress
         self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress = self.digress)
@@ -170,7 +175,11 @@ class Project:
             "date": start_time.strftime("%Y-%m-%d"),
             "simulation-duration": str(end_time - start_time), #end - start
             "start-time": start_time.isoformat(sep= ' '),
-            "end-time": end_time.isoformat(sep= ' ')
+            "end-time": end_time.isoformat(sep= ' '),
+            "epoch-num" : epochs,
+            "snapshot-period": snapshot_period,
+            "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
+            "watch-methods": watch_methods_save 
             # Include other simulation params
         }
 

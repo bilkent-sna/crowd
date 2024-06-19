@@ -19,7 +19,9 @@ class Network:
         self.conf = conf
         print("Got conf")
         if self.conf is not None:
-            network_creator = NetworkCreator(self.conf)            
+            print("PASS1")
+            network_creator = NetworkCreator(self.conf) 
+            print("PASS2")           
             self.G = network_creator.create_network()
             print("G-->")    
             print(self.G)

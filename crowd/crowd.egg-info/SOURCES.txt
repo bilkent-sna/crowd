@@ -5,6 +5,7 @@ crowd/network.py
 crowd/networkcreator.py
 crowd/node.py
 crowd/nodetype.py
+crowd/test.py
 crowd.egg-info/PKG-INFO
 crowd.egg-info/SOURCES.txt
 crowd.egg-info/dependency_links.txt
