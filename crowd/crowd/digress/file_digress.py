@@ -12,19 +12,29 @@ class file_digress(d.digress):
         f.write(str(input)+"\n")
         f.close()
     
-    def save_iteration_data(self, data_dict, file_name):
-        to_write = json.dumps(data_dict)
-        self.save(to_write, file_name)
+    def save_iteration_data(self, simulation_data):
+        for key, value in simulation_data.items():
+            file_name = f"{key.split()[0]}.json"  # Use the method name as the file name
+            to_write = json.dumps(value, indent=2)
+            self.save(to_write, os.path.join('parameters', file_name))
+      
 
-    def save_statusdelta(self, epoch_num, data_dict, file_name):
-        if(epoch_num != "0"):
-            to_write = (",\n\"" + epoch_num + "\": ") + json.dumps(data_dict)
+    def save_statusdelta(self, epoch_num, data_dict, file_name, available_status):
+        new_dict = {"Iteration": epoch_num}
+        index = 0
+        for status in available_status:
+            new_dict[status] = data_dict[index]
+            index += 1
+
+        if(epoch_num != 0):
+            to_write = (",") + json.dumps(new_dict)
         else:
-            to_write = ("\"" + epoch_num + "\": ") + json.dumps(data_dict)
+            to_write = json.dumps(new_dict)
         #self.save(to_write, file_name)
-        path = os.path.join(self.artifact_path, file_name)
+        path = os.path.join(self.artifact_path, 'parameters', file_name)
         f = open(path, "a")
-        f.write(str(to_write))
+        f.write(to_write)
+        # f.write(str(to_write))
         f.close()
 
 

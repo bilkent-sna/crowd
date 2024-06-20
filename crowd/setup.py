@@ -15,7 +15,8 @@ setup(
         "python-louvain",
         "imageio",
         "matplotlib",
-        "ndlib"  
+        "ndlib", 
+        "scikit-network"  
     ],
     	
     author="Tolga Yilmaz",

@@ -1,3 +1,4 @@
+import json
 import random
 from crowd import node as n
 from crowd import network as netw
@@ -51,7 +52,8 @@ class DiffusionNetwork(netw.Network):
         #initialize the watch methods to None
         #this variable will hold a list of method names that will be called in every iteration of the simulation
         #to record the values of user-requested parameters or do a certain calculation with them
-        self.watch_methods = None
+        self.every_iteration_methods = None
+        self.after_methods = None
 
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
@@ -72,30 +74,40 @@ class DiffusionNetwork(netw.Network):
 
                 if digress is not None:
                     digress.save_graph(str(epoch), self.G, 'graph.json')
-                    digress.save_statusdelta(str(epoch), self.status_delta, 'statusdelta.json')
+                    digress.save_statusdelta(epoch, self.status_delta, 'statusdelta.json', self.ndlib_model.available_statuses)
                     
 
-                #save iteration data for parameters that user wants to track
-                #in this case, we say that user can't pass any parameters to these functions
-                for method in self.watch_methods:
-                    #if method in self.predefined_models:
-                    #call each method
-                    if isinstance(method, list): #then it is a method with parameters
-                        #first value in the list is the name of the function
-                        #following ones are parameters
-                        key_to_save = method[0].__name__ + " iteration " + str(epoch)
-                        parameters = [self]
-                        for i in range(1, len(method)):
-                            parameters.append(method[i])
-                        print("Parameters:", parameters)
-                        #too similar to mesa?
-                        simulation_data[key_to_save] = method[0](*parameters)
-                    else:
-                        #next line of code is assumed to be running the following way:
-                        #simulation_data["percent_infected"][0] = percent_infected()
-                        #print(method.__name__, type(method))
-                        key_to_save = method.__name__ + " iteration " + str(epoch)
-                        simulation_data[key_to_save] = method(self)
+            #save iteration data for parameters that user wants to track
+            #in this case, we say that user can't pass any parameters to these functions
+            for method in self.every_iteration_methods:
+                #if method in self.predefined_models:
+                #call each method
+                if isinstance(method, list): #then it is a method with parameters
+                    #first value in the list is the name of the function
+                    #following ones are parameters
+                    key_to_save = method[0].__name__ 
+                    parameters = [self]
+                    for i in range(1, len(method)):
+                        parameters.append(method[i])
+                    print("Parameters:", parameters)
+                    #too similar to mesa?
+                    if key_to_save not in simulation_data:
+                        simulation_data[key_to_save] = []
+                    simulation_data[key_to_save].append({
+                        "Iteration": epoch,
+                        "Value": method[0](*parameters)
+                    })
+                else:
+                    #next line of code is assumed to be running the following way:
+                    #simulation_data["percent_infected"][0] = percent_infected()
+                    #print(method.__name__, type(method))
+                    key_to_save = method.__name__ 
+                    if key_to_save not in simulation_data:
+                        simulation_data[key_to_save] = []
+                    simulation_data[key_to_save].append({
+                        "Iteration": epoch,
+                        "Value":  method(self)
+                    })
                 
                 
                     
@@ -105,9 +117,42 @@ class DiffusionNetwork(netw.Network):
             for visualizer in visualizers:
                 visualizer.animate()
 
-        if digress is not None and self.watch_methods is not None:
-            digress.save_iteration_data(simulation_data, 'parameters.json')
+        if digress is not None and self.every_iteration_methods is not None:
+            digress.save_iteration_data(simulation_data)
+
+        if digress is not None and self.after_methods is not None:
+            simulation_data = {}
+            for method in self.after_methods:
+                #if method in self.predefined_models:
+                #call each method
+                if isinstance(method, list): #then it is a method with parameters
+                    #first value in the list is the name of the function
+                    #following ones are parameters
+                    key_to_save = method[0].__name__ 
+                    parameters = [self]
+                    for i in range(1, len(method)):
+                        parameters.append(method[i])
+                    print("Parameters:", parameters)
+                    if key_to_save not in simulation_data:
+                        simulation_data[key_to_save] = []
+                    simulation_data[key_to_save].append({
+                        "Value": method[0](*parameters)
+                    })
+                else:
+                    #next line of code is assumed to be running the following way:
+                    #simulation_data["percent_infected"][0] = percent_infected()
+                    #print(method.__name__, type(method))
+                    key_to_save = method.__name__ 
+                    if key_to_save not in simulation_data:
+                        simulation_data[key_to_save] = []
+                    simulation_data[key_to_save].append({
+                        "Value":  method(self)
+                    })
             
+            digress.save(json.dumps(simulation_data), 'parameters/after_simulation.json')
+        
+        
+        
         #trends = self.ndlib_model.build_trends(iterations)
                 
     def add_node_parameters(self, pd_conf):

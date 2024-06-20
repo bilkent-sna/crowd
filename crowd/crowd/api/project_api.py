@@ -44,9 +44,7 @@ class ProjectFunctions:
             new_project.update_conf(conf)
             print("After updating conf")
 
-            #remove this later and actually read the methods file
-            methods = []
-            new_project.run_simulation(epochs, snapshot_period, methods)
+            new_project.run_simulation(epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
             print("Simulation directory:", simulation_directory)                                                                                                      

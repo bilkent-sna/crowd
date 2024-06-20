@@ -33,7 +33,7 @@ my_project = NewProject(existing_project_name)
 
 #print("\n\n\n\n\nGet latest result:", my_project.get_latest_result())
 
-#returns the status of node 0 in every snapshot
+# # returns the status of node 0 in every snapshot
 # def get_node_status(network):
 #     return network.ndlib_model.status[0]
 
@@ -44,7 +44,7 @@ my_project = NewProject(existing_project_name)
 # def method_with_parameters(network, node_count):
 #     print("Node count: ", node_count)
 
-# # methods = [get_node_status, get_percentage_infected, [method_with_parameters, 5]]
+# methods = [get_node_status, get_percentage_infected, [method_with_parameters, 5]]
 # methods = [get_node_status, get_percentage_infected]
-methods = []
-my_project.run_simulation(2, 1, methods)
+# methods = []
+my_project.run_simulation(2, 1)

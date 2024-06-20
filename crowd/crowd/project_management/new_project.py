@@ -1,5 +1,7 @@
+import importlib
 import os
 import json
+from crowd.models.EdgeSimNetwork import EdgeSimNetwork
 import yaml
 from datetime import datetime
 import shutil
@@ -98,7 +100,7 @@ class NewProject:
         if isDiffusion:
             self.netw = DiffusionNetwork(self.conf)
         else:
-            self.netw = Network(self.conf)
+            self.netw = EdgeSimNetwork(self.conf)
 
 
     def init_methods(self):
@@ -156,71 +158,11 @@ class NewProject:
                         "c1": {
                             "type": "node-stochastic",
                             "ratio": 0.5,
-                            "triggering_status": "Infected",
-                            "composed": "c2"
-                        },
-                        "c2": {
-                            "type": "node-categorical",
-                            "attribute": "gender",
-                            "value": "male",
-                            "probability": 0.1
-                        },
-                        "c3": {
-                            "type": "node-numerical-attribute",
-                            "attribute": "age",
-                            "value": 18,
-                            "operator": "==",
-                            "probability": 0.6,
-                            "triggering_status": "Susceptible"
-                        },
-                        "c4": {
-                            "type": "node-numerical-variable",
-                            "variable": "age",
-                            "variable-type": "attribute",
-                            "value": "friends",
-                            "value-type": "attribute",
-                            "operator": "<"
-                        },
-                        "c5": {
-                            "type": "node-treshold",
-                            "treshold": 0.1,
                             "triggering_status": "Infected"
-                        },
-                        "c6": {
-                            "type": "edge-categorical",
-                            "attribute": "type",
-                            "value": "family",
-                            "probability": 0.6,
-                            "triggering_status": "Susceptible"
-                        },
-                        "c7": {
-                            "type": "edge-numerical",
-                            "attribute": "weight",
-                            "value": 4,
-                            "operator": "==",
-                            "probability": 0.6,
-                            "triggering_status": "Susceptible"
-                        },
-                        "c8": {
-                            "type": "edge-stochastic",
-                            "treshold": 0.1,
-                            "triggering_status": "Infected"
-                        },
-                        "c9": {
-                            "type": "count-down",
-                            "name": "incubation",
-                            "iteration-count": 10
-                        },
-                        "c10": {
-                            "type": "conditional-composition",
-                            "condition": "c6",
-                            "first-branch": "c7",
-                            "second-branch": "c4"
                         }
                     },
                     "rules": {
-                        "r1": ["Susceptible", "Infected", "c1"],
-                        "r2": ["Infected", "Recovered", "c10"]
+                        "r1": ["Susceptible", "Infected", "c1"]
                     }
                 }
             },
@@ -260,10 +202,7 @@ class NewProject:
         with open(self.conf_file, 'w') as f:
             yaml.dump(self.conf, f)
 
-
-    # NOT UPDATED
-    # Simulates the social network and saves the results in JSON format under the results directory
-    def run_simulation(self, epochs, snapshot_period, methods):
+    def run_edge_simulation(self, epochs, snapshot_period):
         # Running the simulation
         start_time = datetime.now()
 
@@ -276,17 +215,68 @@ class NewProject:
         
         # Initialize empty dictionary in JSON files
         self.digress.save("{}", 'graph.json')
-        self.digress.save("{}", 'statusdelta.json')
+       
+        # Take update method
+        self.netw.update_method = self.get_update_method()
+
+        # Modify networks run method for new digress
+        self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
+        end_time = datetime.now()
+
+      
+        # Ensure the closing braces are added only if necessary
+        simulation_params = {
+            "date": start_time.strftime("%Y-%m-%d"),
+            "name": self.conf["name"],
+            "simulation_duration": str(end_time - start_time),  # end - start
+            "start_time": start_time.isoformat(sep=' '),
+            "end_time": end_time.isoformat(sep=' '),
+            "epoch_num": epochs,
+            "snapshot_period": snapshot_period,
+            # Include other simulation params
+        }
+
+        # Save simulation results to a JSON file
+        sim_info_file = os.path.join(simulation_dir, "simulation_info.json")
+        with open(sim_info_file, 'w') as f:
+            json.dump(simulation_params, f, indent=4)
+
+    
+    # Simulates the social network and saves the results in JSON format under the results directory
+    def run_simulation(self, epochs, snapshot_period):
+        # Running the simulation
+        start_time = datetime.now()
+
+        # Create the directory for this simulation
+        simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+        if not os.path.exists(simulation_dir):
+            os.makedirs(simulation_dir)
+
+        # Create the parameters directory for this simulation
+        parameters_dir = os.path.join(simulation_dir, 'parameters')
+        if not os.path.exists(parameters_dir):
+            os.makedirs(parameters_dir)
+
+        self.digress = fd.file_digress(simulation_dir)
+        
+        # Initialize empty dictionary in JSON files
+        self.digress.save("{}", 'graph.json')
+        self.digress.save("[", os.path.join('parameters', 'statusdelta.json'))
 
         # User gives the method a list of functions, which will be called every step of the simulation
         # These methods can be user-defined or predefined
         # As they are written in Python for now, we can just pass it by name
-        self.netw.watch_methods = methods
-        watch_methods_save = {str(method.__name__): str(method.__code__) for method in self.netw.watch_methods}
+        self.netw.every_iteration_methods = self.get_every_iteration_methods()
+        self.netw.after_methods = self.get_after_simulation_methods()
+
+        # Removed
+        # watch_methods_save = {str(method.__name__): str(method.__code__) for method in self.netw.watch_methods}
         
         # Modify networks run method for new digress
         self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
         end_time = datetime.now()
+
+        self.digress.save("]", os.path.join('parameters', 'statusdelta.json'))
 
         # Ensure the closing braces are added only if necessary
         simulation_params = {
@@ -298,7 +288,7 @@ class NewProject:
             "epoch_num": epochs,
             "snapshot_period": snapshot_period,
             "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
-            "watch_methods": watch_methods_save
+            # "watch_methods": watch_methods_save
             # Include other simulation params
         }
 
@@ -320,4 +310,46 @@ class NewProject:
         with open(basic_info_file, 'w') as f:
             json.dump(basic_info, f, indent=4)
 
+    def get_every_iteration_methods(self):
+        path = os.path.join(self.project_dir, 'method_settings.json')
+        with open(path, 'r') as f:
+            settings = json.load(f)
+        
+        all_methods = self.load_methods()
+        every_iteration_methods = []
+        
+        for method_name, setting in settings.items():
+            if setting.get('every_iteration', False):
+                every_iteration_methods.append(all_methods[method_name])
+        
+        return every_iteration_methods
     
+    def get_after_simulation_methods(self):
+        path = os.path.join(self.project_dir, 'method_settings.json')
+        with open(path, 'r') as f:
+            settings = json.load(f)
+        
+        all_methods = self.load_methods()
+        after_simulation_methods = []
+        
+        for method_name, setting in settings.items():
+            if setting.get('after_simulation', False):
+                after_simulation_methods.append(all_methods[method_name])
+        
+        return after_simulation_methods
+
+    def load_methods(self):
+        file_path = os.path.join(self.project_dir, 'methods.py')
+        if not os.path.isfile(file_path):
+            raise FileNotFoundError(f"Methods file not found: {file_path}")
+        
+        spec = importlib.util.spec_from_file_location("methods", file_path)
+        if spec is None:
+            raise ImportError(f"Could not load spec from {file_path}")
+        
+        methods = importlib.util.module_from_spec(spec)
+        if methods is None:
+            raise ImportError(f"Could not create module from spec for {file_path}")
+        
+        spec.loader.exec_module(methods)
+        return {name: func for name, func in methods.__dict__.items() if callable(func)}
