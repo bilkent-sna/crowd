@@ -217,7 +217,7 @@ class NewProject:
         self.digress.save("{}", 'graph.json')
        
         # Take update method
-        self.netw.update_method = self.get_update_method()
+        self.netw.update_method = self.load_methods()["update"]
 
         # Modify networks run method for new digress
         self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
@@ -309,7 +309,7 @@ class NewProject:
         basic_info_file = os.path.join(self.project_dir, "basic_info.json")
         with open(basic_info_file, 'w') as f:
             json.dump(basic_info, f, indent=4)
-
+    
     def get_every_iteration_methods(self):
         path = os.path.join(self.project_dir, 'method_settings.json')
         with open(path, 'r') as f:
@@ -353,3 +353,11 @@ class NewProject:
         
         spec.loader.exec_module(methods)
         return {name: func for name, func in methods.__dict__.items() if callable(func)}
+    
+
+# pr = NewProject()
+# pr.load_project("customsimulation")
+# pr.change_network_type(False) #change network type to edge
+# pr.run_edge_simulation(2, 1)
+# print("Simulation completed")
+

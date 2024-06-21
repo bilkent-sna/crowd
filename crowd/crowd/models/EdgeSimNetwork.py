@@ -1,3 +1,4 @@
+import json
 from crowd import network as netw
 import networkx as nx
 
@@ -20,6 +21,11 @@ class EdgeSimNetwork(netw.Network):
 
                 if digress is not None:
                     digress.save_graph(str(epoch), self.G, 'graph.json')
+                    
 
-            self.update_method(self)
-            
+            added_links = self.update_method(self)
+            simulation_data[str(epoch)] = added_links
+
+        digress.save(json.dumps(simulation_data), 'new_addition.json')    
+                
+                
