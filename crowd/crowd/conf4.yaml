@@ -24,6 +24,9 @@ fields:
           degree:
             required: false
             default: 4
+          count: 
+            required: false
+            default: 100
       barabasi-albert:
         fields:
           seed:
@@ -32,6 +35,9 @@ fields:
           degree:
             required: false
             default: 4
+          count: 
+            required: false
+            default: 100
       watts-strogatz:
         fields:
           seed:
@@ -40,6 +46,9 @@ fields:
           degree:
             required: false
             default: 4
+          count: 
+            required: false
+            default: 100
       twitter:
       facebook:
   info:

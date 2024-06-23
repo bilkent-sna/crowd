@@ -25,7 +25,7 @@ my_project.run_simulation(10, 2)
 
 '''
 # Load an existing project
-existing_project_name = "test2"
+existing_project_name = "simplediffusion"
 my_project = NewProject(existing_project_name)
 #print("All result dates:\n", my_project.get_all_result_dates())
 
@@ -47,4 +47,4 @@ my_project = NewProject(existing_project_name)
 # methods = [get_node_status, get_percentage_infected, [method_with_parameters, 5]]
 # methods = [get_node_status, get_percentage_infected]
 # methods = []
-my_project.run_simulation(2, 1)
+my_project.run_simulation(10, 1)

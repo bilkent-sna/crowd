@@ -59,6 +59,30 @@ class ProjectFunctions:
         except KeyError as e:
             print(f"Key error: {e}")
     
+    def init_and_run_simulation(self, project_name, epochs, snapshot_period):
+        try:
+            # Initialize the project object
+            new_project = NewProject()
+
+            print("Before loading project")
+            new_project.load_project(project_name)
+            print("After loading project")
+
+            new_project.run_simulation(epochs, snapshot_period)
+
+            simulation_directory = max(os.listdir(new_project.results_dir))
+            print("Simulation directory:", simulation_directory)                                                                                                      
+      
+            return json.dumps(simulation_directory)
+
+        except TypeError as e:
+            print(f"Type error: {e}")
+        except KeyError as e:
+            print(f"Key error: {e}")
+    
+    def save_conf(self, data, project_name):
+        pass
+        
     def parseConf(self, data_dict, project_dir):
         conf = {
                 "name": data_dict["name"]
@@ -151,7 +175,7 @@ class ProjectFunctions:
                     "categorical": temp2
                 }
             }
-            conf["definitions"]["pd-model"].update(item_to_add)
+            definitions["definitions"]["pd-model"].update(item_to_add)
 
         #compartments 
         compartments_dict = data_dict["compartments"]
@@ -199,11 +223,13 @@ class ProjectFunctions:
             item_to_add["structure"]["file"]["path"] = os.path.join(project_dir, 'datasets', curr_path)
         
         else:
-            generate_type = next(iter(data_dict["dataSource"]["structure"]["fileOrRandom"]))
+            generate_type = data_dict["dataSource"]["structure"]["fileOrRandom"]["generateType"]
+            print("Generate type:", generate_type)
             item_to_add = {
                 "structure": {
                     generate_type: {
-                        "degree": data_dict["dataSource"]["structure"]["fileOrRandom"][generate_type]["degree"]
+                        "degree": data_dict["dataSource"]["structure"]["fileOrRandom"]["degree"],
+                        "count": data_dict["dataSource"]["structure"]["fileOrRandom"]["count"]
                     }
                 }
             }

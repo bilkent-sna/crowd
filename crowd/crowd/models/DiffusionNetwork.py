@@ -19,6 +19,9 @@ class DiffusionNetwork(netw.Network):
         pd_conf = self.conf["definitions"]["pd-model"]
         node_types = pd_conf["nodetypes"] #this is a dictionary
 
+         #DEBUG: Print the configurations to verify their structure
+        print("Initial configuration:", pd_conf)
+        
         self.add_node_parameters(pd_conf)
 
         self.add_edge_parameters(pd_conf)
@@ -38,8 +41,10 @@ class DiffusionNetwork(netw.Network):
                 
         #create rules and add them to model
         for rule in pd_conf["rules"].values():
+            print("Processing rule", rule[0])
             self.ndlib_model.add_rule(rule[0], rule[1], compartments[rule[2]])          
 
+ 
         #model initial status configuration
         self.ndlib_config = mc.Configuration()
 
@@ -164,23 +169,38 @@ class DiffusionNetwork(netw.Network):
             if("numerical" in pd_conf["node-parameters"]):
                 print("TO-DO: is it possible to give user more options")
                 params = pd_conf["node-parameters"]["numerical"]
-                if params != []:
-                    for param_name, param_values in params.items():
-                        #setting the numerical attribute randomly between 2 numbers
-                        #we expect user to enter these 2 numbers in a list format
-                        attr = {n: {param_name: random.choice(range(int(param_values[0]), int(param_values[1])))} for n in self.G.nodes()}
-                        nx.set_node_attributes(self.G, attr)
+                if params != []: 
+                    if type(params) == dict:
+                        for param_name, param_values in params.items():
+                            #setting the numerical attribute randomly between 2 numbers
+                            #we expect user to enter these 2 numbers in a list format
+                            attr = {n: {param_name: random.choice(range(int(param_values[0]), int(param_values[1])))} for n in self.G.nodes()}
+                            nx.set_node_attributes(self.G, attr)
+                    else:
+                        # params is list type
+                        for item in params:
+                            for param_name, param_values in item.items():
+                                attr = {n: {param_name: random.choice(range(int(param_values[0]), int(param_values[1])))} for n in self.G.nodes()}
+                                nx.set_node_attributes(self.G, attr)
+
 
             #setting categorical node parameters if given
             if("categorical" in pd_conf["node-parameters"]):
                 params = pd_conf["node-parameters"]["categorical"]
                 if params != []:
-                    for param_name, param_values in params.items():
-                        #setting the categorical attribute randomly
-                        #ndlib does not provide a method for this so we can add
-                        #to conf file if user has any requirements
-                        attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
-                        nx.set_node_attributes(self.G, attr)
+                    if type(params) == dict:
+                        for param_name, param_values in params.items():
+                            #setting the categorical attribute randomly
+                            #ndlib does not provide a method for this so we can add
+                            #to conf file if user has any requirements
+                            attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
+                            nx.set_node_attributes(self.G, attr)
+                    else:
+                        for item in params:
+                            for param_name, param_values in item.items():
+                                attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
+                                nx.set_node_attributes(self.G, attr)
+
 
     def add_edge_parameters(self, pd_conf):
        #Setting edge attribute if given
@@ -190,32 +210,61 @@ class DiffusionNetwork(netw.Network):
                 params = pd_conf["edge-parameters"]["numerical"]
 
                 if params != []:
-                    for param_name, param_value in params.items():
-                        '''
-                        ndlib's example:
-                        attr = {(u, v): {"weight": int((u+v) % 10)} for (u, v) in g.edges()}
-                        our case: we take "weight: int((u+v) % 10)" in the yaml file?  
-                        '''
-                        #would this work? param_values will be a string but we want it to be a calculation
-                        #attr = {(u, v) : {param_name: param_values} for (u, v) in self.G.edges()}
-                        attr = {(u, v) : {param_name: int((u+v) % 10)} for (u, v) in self.G.edges()}
-                        nx.set_edge_attributes(self.G, attr)
+                    if type(params) == dict:
+                        for param_name, param_value in params.items():
+                            '''
+                            ndlib's example:
+                            attr = {(u, v): {"weight": int((u+v) % 10)} for (u, v) in g.edges()}
+                            our case: we take "weight: int((u+v) % 10)" in the yaml file?  
+                            '''
+                            #would this work? param_values will be a string but we want it to be a calculation
+                            #attr = {(u, v) : {param_name: param_values} for (u, v) in self.G.edges()}
+                            attr = {(u, v) : {param_name: int((u+v) % 10)} for (u, v) in self.G.edges()}
+                            nx.set_edge_attributes(self.G, attr)
+                    else:
+                        for item in params:
+                            for param_name, param_value in item.items():
+                                '''
+                                ndlib's example:
+                                attr = {(u, v): {"weight": int((u+v) % 10)} for (u, v) in g.edges()}
+                                our case: we take "weight: int((u+v) % 10)" in the yaml file?  
+                                '''
+                                #would this work? param_values will be a string but we want it to be a calculation
+                                #attr = {(u, v) : {param_name: param_values} for (u, v) in self.G.edges()}
+                                attr = {(u, v) : {param_name: int((u+v) % 10)} for (u, v) in self.G.edges()}
+                                nx.set_edge_attributes(self.G, attr)
+                            
             
             if("categorical" in pd_conf["edge-parameters"]):
                 params = pd_conf["edge-parameters"]["categorical"]
                 if params != []:
-                    for param_name, param_value in params.items():
-                        #setting the categorical attribute randomly
-                        #ndlib does not provide a method for this so we can add
-                        #to conf file if user has any requirements
-                        attr = {(u, v): {param_name: random.choice(param_value)} for (u, v) in self.G.edges()}
-                        attr.update({(v, u): attr[(u, v)] for (u, v) in self.G.edges()})
-                        nx.set_edge_attributes(self.G, attr)
+                    if type(params) == dict:
+                        for param_name, param_value in params.items():
+                            #setting the categorical attribute randomly
+                            #ndlib does not provide a method for this so we can add
+                            #to conf file if user has any requirements
+                            attr = {(u, v): {param_name: random.choice(param_value)} for (u, v) in self.G.edges()}
+                            attr.update({(v, u): attr[(u, v)] for (u, v) in self.G.edges()})
+                            nx.set_edge_attributes(self.G, attr)
+                    else: 
+                        for item in params:
+                            for param_name, param_value in item.items():
+                                #setting the categorical attribute randomly
+                                #ndlib does not provide a method for this so we can add
+                                #to conf file if user has any requirements
+                                attr = {(u, v): {param_name: random.choice(param_value)} for (u, v) in self.G.edges()}
+                                attr.update({(v, u): attr[(u, v)] for (u, v) in self.G.edges()})
+                                nx.set_edge_attributes(self.G, attr)
+                                    
 
     def add_compartments(self, pd_conf):
         #create compartments dictionary
         compartments = {}
         for compartment_name, compartment_values in pd_conf["compartments"].items():
+            
+             #DEBUG: Print compartment details
+            print("Processing compartment:", compartment_name, compartment_values)
+            
             #for all type of compartments, except ConditionalComposition,
             #check if there is cascading composition
             if("composed" in compartment_values and compartment_values["composed"] != ''):
@@ -386,6 +435,9 @@ class DiffusionNetwork(netw.Network):
                 second_branch = compartment_values["second-branch"]
                 compartments[compartment_name] = cpm.ConditionalComposition(compartments[condition], compartments[first_branch], compartments[second_branch])
 
+         #DEBUG: Print all compartments after processing
+        print("All compartments:", compartments)
+        
         #all compartments added, return the dictionary        
         return compartments
 

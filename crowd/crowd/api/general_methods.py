@@ -184,4 +184,24 @@ class GeneralMethods:
         Given the project name, returns the conf file in that project directory
     """
     def get_conf(self, project_name):
-        return "The yaml file" 
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name))
+       
+        try:
+            path = os.path.join(base_dir, 'conf.yaml')
+            with open(path, 'r') as f:
+                file_content = f.read()
+                return json.dumps(file_content)
+        except Exception as e: 
+            # Print the exception details
+            print(f"Exception occurred: {e}")
+            return json.dumps({'error': "Cannot find conf file"})
+        
+    def save_conf(self, project_name, file_content):
+        path = os.path.abspath(os.path.join(self.projects_dir, project_name, 'conf.yaml'))
+        try:
+            with open(path, 'w') as file:
+                file.write(file_content)
+            print(f"Conf saved successfully")
+        except Exception as e:
+            print(f"Error saving file: {e}")
+    

@@ -18,7 +18,10 @@ class Random(Structure):
             
     def create(self):
         print("Creating random structure")
-        count = self.conf["info"]["total_count"]
+        # count = self.conf["info"]["total_count"]
+        count = self.conf["structure"]["random"]["count"]
+        print("Count at random.create: ", count)
+
         self.G = None
         if "preprocessing" not in self.conf:
             #if "random" in self.structure:
@@ -42,7 +45,7 @@ class Random(Structure):
                         #fill the weights array with the numbers given in the conf file
                         weights = []
                         for element in nodetype_dict.values():
-                            weights.append(element['initial-weight'])
+                            weights.append(float(element['initial-weight']))
                         
                         #weights = self.conf["definitions"]["pd-model"]["type-weights"]
                     
