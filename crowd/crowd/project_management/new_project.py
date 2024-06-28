@@ -32,7 +32,7 @@ class NewProject:
             self.digress = None
             self.tracked_params = []
 
-    def create_project(self, project_name, creation_date, project_info):
+    def create_project(self, project_name, creation_date, project_info, nodeOrEdge):
         
         self.project_name = project_name
 
@@ -66,11 +66,17 @@ class NewProject:
         # Initialize configuration and basic info files 
         self.conf = self.init_conf()
         self.methods = self.init_methods()
-        self.save_basic_info(project_name, creation_date, project_info)
+        self.save_basic_info(project_name, creation_date, project_info, nodeOrEdge)
 
         # Initialize network for simulations
         # By default, it is set as a diffusion network, but it can be changed with methods
-        self.netw = DiffusionNetwork(self.conf)
+        if nodeOrEdge == 'node':
+            self.netw = DiffusionNetwork(self.conf)
+        elif nodeOrEdge == 'edge':
+            self.netw = EdgeSimNetwork(self.conf)
+        else:
+            #default
+            self.netw = DiffusionNetwork(self.conf)
 
     def load_project(self, project_name):
 
@@ -91,8 +97,13 @@ class NewProject:
         self.conf = self.get_conf()
         
         # Initialize network for simulations
-        # By default, it is set as a diffusion network, but it can be changed with methods
-        self.netw = DiffusionNetwork(self.conf)
+        if "definitions" in self.conf:
+            if "pd-model" in self.conf["definitions"]:
+                self.netw = DiffusionNetwork(self.conf)
+            else:
+                self.netw = Network(self.conf)
+        else:
+            self.netw = EdgeSimNetwork(self.conf)
 
         self.visualizers = None
 
@@ -168,7 +179,8 @@ class NewProject:
             },
             "structure": {
                 "random": {
-                    "degree": 4
+                    "degree": 4,
+                    "count": 100
                 }
             }
         }
@@ -193,14 +205,26 @@ class NewProject:
         
         self.conf = new_conf
 
-        # We have to recreate the network object here
-        # Because if we don't, NetworkCreater object is not called again
-        # And even though the conf is changed, the graph itself is not affected by these changes
-        self.netw = DiffusionNetwork(self.conf)
-
         # Save updated configuration to file
         with open(self.conf_file, 'w') as f:
             yaml.dump(self.conf, f)
+
+        # We have to recreate the network object here
+        # Because if we don't, NetworkCreater object is not called again
+        # And even though the conf is changed, the graph itself is not affected by these changes
+        if "definitions" in self.conf:
+            if "pd-model" in self.conf["definitions"]:
+                self.netw = DiffusionNetwork(self.conf)
+            else:
+                self.netw = Network(self.conf)
+        else:
+            self.netw = EdgeSimNetwork(self.conf)
+
+    def update_conf_with_path(self, path):
+        conf_checker = ConfChecker(path)
+        new_conf = conf_checker.get_conf()   
+        
+        self.update_conf(new_conf)
 
     def run_edge_simulation(self, epochs, snapshot_period):
         # Running the simulation
@@ -242,8 +266,18 @@ class NewProject:
             json.dump(simulation_params, f, indent=4)
 
     
+    def lib_run_simulation(self, epochs, snapshot_period, every_iteration_methods, after_methods):
+        if type(self.netw) == DiffusionNetwork:        
+            self.netw.every_iteration_methods = every_iteration_methods
+            self.netw.after_methods = after_methods
+
+            self.run_simulation(epochs, snapshot_period, user_called = True)
+        elif type(self.netw) == EdgeSimNetwork:
+            self.run_edge_simulation(epochs, snapshot_period)
+        
+        
     # Simulates the social network and saves the results in JSON format under the results directory
-    def run_simulation(self, epochs, snapshot_period):
+    def run_simulation(self, epochs, snapshot_period, user_called = False):
         # Running the simulation
         start_time = datetime.now()
 
@@ -266,8 +300,9 @@ class NewProject:
         # User gives the method a list of functions, which will be called every step of the simulation
         # These methods can be user-defined or predefined
         # As they are written in Python for now, we can just pass it by name
-        self.netw.every_iteration_methods = self.get_every_iteration_methods()
-        self.netw.after_methods = self.get_after_simulation_methods()
+        if not user_called:
+            self.netw.every_iteration_methods = self.get_every_iteration_methods()
+            self.netw.after_methods = self.get_after_simulation_methods()
 
         # Removed
         # watch_methods_save = {str(method.__name__): str(method.__code__) for method in self.netw.watch_methods}
@@ -298,12 +333,13 @@ class NewProject:
             json.dump(simulation_params, f, indent=4)
 
     # Saves the information passed by UI for project initialization
-    def save_basic_info(self, name, date, info):
+    def save_basic_info(self, name, date, info, nodeOrEdge):
 
         basic_info = {
             "name": name, 
             "date": date,
-            "info": info
+            "info": info,
+            "nodeOrEdge": nodeOrEdge
         }
 
         basic_info_file = os.path.join(self.project_dir, "basic_info.json")

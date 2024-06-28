@@ -1,0 +1,49 @@
+definitions:
+  pd-model:
+    compartments:
+      c1:
+        ratio: 0.3
+        triggering_status: Infected
+        type: node-stochastic
+    edge-parameters:
+      categorical:
+        type:
+          - co-worker
+          - family
+      numerical:
+        weight: int((u+v) % 10)
+    name: diffusion
+    node-parameters:
+      categorical:
+        gender:
+          - male
+          - female
+      numerical:
+        age:
+          - 0
+          - 100
+        friends:
+          - 0
+          - 50
+    nodetypes:
+      Infected:
+        color: red
+        initial-weight: 0.1
+      Recovered:
+        color: green
+        initial-weight: 0
+      Susceptible:
+        color: blue
+        initial-weight: 0.9
+    rules:
+      r1:
+        - Susceptible
+        - Infected
+        - c1
+info:
+  total_count: 200
+name: lib-test
+structure:
+  random:
+    count: 100
+    degree: 4

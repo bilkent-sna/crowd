@@ -1,10 +1,11 @@
 import os
 import json
+from crowd.models.EdgeSimNetwork import EdgeSimNetwork
 from crowd.project_management.new_project import NewProject
 
 
 class ProjectFunctions:
-    def create_project(self, name: str, date: str, info: str):
+    def create_project(self, name: str, date: str, info: str, nodeOrEdge: str):
         """
         Creates a new project.
 
@@ -19,7 +20,7 @@ class ProjectFunctions:
         # Create a new project with the given parameters
         # A directory will be created for this object with the most basic files
         try:
-            new_project.create_project(name, date, info)
+            new_project.create_project(name, date, info, nodeOrEdge)
         except Exception as e:
             print(f"An error occurred: {e.with_traceback}")
 
@@ -59,6 +60,42 @@ class ProjectFunctions:
         except KeyError as e:
             print(f"Key error: {e}")
     
+    def edge_conf_run(self, data, project_name, epochs, snapshot_period):
+        try:
+            data_dict = json.loads(data)
+            print(f"Received data successfully")
+           
+            # Initialize the project object
+            new_project = NewProject()
+
+            print("Before loading project")
+            new_project.load_project(project_name)
+            print("After loading project")
+            
+            conf = self.parse_custom_sim_conf(data_dict, new_project.project_dir)
+
+            print("Before updating conf")
+            new_project.update_conf(conf)
+            print("After updating conf")
+
+            if type(new_project.netw) != EdgeSimNetwork:
+                new_project.change_network_type(False)
+
+            new_project.run_edge_simulation(epochs, snapshot_period)
+            
+            simulation_directory = max(os.listdir(new_project.results_dir))
+            print("Simulation directory:", simulation_directory)                                                                                                      
+      
+            return json.dumps(simulation_directory)
+        
+            # Process the data as needed
+        except json.JSONDecodeError as e:
+            print(f"Error decoding JSON: {e}")
+        except TypeError as e:
+            print(f"Type error: {e}")
+        except KeyError as e:
+            print(f"Key error: {e}")
+
     def init_and_run_simulation(self, project_name, epochs, snapshot_period):
         try:
             # Initialize the project object
@@ -79,10 +116,67 @@ class ProjectFunctions:
             print(f"Type error: {e}")
         except KeyError as e:
             print(f"Key error: {e}")
+
+    def edge_sim_run(self, project_name, epochs, snapshot_period):
+        try:
+            # Initialize the project object
+            new_project = NewProject()
+
+            print("Before loading project")
+            new_project.load_project(project_name)
+            print("After loading project")
+
+            if type(new_project.netw) != EdgeSimNetwork:
+                new_project.change_network_type(False)
+
+            new_project.run_edge_simulation(epochs, snapshot_period)
+
+            simulation_directory = max(os.listdir(new_project.results_dir))
+            print("Simulation directory:", simulation_directory)                                                                                                      
+      
+            return json.dumps(simulation_directory)
+
+        except TypeError as e:
+            print(f"Type error: {e}")
+        except KeyError as e:
+            print(f"Key error: {e}")
+
+    def parse_custom_sim_conf(self, data_dict, project_dir):
+        conf = {
+                "name": data_dict["name"]
+            }
     
-    def save_conf(self, data, project_name):
-        pass
+        #data source/structure part
+        if "file" in data_dict["dataSource"]["structure"]["fileOrRandom"]:
+            item_to_add = {
+                "structure": {
+                    "file": data_dict["dataSource"]["structure"]["fileOrRandom"]["file"]
+                }
+            }
+
+            curr_path = item_to_add["structure"]["file"]["path"]
+            item_to_add["structure"]["file"]["path"] = os.path.join(project_dir, 'datasets', curr_path)
         
+        else:
+            generate_type = data_dict["dataSource"]["structure"]["fileOrRandom"]["generateType"]
+            print("Generate type:", generate_type)
+            item_to_add = {
+                "structure": {
+                    generate_type: {
+                        "degree": data_dict["dataSource"]["structure"]["fileOrRandom"]["degree"],
+                        "count": data_dict["dataSource"]["structure"]["fileOrRandom"]["count"]
+                    }
+                }
+            }
+
+         # Directly set the structure key at the top level
+        conf["structure"] = item_to_add["structure"]
+
+        print('CONF --->', conf)
+
+        return conf
+
+
     def parseConf(self, data_dict, project_dir):
         conf = {
                 "name": data_dict["name"]

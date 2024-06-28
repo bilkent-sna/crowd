@@ -110,6 +110,24 @@ class GeneralMethods:
             # Print the exception details
             print(f"Exception occurred: {e}")
             return "Cannot find simulation"
+        
+    """
+        Given the project name and simulation directory name, 
+        returns the added edges in simulation, saved in each iteration?
+        in JSON format
+    """
+    def load_added_edges(self, project_name, simulation_directory):
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
+       
+        try:
+            path = os.path.join(base_dir, simulation_directory, "new_addition.json")
+            # return json.dumps(path)
+            with open(path, 'r') as f:
+                return json.dumps(json.load(f))
+        except Exception as e: 
+            # Print the exception details
+            print(f"Exception occurred: {e}")
+            return "Cannot find simulation"
 
     """
         reads the current parameters directory and returns a list of the names of all files in there
