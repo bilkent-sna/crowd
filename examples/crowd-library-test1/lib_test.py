@@ -7,8 +7,11 @@ my_project = NewProject()
 creation_date = "28/06/2024"
 info = "First test of library"
 
+#create new project
 my_project.create_project(project_name, creation_date, info, "node")
 
+#OR load previous
+#my_project.load_project(project_name)
 
 #conf_path = "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/netsim/examples/crowd-library-test1/conf.yaml"
 conf_path = os.path.join(os.path.dirname(__file__), 'conf.yaml')
