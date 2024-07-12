@@ -71,12 +71,12 @@ class NewProject:
         # Initialize network for simulations
         # By default, it is set as a diffusion network, but it can be changed with methods
         if nodeOrEdge == 'node':
-            self.netw = DiffusionNetwork(self.conf)
+            self.netw = DiffusionNetwork(self.conf, self.project_dir)
         elif nodeOrEdge == 'edge':
-            self.netw = EdgeSimNetwork(self.conf)
+            self.netw = EdgeSimNetwork(self.conf, self.project_dir)
         else:
             #default
-            self.netw = DiffusionNetwork(self.conf)
+            self.netw = DiffusionNetwork(self.conf, self.project_dir)
 
     def load_project(self, project_name):
 
@@ -99,19 +99,19 @@ class NewProject:
         # Initialize network for simulations
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
-                self.netw = DiffusionNetwork(self.conf)
+                self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
-                self.netw = Network(self.conf)
+                self.netw = Network(self.conf, self.project_dir)
         else:
-            self.netw = EdgeSimNetwork(self.conf)
+            self.netw = EdgeSimNetwork(self.conf, self.project_dir)
 
         self.visualizers = None
 
     def change_network_type(self, isDiffusion):
         if isDiffusion:
-            self.netw = DiffusionNetwork(self.conf)
+            self.netw = DiffusionNetwork(self.conf, self.project_dir)
         else:
-            self.netw = EdgeSimNetwork(self.conf)
+            self.netw = EdgeSimNetwork(self.conf, self.project_dir)
 
 
     def init_methods(self):
@@ -214,11 +214,11 @@ class NewProject:
         # And even though the conf is changed, the graph itself is not affected by these changes
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
-                self.netw = DiffusionNetwork(self.conf)
+                self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
-                self.netw = Network(self.conf)
+                self.netw = Network(self.conf, self.project_dir)
         else:
-            self.netw = EdgeSimNetwork(self.conf)
+            self.netw = EdgeSimNetwork(self.conf, self.project_dir)
 
     def update_conf_with_path(self, path):
         conf_checker = ConfChecker(path)
@@ -348,31 +348,43 @@ class NewProject:
     
     def get_every_iteration_methods(self):
         path = os.path.join(self.project_dir, 'method_settings.json')
-        with open(path, 'r') as f:
-            settings = json.load(f)
         
-        all_methods = self.load_methods()
-        every_iteration_methods = []
+        try:
+            with open(path, 'r') as f:
+                settings = json.load(f)
+            
+            all_methods = self.load_methods()
+            every_iteration_methods = []
+            
+            for method_name, setting in settings.items():
+                if setting.get('every_iteration', False):
+                    every_iteration_methods.append(all_methods[method_name])
+            
+            return every_iteration_methods
+        except:
+            print("Method settings file not found. Returning empty array.")
+            return []
         
-        for method_name, setting in settings.items():
-            if setting.get('every_iteration', False):
-                every_iteration_methods.append(all_methods[method_name])
-        
-        return every_iteration_methods
     
     def get_after_simulation_methods(self):
         path = os.path.join(self.project_dir, 'method_settings.json')
-        with open(path, 'r') as f:
-            settings = json.load(f)
         
-        all_methods = self.load_methods()
-        after_simulation_methods = []
+        try:
+            with open(path, 'r') as f:
+                settings = json.load(f)
+                all_methods = self.load_methods()
+                after_simulation_methods = []
+                
+                for method_name, setting in settings.items():
+                    if setting.get('after_simulation', False):
+                        after_simulation_methods.append(all_methods[method_name])
+                
+                return after_simulation_methods
+        except:
+            print("Method settings file not found. Returning empty array.")
+            return []
         
-        for method_name, setting in settings.items():
-            if setting.get('after_simulation', False):
-                after_simulation_methods.append(all_methods[method_name])
         
-        return after_simulation_methods
 
     def load_methods(self):
         file_path = os.path.join(self.project_dir, 'methods.py')

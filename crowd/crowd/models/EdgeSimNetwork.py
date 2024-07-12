@@ -3,9 +3,9 @@ from crowd import network as netw
 import networkx as nx
 
 class EdgeSimNetwork(netw.Network):
-    def __init__(self, conf_dict):
+    def __init__(self, conf_dict, project_dir):
         # create network by calling parent's constructor
-        super().__init__(conf_dict)
+        super().__init__(conf_dict, project_dir)
         self.update_method = None
 
     def run(self, epochs, visualizers = None, snapshot_period = 1, agility = 1, digress = None):

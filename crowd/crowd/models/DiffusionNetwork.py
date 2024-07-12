@@ -10,8 +10,8 @@ from ndlib.models.compartments.enums.NumericalType import NumericalType
 
 class DiffusionNetwork(netw.Network):
 
-    def __init__(self, conf_dict):
-        super().__init__(conf_dict)
+    def __init__(self, conf_dict, project_dir):
+        super().__init__(conf_dict, project_dir)
 
         #everything about configuration is stored at self.conf
 

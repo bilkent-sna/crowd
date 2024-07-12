@@ -21,18 +21,18 @@ class NetworkCreator:
         except Exception as ex:
             return 4
 
-    def create_network(self):
+    def create_network(self, project_dir):
         structure = self.conf["structure"]
         structure_creator = None
         for key in structure:
             if key == "random":
-                structure_creator = Random(structure[key], self.conf)
+                structure_creator = Random(structure[key], self.conf, project_dir)
             elif key =="file":
-                structure_creator = File(structure[key], self.conf)
+                structure_creator = File(structure[key], self.conf, project_dir)
             elif key == "barabasi-albert":
-                structure_creator = BarabasiAlbert(structure[key], self.conf)
+                structure_creator = BarabasiAlbert(structure[key], self.conf, project_dir)
             elif key == "watts-strogatz":
-                structure_creator = WattsStrogatz(structure[key], self.conf)
+                structure_creator = WattsStrogatz(structure[key], self.conf, project_dir)
 
         return structure_creator.create()        
         

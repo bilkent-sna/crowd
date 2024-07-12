@@ -4,8 +4,8 @@ import random
 from .structure import Structure
 
 class BarabasiAlbert(Structure):
-    def __init__(self, structure, conf, seed=123):
-        super().__init__(structure)
+    def __init__(self, structure, conf, project_dir, seed=123):
+        super().__init__(structure, project_dir)
         self.seed = seed
         self.conf = conf
 

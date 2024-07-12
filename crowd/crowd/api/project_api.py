@@ -196,10 +196,30 @@ class ProjectFunctions:
 
         for type in nodetypes_dict:
             key_name = type["name"]
+            init_type = type["init"]
+            init_dict = {}
+            if init_type == 'random-with-count':
+                init_dict = {
+                    "count": type[init_type]["count"]
+                }
+            elif init_type == 'random-with-weight':
+                init_dict = {
+                    "initial-weight": type[init_type]["weight"]
+                }
+            elif init_type == 'choose-with-metric':
+                init_dict = {
+                    "metric": type[init_type]["metric"],
+                    "count": type[init_type]["count"]
+                }
+            elif init_type == 'from-file':
+                init_dict = {
+                    "path": type[init_type]["path"]
+                }
+
             #type's format: {name: .., weight: ...}
             temp.update( {
                 key_name: {
-                    "initial-weight": type["weight"]
+                    init_type: init_dict
                 }
             } )
         

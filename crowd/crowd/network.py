@@ -15,14 +15,14 @@ from crowd.digress import file_digress as fd
 
 class Network:
     
-    def __init__(self, conf):
+    def __init__(self, conf, project_dir):
         self.conf = conf
         print("Got conf")
         if self.conf is not None:
             print("PASS1")
             network_creator = NetworkCreator(self.conf) 
             print("PASS2")           
-            self.G = network_creator.create_network()
+            self.G = network_creator.create_network(project_dir)
             print("G-->")    
             print(self.G)
     """

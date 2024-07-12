@@ -5,8 +5,8 @@ from .structure import Structure
 import math
 
 class Random(Structure):
-    def __init__(self, structure, conf, seed=123):
-        super().__init__(structure)
+    def __init__(self, structure, conf, project_dir, seed=123):
+        super().__init__(structure, project_dir)
         self.seed = seed
         self.conf = conf
 
@@ -34,67 +34,7 @@ class Random(Structure):
             #else still needs to be changed bc we changed the conf file 
             if("definitions" in self.conf):
                 if "pd-model" in self.conf["definitions"]: #if it is a predefined model
-                    print("random.py - inside pd-model")
-                    if(self.conf["definitions"]["pd-model"]["name"] == "diffusion"): #if it is a diffusion model
-                        if(self.conf["definitions"]["pd-model"]["nodetypes"] != None): #if nodetypes are defined
-                            nodetype_counts = {}
-                            #take out [pd-model] if code works like this
-                            nodetype_dict = self.conf["definitions"]["pd-model"]["nodetypes"]
-                            keys = list(nodetype_dict.keys())
-                            
-                            for nodetype in keys:
-                                nodetype_counts[nodetype] = 0
-                            
-                            #fill the weights array with the numbers given in the conf file
-                            weights = []
-                            for element in nodetype_dict.values():
-                                weights.append(float(element['initial-weight']))
-                            
-                            #weights = self.conf["definitions"]["pd-model"]["type-weights"]
-                        
-                            random_nodetypes = []
-                            #keys = list(self.conf["definitions"]["nodetypes"].keys())
-                    
-                            for i in range(0,len(keys)):
-                                random_nodetypes.extend([ keys[i] ] * int(math.ceil(weights[i]*count)))
-
-                            #if less than count nodetypes assigned, add 1 of last type
-                            if len(random_nodetypes) < count:
-                                random_nodetypes.append(keys[len(keys) - 1])
-                            #if more than count nodetypes assigned, take out the last element
-                            elif len(random_nodetypes) > count:
-                                random_nodetypes.pop() #pop removes the last by default
-
-                            random.seed(19)
-                                
-                            random.shuffle(random_nodetypes)
-                            #random.shuffle(random_nodetypes)
-                            #print(random.getstate())
-                            print("--->", str(len(random_nodetypes)))
-                            
-                            '''
-                            for i in range(0, count):
-                                #deleted [].keys() here
-                                    
-                                random_nodetype = random.choice(list(self.conf["definitions"]["pd-model"]["nodetypes"]))
-                                nodetype_counts[random_nodetype] +=1
-                                nx.set_node_attributes(self.G, {i:{"node": random_nodetype}})
-                            '''
-                                
-                            i = 0
-                            for node in self.G.nodes:
-                                #node variable here is not the node itself, but an int
-                                #print("node", node) 
-                                random_nodetype = random_nodetypes[i]
-                                nodetype_counts[random_nodetype] +=1
-                                nx.set_node_attributes(self.G, {node:{"node": random_nodetype}})
-                                i += 1 #increment i for next iteration
-                            print("NODE COUNTS-->", nodetype_counts) 
-                        else:
-                            print("Nodetypes not defined in the configuration file.")
-                    else:
-                        print("It is not defined as a diffusion model. You may want to check the configuration file.")
-
+                    self.G = self.set_nodetypes(self.G, self.conf, count)
                 #if not a diffusion model
                 # else:
                 elif "source" in self.conf["definitions"]: 
