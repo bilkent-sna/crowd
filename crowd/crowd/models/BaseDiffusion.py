@@ -166,6 +166,9 @@ class BaseDiffusion(gc.CompositeModel):
         self.status = actual_status
         self.actual_iteration += 1
 
+        print("delta:", delta)
+        print("node count:", node_count)
+        print("status_delta: ", status_delta)
         if node_status:
             '''return {"iteration": self.actual_iteration - 1, "status": delta.copy(),
                     "node_count": node_count.copy(), "status_delta": status_delta.copy()}'''

@@ -236,6 +236,7 @@ class NewProject:
             os.makedirs(simulation_dir)
 
         self.digress = fd.file_digress(simulation_dir)
+        #self.netw.digress = self.digress
         
         # Initialize empty dictionary in JSON files
         self.digress.save("{}", 'graph.json')
@@ -292,6 +293,7 @@ class NewProject:
             os.makedirs(parameters_dir)
 
         self.digress = fd.file_digress(simulation_dir)
+        self.netw.digress = self.digress
         
         # Initialize empty dictionary in JSON files
         self.digress.save("{}", 'graph.json')
