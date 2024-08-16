@@ -21,10 +21,14 @@ class file_digress(d.digress):
 
     def save_statusdelta(self, epoch_num, data_dict, file_name, available_status):
         new_dict = {"Iteration": epoch_num}
-        index = 0
-        for status in available_status:
-            new_dict[status] = data_dict[index]
-            index += 1
+
+        if available_status:
+            index = 0
+            for status in available_status:
+                new_dict[status] = data_dict[index]
+                index += 1
+        else:
+            new_dict.update(data_dict)
 
         if(epoch_num != 0):
             to_write = (",") + json.dumps(new_dict)

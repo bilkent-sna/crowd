@@ -2,6 +2,7 @@ import json
 import random
 from crowd import node as n
 from crowd import network as netw
+from .CustomSimNetwork import CustomSimNetwork
 import ndlib.models.ModelConfig as mc
 from crowd.models import BaseDiffusion as bd
 import ndlib.models.compartments as cpm
@@ -57,8 +58,9 @@ class DiffusionNetwork(netw.Network):
         #initialize the watch methods to None
         #this variable will hold a list of method names that will be called in every iteration of the simulation
         #to record the values of user-requested parameters or do a certain calculation with them
-        self.every_iteration_methods = None
-        self.after_methods = None
+        self.before_iteration_methods = None
+        self.after_iteration_methods = None
+        self.after_simulation_methods = None
 
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
@@ -68,6 +70,10 @@ class DiffusionNetwork(netw.Network):
         simulation_data = {}
 
         for epoch in range(0, epochs): #for each epoch
+
+            #execute before iteration methods
+
+
             #execute one iteration with ndlib
             self.G, self.status_delta = self.ndlib_model.iteration(node_status=True)
 
@@ -84,7 +90,7 @@ class DiffusionNetwork(netw.Network):
 
             #save iteration data for parameters that user wants to track
             #in this case, we say that user can't pass any parameters to these functions
-            for method in self.every_iteration_methods:
+            for method in self.after_iteration_methods:
                 #if method in self.predefined_models:
                 #call each method
                 if isinstance(method, list): #then it is a method with parameters
@@ -122,12 +128,12 @@ class DiffusionNetwork(netw.Network):
             for visualizer in visualizers:
                 visualizer.animate()
 
-        if digress is not None and self.every_iteration_methods is not None:
+        if digress is not None and self.after_iteration_methods is not None:
             digress.save_iteration_data(simulation_data)
 
-        if digress is not None and self.after_methods is not None:
+        if digress is not None and self.after_simulation_methods is not None:
             simulation_data = {}
-            for method in self.after_methods:
+            for method in self.after_simulation_methods:
                 #if method in self.predefined_models:
                 #call each method
                 if isinstance(method, list): #then it is a method with parameters

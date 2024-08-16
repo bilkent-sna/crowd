@@ -5,7 +5,7 @@ from .structure import Structure
 from ..preprocessing import communitydetection as com
 import math
 
-class Random(Structure):
+class FromLibrary(Structure):
     def __init__(self, structure, conf, project_dir, seed=123):
         super().__init__(structure, project_dir)
         self.seed = seed
@@ -18,19 +18,23 @@ class Random(Structure):
             return 4
             
     def create(self):
-        print("Creating random structure")
-        # count = self.conf["info"]["total_count"]
-        count = self.conf["structure"]["random"]["count"]
-        print("Count at random.create: ", count)
-        print("conf at random", self.conf)
+        conf_part = self.conf["structure"]["from-library"]
+        graph_type = conf_part["type"]
 
         self.G = None
         if "preprocessing" not in self.conf:
-            #if "random" in self.structure:
-            print("Creating random regular graph")
-            self.G = nx.random_regular_graph(self.get_degree_count(), count, seed=None)
-            #else:
-            #    self.G = nx.read_edgelist(self.structure, create_using = nx.Graph(), nodetype=int)            
+            
+            if graph_type == 'complete-graph':
+                count = conf_part["count"]
+                self.G = nx.complete_graph(count)
+            elif graph_type == 'karate-club-graph':
+                self.G = nx.karate_club_graph()
+            elif graph_type == 'davis-southern-woman':
+                self.G = nx.davis_southern_women_graph()
+            elif graph_type == 'florentine-families':
+                self.G = nx.florentine_families_graph()
+            elif graph_type == 'les-miserables':
+                self.G = nx.les_miserables_graph()
 
             #else still needs to be changed bc we changed the conf file 
             if("definitions" in self.conf):

@@ -1,0 +1,36 @@
+definitions:
+  name: custom
+  nodetypes:
+    I:
+      random-with-weight:
+        initial-weight: 0.3
+    T:
+      random-with-weight:
+        initial-weight: 0.25
+    U:
+      random-with-weight:
+        initial-weight: 0.45
+  node-parameters:
+    categorical:
+      prev_strategy:
+        - "undefined_strategy"
+    numerical:
+      "current_payoff":
+        - -100
+        - -99
+      "previous_payoff":
+        - -100
+        - -99
+  model-parameters:
+    R_T: 6 #multiplier of what is recieved by T from I
+    r_UT: 0.1111 #temptation to defect ratio (0,1). Formula: (R_U - R_T) / R_T where R_U is what is recieved by U from I
+    min_payoff: -1
+    max_payoff: -1 #will change this after network is created
+info:
+  total_count: 100
+name: n-player-1
+structure:
+  random:
+    type: random-regular
+    count: 100
+    m: 4

@@ -1,6 +1,7 @@
 import importlib
 import os
 import json
+from crowd.models.CustomSimNetwork import CustomSimNetwork
 from crowd.models.EdgeSimNetwork import EdgeSimNetwork
 import yaml
 from datetime import datetime
@@ -76,7 +77,7 @@ class NewProject:
             self.netw = EdgeSimNetwork(self.conf, self.project_dir)
         else:
             #default
-            self.netw = DiffusionNetwork(self.conf, self.project_dir)
+            self.netw = CustomSimNetwork(self.conf, self.project_dir)
 
     def load_project(self, project_name):
 
@@ -95,13 +96,13 @@ class NewProject:
             raise FileNotFoundError("Conf file does not exist.")
 
         self.conf = self.get_conf()
-        
+
         # Initialize network for simulations
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
                 self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
-                self.netw = Network(self.conf, self.project_dir)
+                self.netw = CustomSimNetwork(self.conf, self.project_dir)
         else:
             self.netw = EdgeSimNetwork(self.conf, self.project_dir)
 
@@ -127,9 +128,9 @@ class NewProject:
     def init_conf(self):
         # Define the content of the YAML file
         config = {
-            "name": "SIR-example-with-all-compartment-types",
+            "name": "SIR-example",
             "info": {
-                "total_count": 200
+                "total_count": 100
             },
             "definitions": {
                 "pd-model": {
@@ -179,6 +180,7 @@ class NewProject:
             },
             "structure": {
                 "random": {
+                    "type": 'random-regular',
                     "degree": 4,
                     "count": 100
                 }
@@ -216,7 +218,7 @@ class NewProject:
             if "pd-model" in self.conf["definitions"]:
                 self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
-                self.netw = Network(self.conf, self.project_dir)
+                self.netw = CustomSimNetwork(self.conf, self.project_dir)
         else:
             self.netw = EdgeSimNetwork(self.conf, self.project_dir)
 
@@ -265,18 +267,31 @@ class NewProject:
         sim_info_file = os.path.join(simulation_dir, "simulation_info.json")
         with open(sim_info_file, 'w') as f:
             json.dump(simulation_params, f, indent=4)
-
-    
-    def lib_run_simulation(self, epochs, snapshot_period, every_iteration_methods, after_methods):
+        
+    def lib_run_simulation(self, 
+                           epochs, 
+                           snapshot_period, 
+                           before_iteration_methods = None, 
+                           after_iteration_methods = None,
+                           every_iteration_agent = None,
+                           after_simulation_methods = None):
         if type(self.netw) == DiffusionNetwork:        
-            self.netw.every_iteration_methods = every_iteration_methods
-            self.netw.after_methods = after_methods
+            self.netw.before_iteration_methods = before_iteration_methods
+            self.netw.after_iteration_methods = after_iteration_methods
+            self.netw.after_simulation_methods = after_simulation_methods
 
             self.run_simulation(epochs, snapshot_period, user_called = True)
         elif type(self.netw) == EdgeSimNetwork:
             self.run_edge_simulation(epochs, snapshot_period)
         
-        
+        elif type(self.netw) == CustomSimNetwork:
+            self.netw.before_iteration_methods = before_iteration_methods
+            self.netw.after_iteration_methods = after_iteration_methods
+            self.netw.every_iteration_agent = every_iteration_agent
+            self.netw.after_simulation_methods = after_simulation_methods
+            
+            self.run_simulation(epochs, snapshot_period, user_called = True)
+
     # Simulates the social network and saves the results in JSON format under the results directory
     def run_simulation(self, epochs, snapshot_period, user_called = False):
         # Running the simulation
@@ -297,14 +312,18 @@ class NewProject:
         
         # Initialize empty dictionary in JSON files
         self.digress.save("{}", 'graph.json')
-        self.digress.save("[", os.path.join('parameters', 'statusdelta.json'))
+        self.digress.save("[", os.path.join('parameters', 'status_delta.json'))
+        self.digress.save("[", os.path.join('parameters', 'count_node_types.json'))
 
         # User gives the method a list of functions, which will be called every step of the simulation
         # These methods can be user-defined or predefined
         # As they are written in Python for now, we can just pass it by name
         if not user_called:
-            self.netw.every_iteration_methods = self.get_every_iteration_methods()
-            self.netw.after_methods = self.get_after_simulation_methods()
+            self.netw.before_iteration_methods = self.get_before_iteration_methods()
+            self.netw.after_iteration_methods = self.get_after_iteration_methods()
+            self.netw.after_simulation_methods = self.get_after_simulation_methods()
+            if type(self.netw) == CustomSimNetwork():
+                self.netw.every_iteration_agent = self.get_every_iteration_agent_methods()
 
         # Removed
         # watch_methods_save = {str(method.__name__): str(method.__code__) for method in self.netw.watch_methods}
@@ -313,21 +332,34 @@ class NewProject:
         self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
         end_time = datetime.now()
 
-        self.digress.save("]", os.path.join('parameters', 'statusdelta.json'))
-
-        # Ensure the closing braces are added only if necessary
-        simulation_params = {
-            "date": start_time.strftime("%Y-%m-%d"),
-            "name": self.conf["name"],
-            "simulation_duration": str(end_time - start_time),  # end - start
-            "start_time": start_time.isoformat(sep=' '),
-            "end_time": end_time.isoformat(sep=' '),
-            "epoch_num": epochs,
-            "snapshot_period": snapshot_period,
-            "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
-            # "watch_methods": watch_methods_save
-            # Include other simulation params
-        }
+        self.digress.save("]", os.path.join('parameters', 'status_delta.json'))
+        # Add this to Diffusion Network as well. If running diffusion network, comment this out for now
+        self.digress.save("]", os.path.join('parameters', 'count_node_types.json'))
+        
+        if type(self.netw) == DiffusionNetwork: 
+            simulation_params = {
+                "date": start_time.strftime("%Y-%m-%d"),
+                "name": self.conf["name"],
+                "simulation_duration": str(end_time - start_time),  # end - start
+                "start_time": start_time.isoformat(sep=' '),
+                "end_time": end_time.isoformat(sep=' '),
+                "epoch_num": epochs,
+                "snapshot_period": snapshot_period,
+                "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
+                # "watch_methods": watch_methods_save
+                # Include other simulation params
+            }
+        else: 
+            simulation_params = {
+                "date": start_time.strftime("%Y-%m-%d"),
+                "name": self.conf["name"],
+                "simulation_duration": str(end_time - start_time),  # end - start
+                "start_time": start_time.isoformat(sep=' '),
+                "end_time": end_time.isoformat(sep=' '),
+                "epoch_num": epochs,
+                "snapshot_period": snapshot_period,
+                "states": list(self.conf["definitions"]["nodetypes"].keys())
+            }
 
         # Save simulation results to a JSON file
         sim_info_file = os.path.join(simulation_dir, "simulation_info.json")
@@ -348,7 +380,7 @@ class NewProject:
         with open(basic_info_file, 'w') as f:
             json.dump(basic_info, f, indent=4)
     
-    def get_every_iteration_methods(self):
+    def get_every_iteration_agent_methods(self):
         path = os.path.join(self.project_dir, 'method_settings.json')
         
         try:
@@ -356,17 +388,54 @@ class NewProject:
                 settings = json.load(f)
             
             all_methods = self.load_methods()
-            every_iteration_methods = []
+            agent_methods = []
             
             for method_name, setting in settings.items():
-                if setting.get('every_iteration', False):
-                    every_iteration_methods.append(all_methods[method_name])
+                if setting.get('every_iteration_agent', False):
+                    agent_methods.append(all_methods[method_name])
             
-            return every_iteration_methods
+            return agent_methods
         except:
             print("Method settings file not found. Returning empty array.")
             return []
         
+    def get_before_iteration_methods(self):
+        path = os.path.join(self.project_dir, 'method_settings.json')
+        
+        try:
+            with open(path, 'r') as f:
+                settings = json.load(f)
+            
+            all_methods = self.load_methods()
+            before_iteration_methods = []
+            
+            for method_name, setting in settings.items():
+                if setting.get('before_iteration', False):
+                    before_iteration_methods.append(all_methods[method_name])
+            
+            return before_iteration_methods
+        except:
+            print("Method settings file not found. Returning empty array.")
+            return []
+        
+    def get_after_iteration_methods(self):
+        path = os.path.join(self.project_dir, 'method_settings.json')
+        
+        try:
+            with open(path, 'r') as f:
+                settings = json.load(f)
+            
+            all_methods = self.load_methods()
+            after_iteration_methods = []
+            
+            for method_name, setting in settings.items():
+                if setting.get('after_iteration', False):
+                    after_iteration_methods.append(all_methods[method_name])
+            
+            return after_iteration_methods
+        except:
+            print("Method settings file not found. Returning empty array.")
+            return []
     
     def get_after_simulation_methods(self):
         path = os.path.join(self.project_dir, 'method_settings.json')

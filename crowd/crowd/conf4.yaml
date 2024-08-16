@@ -6,7 +6,7 @@ fields:
   structure:
     required: true
     select_fields:
-      file: 
+      file:
         fields:
           path:
             required: true
@@ -24,9 +24,25 @@ fields:
           degree:
             required: false
             default: 4
-          count: 
+          count:
             required: false
             default: 100
+          type:
+            required: true
+            default: random-regular
+          p: #probability
+            required: false
+          m:
+            required: false
+          k:
+            required: false
+      from-library:
+        fields:
+          type:
+            required: true
+            default: "karate-club-graph"
+          count:
+            required: false
       barabasi-albert:
         fields:
           seed:
@@ -35,7 +51,7 @@ fields:
           degree:
             required: false
             default: 4
-          count: 
+          count:
             required: false
             default: 100
       watts-strogatz:
@@ -46,43 +62,41 @@ fields:
           degree:
             required: false
             default: 4
-          count: 
+          count:
             required: false
             default: 100
-      twitter:
-      facebook:
-  info:
-    required: false
+      #twitter:
+      #facebook:
   definitions:
     required: false
-    select-fields: 
-      pd-model: 
-        name: 
+    select-fields:
+      pd-model:
+        name:
           required: true
         nodetypes:
           required: false
-          default: 
+          default:
             Susceptible:
               initial-weight: 0.7
             Infected:
               initial-weight: 0.3
             Recovered:
-              initial-weight: 0  
+              initial-weight: 0
         node-parameters:
           required: false
           default: none
         edge-parameters:
           required: false
-          default: none  
+          default: none
         model-parameters:
           required: false
-          default: none    
+          default: none
         compartments:
           required: false
           default: none
         rules:
           required: false
-          default: none 
+          default: none
       custom:
         required: false
         fields:

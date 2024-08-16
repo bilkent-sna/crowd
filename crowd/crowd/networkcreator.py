@@ -7,6 +7,8 @@ from .structure.file import File
 from .structure.random import Random
 from .structure.barabasi_albert import BarabasiAlbert
 from .structure.watts_strogatz import WattsStrogatz
+from .structure.combined_random import CombinedRandom
+from .structure.from_library import FromLibrary
 
 
 class NetworkCreator:
@@ -25,14 +27,20 @@ class NetworkCreator:
         structure = self.conf["structure"]
         structure_creator = None
         for key in structure:
-            if key == "random":
-                structure_creator = Random(structure[key], self.conf, project_dir)
-            elif key =="file":
+            # if key == "random":
+            #     structure_creator = Random(structure[key], self.conf, project_dir)
+            # elif key =="file":
+            #     structure_creator = File(structure[key], self.conf, project_dir)
+            # elif key == "barabasi-albert":
+            #     structure_creator = BarabasiAlbert(structure[key], self.conf, project_dir)
+            # elif key == "watts-strogatz":
+            #     structure_creator = WattsStrogatz(structure[key], self.conf, project_dir)
+            if key =="file":
                 structure_creator = File(structure[key], self.conf, project_dir)
-            elif key == "barabasi-albert":
-                structure_creator = BarabasiAlbert(structure[key], self.conf, project_dir)
-            elif key == "watts-strogatz":
-                structure_creator = WattsStrogatz(structure[key], self.conf, project_dir)
+            elif key == "random":
+                structure_creator = CombinedRandom(structure[key], self.conf, project_dir)
+            elif key == "from-library-dataset":
+                structure_creator = FromLibrary(structure[key], self.conf, project_dir)
 
         return structure_creator.create()        
         

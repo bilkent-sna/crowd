@@ -5,12 +5,13 @@ from .structure import Structure
 from ..preprocessing import communitydetection as com
 import math
 
-class Random(Structure):
+class CombinedRandom(Structure):
     def __init__(self, structure, conf, project_dir, seed=123):
         super().__init__(structure, project_dir)
         self.seed = seed
         self.conf = conf
 
+    # REWRITE NEEDED
     def get_degree_count(self):
         try:
             return self.conf["structure"]["random"]["degree"]
@@ -19,22 +20,47 @@ class Random(Structure):
             
     def create(self):
         print("Creating random structure")
-        # count = self.conf["info"]["total_count"]
         count = self.conf["structure"]["random"]["count"]
         print("Count at random.create: ", count)
         print("conf at random", self.conf)
 
+        graph_type = self.conf["structure"]["random"]["type"]
+
         self.G = None
         if "preprocessing" not in self.conf:
-            #if "random" in self.structure:
-            print("Creating random regular graph")
-            self.G = nx.random_regular_graph(self.get_degree_count(), count, seed=None)
-            #else:
-            #    self.G = nx.read_edgelist(self.structure, create_using = nx.Graph(), nodetype=int)            
+            
+            if graph_type == 'random-regular':
+                print("Creating random regular graph")
+                degree = self.conf["structure"]["random"]["degree"]
+                self.G = nx.random_regular_graph(degree, count, seed=None)
+            elif graph_type == 'erdos-renyi':
+                prob = self.conf["structure"]["random"]["p"] # probability for edge creation
+                self.G = nx.erdos_renyi_graph(count, prob, seed = None)
+            elif graph_type == 'barabasi-albert':
+                m = self.conf["structure"]["random"]["m"] # number of edges to attach from a new node to existing nodes
+                self.G = nx.barabasi_albert_graph(count, m, seed = None, initial_graph=None)
+            elif graph_type == 'watts-strogatz':
+                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
+                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
+                self.G = nx.watts_strogatz_graph(count, k, prob, seed = None)
+            elif graph_type == 'connected-watts-strogatz':
+                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
+                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
+                tries = self.conf["structure"]["random"]["tries"] # number of attempts to generate a connected graph
+                self.G = nx.connected_watts_strogatz_graph(count, k, prob, tries, seed = None)
+            elif graph_type == 'newman_watts_strogatz':
+                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
+                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
+                self.G = nx.newman_watts_strogatz_graph(count, k, prob, seed = None)
+            elif graph_type == 'powerlaw-cluster-graph':
+                m = self.conf["structure"]["random"]["m"] # the number of random edges to add for each new node
+                prob = self.conf["structure"]["random"]["p"] # probability of adding a triangle after adding a random edge
+                self.G = nx.powerlaw_cluster_graph(count, m, prob, seed = None)
+
 
             #else still needs to be changed bc we changed the conf file 
             if("definitions" in self.conf):
-                if "pd-model" in self.conf["definitions"]: #if it is a predefined model
+                if "pd-model" in self.conf["definitions"] or self.conf["definitions"]["name"] == 'custom': #if it is a predefined model
                     self.G = self.set_nodetypes(self.G, self.conf, count)
                 #if not a diffusion model
                 # else:

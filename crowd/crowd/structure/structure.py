@@ -19,10 +19,16 @@ class Structure:
     def set_nodetypes(self, graph, conf, count):
         print("Inside set nodetypes")
         # Set the nodetypes as described in conf
+
+        conf_part = {}
+
         if "pd-model" in conf["definitions"]:
-            if conf["definitions"]["pd-model"]["nodetypes"] != None:
+            conf_part = conf["definitions"]["pd-model"]["nodetypes"]
+        else:
+            conf_part = conf["definitions"]["nodetypes"]
+            if conf_part != None:
                 nodetype_counts = {}
-                nodetype_dict = self.conf["definitions"]["pd-model"]["nodetypes"]
+                nodetype_dict = conf_part
                 keys = list(nodetype_dict.keys())
 
                 random_nodetypes = []
