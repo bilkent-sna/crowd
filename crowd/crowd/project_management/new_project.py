@@ -1,3 +1,4 @@
+from collections import defaultdict
 import importlib
 import os
 import json
@@ -100,8 +101,10 @@ class NewProject:
         # Initialize network for simulations
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
+                # print("PD model in load project")                
                 self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
+                # print("Custom model in load project")
                 self.netw = CustomSimNetwork(self.conf, self.project_dir)
         else:
             self.netw = EdgeSimNetwork(self.conf, self.project_dir)
@@ -270,7 +273,8 @@ class NewProject:
         
     def lib_run_simulation(self, 
                            epochs, 
-                           snapshot_period, 
+                           snapshot_period,
+                           curr_batch = 1, 
                            before_iteration_methods = None, 
                            after_iteration_methods = None,
                            every_iteration_agent = None,
@@ -280,7 +284,7 @@ class NewProject:
             self.netw.after_iteration_methods = after_iteration_methods
             self.netw.after_simulation_methods = after_simulation_methods
 
-            self.run_simulation(epochs, snapshot_period, user_called = True)
+            self.run_simulation(epochs, snapshot_period, curr_batch, user_called = True)
         elif type(self.netw) == EdgeSimNetwork:
             self.run_edge_simulation(epochs, snapshot_period)
         
@@ -290,15 +294,25 @@ class NewProject:
             self.netw.every_iteration_agent = every_iteration_agent
             self.netw.after_simulation_methods = after_simulation_methods
             
-            self.run_simulation(epochs, snapshot_period, user_called = True)
+            self.run_simulation(epochs, snapshot_period, curr_batch, user_called = True)
 
     # Simulates the social network and saves the results in JSON format under the results directory
-    def run_simulation(self, epochs, snapshot_period, user_called = False):
+    def run_simulation(self, epochs, snapshot_period, curr_batch = 1, user_called = False):
         # Running the simulation
         start_time = datetime.now()
 
+        if self.parent_simulation_dir is None:
+            parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+        else:
+            parent_simulation_dir = self.parent_simulation_dir
+
+        if curr_batch == 1:
+            # Create the parent directory
+            if not os.path.exists(parent_simulation_dir):
+                os.makedirs(parent_simulation_dir)
+        
         # Create the directory for this simulation
-        simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+        simulation_dir = os.path.join(parent_simulation_dir, str(curr_batch))
         if not os.path.exists(simulation_dir):
             os.makedirs(simulation_dir)
 
@@ -322,7 +336,7 @@ class NewProject:
             self.netw.before_iteration_methods = self.get_before_iteration_methods()
             self.netw.after_iteration_methods = self.get_after_iteration_methods()
             self.netw.after_simulation_methods = self.get_after_simulation_methods()
-            if type(self.netw) == CustomSimNetwork():
+            if type(self.netw) == CustomSimNetwork:
                 self.netw.every_iteration_agent = self.get_every_iteration_agent_methods()
 
         # Removed
@@ -339,7 +353,7 @@ class NewProject:
         if type(self.netw) == DiffusionNetwork: 
             simulation_params = {
                 "date": start_time.strftime("%Y-%m-%d"),
-                "name": self.conf["name"],
+                "name": str(self.conf["name"] + '-' + str(curr_batch)),
                 "simulation_duration": str(end_time - start_time),  # end - start
                 "start_time": start_time.isoformat(sep=' '),
                 "end_time": end_time.isoformat(sep=' '),
@@ -352,7 +366,7 @@ class NewProject:
         else: 
             simulation_params = {
                 "date": start_time.strftime("%Y-%m-%d"),
-                "name": self.conf["name"],
+                "name": str(self.conf["name"] + '-' + str(curr_batch)),
                 "simulation_duration": str(end_time - start_time),  # end - start
                 "start_time": start_time.isoformat(sep=' '),
                 "end_time": end_time.isoformat(sep=' '),
@@ -365,6 +379,57 @@ class NewProject:
         sim_info_file = os.path.join(simulation_dir, "simulation_info.json")
         with open(sim_info_file, 'w') as f:
             json.dump(simulation_params, f, indent=4)
+    
+    def run_multiple_simulations(self, num_simulations, epochs, snapshot_period):
+        # Running the simulation
+        start_time = datetime.now()
+        self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+
+        for curr_batch in range(1, num_simulations + 1):
+            self.run_simulation(epochs, snapshot_period, curr_batch, user_called = False)
+            # Reset the network object
+            if type(self.netw) == DiffusionNetwork:
+                self.netw = DiffusionNetwork(self.conf, self.project_dir)
+            elif type(self.netw) == CustomSimNetwork:
+                self.netw = CustomSimNetwork(self.conf, self.project_dir)
+            elif type(self.netw) == EdgeSimNetwork:
+                self.netw = EdgeSimNetwork(self.conf, self.project_dir)
+            else:
+                self.netw = Network(self.conf, self.project_dir)
+
+    def run_lib_multiple_simulations(self, 
+                                     num_simulations, 
+                                     epochs, 
+                                     snapshot_period, 
+                                     before_iteration_methods = None, 
+                                     after_iteration_methods = None,
+                                     every_iteration_agent = None,
+                                     after_simulation_methods = None):
+        
+        start_time = datetime.now()
+        self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+
+        for curr_batch in range(1, num_simulations + 1):
+            self.lib_run_simulation(epochs, 
+                                    snapshot_period, 
+                                    curr_batch, 
+                                    before_iteration_methods, 
+                                    after_iteration_methods,
+                                    every_iteration_agent,
+                                    after_simulation_methods)
+            # Reset the network object
+            if curr_batch == num_simulations:
+                continue
+            # else, we do the reset
+            if type(self.netw) == DiffusionNetwork:
+                self.netw = DiffusionNetwork(self.conf, self.project_dir)
+            elif type(self.netw) == CustomSimNetwork:
+                self.netw = CustomSimNetwork(self.conf, self.project_dir)
+            elif type(self.netw) == EdgeSimNetwork:
+                self.netw = EdgeSimNetwork(self.conf, self.project_dir)
+            else:
+                self.netw = Network(self.conf, self.project_dir)
+            
 
     # Saves the information passed by UI for project initialization
     def save_basic_info(self, name, date, info, nodeOrEdge):
@@ -473,6 +538,141 @@ class NewProject:
         spec.loader.exec_module(methods)
         return {name: func for name, func in methods.__dict__.items() if callable(func)}
     
+    def merge_in_parent_simulation(self, curr_sim_directory, json_file_name, merge_method):
+        parent_dir = os.path.dirname(curr_sim_directory)
+        sim_dirs = [d for d in os.listdir(parent_dir) if os.path.isdir(os.path.join(parent_dir, d))]
+
+        
+        if json_file_name != 'after_simulation.json':
+            # Collect data from all simulations
+            data_to_merge = defaultdict(list)
+            
+            for sim_dir in sim_dirs:
+                sim_path = os.path.join(parent_dir, sim_dir, 'parameters', json_file_name)
+                if os.path.exists(sim_path):
+                    with open(sim_path, 'r') as f:
+                        sim_data = json.load(f)
+                        for entry in sim_data:
+                            iteration = entry['Iteration']
+                            data_to_merge[iteration].append(entry)
+            
+            # Merge data based on the specified method
+            if merge_method == "mean":
+                merged_data = self.merge_same_sim_mean(data_to_merge)
+            else:
+                raise ValueError(f"Unknown merge method: {merge_method}")
+            # Save the merged data to a new file
+            output_file = os.path.join(curr_sim_directory, 'parameters', f"{json_file_name.split('.')[0]}_{merge_method}.json")
+            with open(output_file, 'w') as f:
+                json.dump(merged_data, f, indent=4)
+            
+        else: #if it is the after simulation file
+            entries = []
+
+            """ Create array in the following format: [
+                {key1: number, key2: number},
+                {key1: number, key2: number}
+            ]
+            """
+            for sim_dir in sim_dirs:
+                sim_path = os.path.join(parent_dir, sim_dir, 'parameters', json_file_name)
+                if os.path.exists(sim_path):
+                    with open(sim_path, 'r') as f:
+                        sim_data = json.load(f)
+                        entries.append(sim_data)
+                    
+           
+            merged_entry = {}
+            keys = entries[0].keys()
+            
+            for key in keys:
+                values = [entry[key] for entry in entries]
+                merged_entry[key] = round(sum(values) / len(values), 3)
+             # Save the merged data to a new file
+            output_file = os.path.join(curr_sim_directory, 'parameters', f"{json_file_name.split('.')[0]}_{merge_method}.json")
+            with open(output_file, 'w') as f:
+                json.dump(merged_entry, f, indent=4)
+                
+
+
+    def merge_same_sim_mean(self, data_to_merge):
+        merged_data = []
+        
+        for iteration, entries in data_to_merge.items():
+            merged_entry = {"Iteration": iteration}
+            keys = entries[0].keys()
+            
+            for key in keys:
+                if key != "Iteration":
+                    values = [entry[key] for entry in entries]
+                    merged_entry[key] = round(sum(values) / len(values), 3)
+            
+            merged_data.append(merged_entry)
+        
+        # Sort by iteration
+        merged_data.sort(key=lambda x: x["Iteration"])
+        
+        return merged_data
+
+    def merge_with_other_simulation(self, simulation_dir, json_file_name, merge_dir_dict):
+        merged_data = {}
+
+        # Include the current simulation directory in the merging
+        merge_dir_dict.insert(0, os.path.relpath(simulation_dir, self.results_dir))
+ 
+        if json_file_name != 'after_simulation.json' and json_file_name != 'after_simulation_mean.json':
+            for sim_path in merge_dir_dict:
+                # Construct the full path to the JSON file
+                full_sim_path = os.path.join(self.results_dir, sim_path, "parameters", json_file_name)
+                sim_info_path = os.path.join(self.results_dir, sim_path, "simulation_info.json")
+                
+                if os.path.exists(full_sim_path) and os.path.exists(sim_info_path):
+                    with open(sim_info_path, 'r') as sim_info_file:
+                        sim_info = json.load(sim_info_file)
+                        sim_name = sim_info['name']
+                    
+                    with open(full_sim_path, 'r') as json_file:
+                        sim_data = json.load(json_file)
+                        for entry in sim_data:
+                            iteration = entry["Iteration"]
+                            value = round(entry["Value"], 3)  # Round to 3 decimal places
+                            
+                            if iteration not in merged_data:
+                                merged_data[iteration] = {}
+                            
+                            merged_data[iteration][sim_name] = value
+
+            # Prepare the merged data in the required format
+            merged_data_list = [{"Iteration": iteration, **values} for iteration, values in merged_data.items()]
+
+            
+        
+        else: #if it is the after simulation file, create a list, not dict
+            merged_data_list = []
+
+            for sim_path in merge_dir_dict:
+                # Construct the full path to the JSON file
+                full_sim_path = os.path.join(self.results_dir, sim_path, "parameters", json_file_name)
+                sim_info_path = os.path.join(self.results_dir, sim_path, "simulation_info.json")
+                
+                if os.path.exists(full_sim_path) and os.path.exists(sim_info_path):
+                    with open(sim_info_path, 'r') as sim_info_file:
+                        sim_info = json.load(sim_info_file)
+                        sim_name = sim_info['name']
+                    
+                    with open(full_sim_path, 'r') as json_file:
+                        sim_data = json.load(json_file)
+                        merged_data_list.append(sim_data)
+
+        # Get the current timestamp in a cross-platform format
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M")
+        output_file_name = f"{json_file_name.split('.')[0]}_merged_{timestamp}.json"
+        output_file_path = os.path.join(simulation_dir, "parameters", output_file_name)
+
+        # Save the merged data to a new JSON file
+        with open(output_file_path, 'w') as output_file:
+            json.dump(merged_data_list, output_file, indent=4)
+
 
 # pr = NewProject()
 # pr.load_project("customsimulation")

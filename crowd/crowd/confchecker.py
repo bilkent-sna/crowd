@@ -34,9 +34,9 @@ class ConfChecker:
 
     def check_conf(self, mconf, nconf):
         # Check if unrecognized fields present
-        print("Checking for unrecognized fields")
-        print(mconf)
-        print(nconf)
+        # print("Checking for unrecognized fields")
+        # print(mconf)
+        # print(nconf)
         for elem in nconf:
             if "fields" in mconf:
                 # Check if unrecognized fields present
@@ -46,7 +46,7 @@ class ConfChecker:
             if "select_fields" in mconf:
                 if elem not in mconf["select_fields"]:
                     raise Exception("Unrecognized field:", elem) 
-        print("Check 2")
+        # print("Check 2")
         # Check if required fields present
         if "fields" in mconf:
             for melem in mconf["fields"]:
@@ -64,22 +64,22 @@ class ConfChecker:
             if count == 0:
                 raise Exception("One of the fields must be present in " + melem)
         
-        print("Recurse")
+        # print("Recurse")
         for elem in nconf:
             if type(nconf[elem]) is dict:
                 if "fields" in mconf:
                     if elem in mconf["fields"] :
-                        print("Recursing for field " + elem)
+                        # print("Recursing for field " + elem)
                         self.check_conf(mconf["fields"][elem], nconf[elem])
                 if "select_fields" in mconf:
                     if elem in mconf["select_fields"]:
-                        print("Recursing for selected_field " + elem)
+                        # print("Recursing for selected_field " + elem)
                         self.check_conf(mconf["select_fields"][elem], nconf[elem])
         
         return True
 
     def parse(self, network_file):
-        print("HELLO INSIDE PARSE METHOD")
+        # print("HELLO INSIDE PARSE METHOD")
         #print(ConfChecker.CONF_FILE)
         with open(ConfChecker.CONF_FILE) as f:
            module_conf = yaml.load(f, Loader=yaml.FullLoader)

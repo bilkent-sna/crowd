@@ -2,6 +2,7 @@
 import random
 from crowd.project_management.new_project import NewProject
 import os
+import networkx as nx
 
 # don't need this rn
 def has_changed_strategy_at_step(network, agent_id):
@@ -123,9 +124,26 @@ def calculate_statistics_after_iteration(network):
 
     return global_payoff
 
+# After simulation methods
+def r_UT(network):
+    # print("Inside r_ut", network.conf["definitions"]["network-parameters"]["r_UT"])
+    return network.conf["definitions"]["network-parameters"]["r_UT"]
+
+# This returns U count at the end
+def R_T_6(network):
+    #print("Inside rt6", network.curr_type_nums["U"])
+    return network.curr_type_nums["U"]
+
+
 # Helper for this file
 def average_degree(G):
     return sum(dict(G.degree()).values()) / G.number_of_nodes() if G.number_of_nodes() > 0 else 0
+
+def set_network_params(network, my_project):
+    # Set some model parameters
+    my_project.netw.G.graph["R_U"] = (1 + my_project.netw.G.graph["r_UT"]) * my_project.netw.G.graph["R_T"]
+    my_project.netw.G.graph["max_payoff"] = average_degree(my_project.netw.G) * my_project.netw.G.graph["R_U"]
+
 
 project_name = "firstcustom"
 
@@ -141,11 +159,21 @@ my_project.load_project(project_name)
 my_project.netw.G.graph["R_U"] = (1 + my_project.netw.G.graph["r_UT"]) * my_project.netw.G.graph["R_T"]
 my_project.netw.G.graph["max_payoff"] = average_degree(my_project.netw.G) * my_project.netw.G.graph["R_U"]
 
+
+before_iteration = [[set_network_params, my_project]]
 every_iteration_agent = [proportional_imitation]
 after_iteration = [calculate_statistics_after_iteration]
+after_simulation = [r_UT, R_T_6]
 
-my_project.lib_run_simulation(epochs=100, snapshot_period=20, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration)
+#my_project.lib_run_simulation(epochs=100, snapshot_period=20, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
+# print("Density of the graph:", nx.density(my_project.netw.G))
+# print("Average clustering coefficient of the graph: ", nx.average_clustering(my_project.netw.G))
 
+# # Calculate the average degree
+# avg_degree = sum(dict(my_project.netw.G.degree()).values()) / my_project.netw.G.number_of_nodes()
+# print("Average degree of the graph: ", avg_degree)
 
+# my_project.run_lib_multiple_simulations(num_simulations=50, epochs=5000, snapshot_period=5000, before_iteration_methods=before_iteration, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
+my_project.run_lib_multiple_simulations(num_simulations=50, epochs=5000, snapshot_period=5000, before_iteration_methods=before_iteration, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
 
 

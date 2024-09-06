@@ -27,7 +27,7 @@ class ProjectFunctions:
         print(f"Creating project: {name} with info: {info}")
 
     
-    def get_conf_and_run(self, data, project_name, epochs, snapshot_period):
+    def get_conf_and_run(self, data, project_name, epochs, snapshot_period, num_simulations):
         try:
             data_dict = json.loads(data)
             print(f"Received data successfully")
@@ -45,7 +45,7 @@ class ProjectFunctions:
             new_project.update_conf(conf)
             print("After updating conf")
 
-            new_project.run_simulation(epochs, snapshot_period)
+            new_project.run_multiple_simulations(num_simulations, epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
             print("Simulation directory:", simulation_directory)                                                                                                      
@@ -96,7 +96,7 @@ class ProjectFunctions:
         except KeyError as e:
             print(f"Key error: {e}")
 
-    def init_and_run_simulation(self, project_name, epochs, snapshot_period):
+    def init_and_run_simulation(self, project_name, epochs, snapshot_period, num_simulations):
         try:
             # Initialize the project object
             new_project = NewProject()
@@ -105,12 +105,12 @@ class ProjectFunctions:
             new_project.load_project(project_name)
             print("After loading project")
 
-            new_project.run_simulation(epochs, snapshot_period)
+            new_project.run_multiple_simulations(num_simulations, epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
             print("Simulation directory:", simulation_directory)                                                                                                      
       
-            return json.dumps(simulation_directory)
+            return json.dumps(simulation_directory) #will this return the parent directory or the last one
 
         except TypeError as e:
             print(f"Type error: {e}")
@@ -178,6 +178,7 @@ class ProjectFunctions:
 
 
     def parseConf(self, data_dict, project_dir):
+
         conf = {
                 "name": data_dict["name"]
             }
@@ -360,3 +361,6 @@ class ProjectFunctions:
         print('LATEST CONF', conf)
 
         return conf
+    
+
+

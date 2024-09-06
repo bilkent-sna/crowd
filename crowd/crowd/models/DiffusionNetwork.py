@@ -85,7 +85,7 @@ class DiffusionNetwork(netw.Network):
 
                 if digress is not None:
                     digress.save_graph(str(epoch), self.G, 'graph.json')
-                    digress.save_statusdelta(epoch, self.status_delta, 'statusdelta.json', self.ndlib_model.available_statuses)
+                    digress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
                     
 
             #save iteration data for parameters that user wants to track
@@ -155,10 +155,10 @@ class DiffusionNetwork(netw.Network):
                     #print(method.__name__, type(method))
                     key_to_save = method.__name__ 
                     if key_to_save not in simulation_data:
-                        simulation_data[key_to_save] = []
-                    simulation_data[key_to_save].append({
-                        "Value":  method(self)
-                    })
+                        simulation_data[key_to_save] =  method(self) # was [] before
+                    # simulation_data[key_to_save].append({
+                    #     "Value":  method(self)
+                    # })
             
             digress.save(json.dumps(simulation_data), 'parameters/after_simulation.json')
         

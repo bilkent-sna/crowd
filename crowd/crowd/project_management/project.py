@@ -200,9 +200,9 @@ class Project:
                     results.append(json.load(f))
         return results
 
-    def run_multiple_simulations(self, num_simulations):
-        for _ in range(num_simulations):
-            self.run_simulation()
+    def run_multiple_simulations(self, num_simulations, epochs, snapshot_period, methods):
+        for curr_batch in range(num_simulations):
+            self.run_simulation(epochs, snapshot_period, methods, curr_batch)
 
     def delete_results(self):
         # Delete all simulation result files

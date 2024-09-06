@@ -14,7 +14,7 @@ from .structure.from_library import FromLibrary
 class NetworkCreator:
 
     def __init__(self, conf):
-        print("Initializing network creator object")
+        # print("Initializing network creator object")
         self.conf = conf
 
     def get_degree_count(self):
@@ -48,7 +48,7 @@ class NetworkCreator:
     def _create_network(self):
         
         structure = self.conf["structure"]
-        print(structure)
+        # print(structure)
         if "random" in structure:
             return self.create_random_network(None)
         else:

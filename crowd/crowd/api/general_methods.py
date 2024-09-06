@@ -45,13 +45,27 @@ class GeneralMethods:
        
         for dir_name in os.listdir(base_dir):
             try:
-                path = os.path.join(base_dir, dir_name, "simulation_info.json")
+                path = os.path.join(base_dir, dir_name, "1\simulation_info.json")
                 with open(path, 'r') as f:
                     simulations.append(json.load(f))
             except: 
                 return "Cannot find simulation"
             
         # print(projects)        
+        return json.dumps(simulations)  
+    
+    def list_sim_and_count(self, project_name):
+        simulations = {}
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
+       
+        for dir_name in os.listdir(base_dir):
+            try:
+                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name)))
+                simulations.update({dir_name: child_sim_count})
+            except: 
+                return "Cannot find simulation"
+            
+        print("List sim and count print:", simulations)      
         return json.dumps(simulations)  
 
     """
@@ -87,7 +101,7 @@ class GeneralMethods:
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
        
         try:
-            path = os.path.join(base_dir, simulation_directory, "simulation_info.json")
+            path = os.path.join(base_dir, simulation_directory, "1\simulation_info.json")
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
         except: 
@@ -102,7 +116,7 @@ class GeneralMethods:
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
        
         try:
-            path = os.path.join(base_dir, simulation_directory, "graph.json")
+            path = os.path.join(base_dir, simulation_directory, "1\graph.json")
             # return json.dumps(path)
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
@@ -133,7 +147,7 @@ class GeneralMethods:
         reads the current parameters directory and returns a list of the names of all files in there
     """
     def list_all_parameters(self, project_name, simulation_directory):
-        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory, 'parameters'))
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory, '1\parameters'))
        
         try:
             files = os.listdir(base_dir)
@@ -146,7 +160,7 @@ class GeneralMethods:
         returns the requested parameter file
     """
     def load_parameter_file(self, project_name, simulation_directory, file_name):
-        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory, 'parameters'))
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory, '1\parameters'))
        
         try:
             path = os.path.join(base_dir, file_name)

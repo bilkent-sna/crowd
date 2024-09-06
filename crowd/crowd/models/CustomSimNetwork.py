@@ -8,14 +8,14 @@ class CustomSimNetwork:
 
     def __init__(self, conf, project_dir):
         self.conf = conf
-        print("Got conf")
+        # print("Got conf")
         if self.conf is not None:
-            print("PASS1")
+            # print("PASS1")
             network_creator = NetworkCreator(self.conf) 
-            print("PASS2")           
+            # print("PASS2")           
             self.G = network_creator.create_network(project_dir)
-            print("G-->")    
-            print(self.G)
+            # print("G-->")    
+            # print(self.G)
 
             # We allow users to define 4 kind of methods in the methods.py file in the project
             # We have default methods to read these, but user can override these methods if they want to read the methods from a different file 
@@ -31,7 +31,7 @@ class CustomSimNetwork:
 
             # Access nodetypes from the conf
             self.node_types = self.conf["definitions"]["nodetypes"].keys()
-            print(self.node_types)
+            # print(self.node_types)
 
             self.prev_type_nums = None
             self.curr_type_nums = self.count_node_types()
@@ -54,7 +54,7 @@ class CustomSimNetwork:
             
             #setting numerical node parameters if given
             if("numerical" in conf_part["node-parameters"]):
-                print("TO-DO: is it possible to give user more options")
+                # print("TO-DO: is it possible to give user more options")
                 params = conf_part["node-parameters"]["numerical"]
                 if params != []: 
                     if type(params) == dict:
@@ -202,7 +202,7 @@ class CustomSimNetwork:
                 self.curr_type_nums = self.count_node_types()
 
             if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
-                print("Epoch:", epoch)
+                # print("Epoch:", epoch)
                 if visualizers is not None:
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
@@ -247,7 +247,7 @@ class CustomSimNetwork:
                         parameters.append(agent_id)
                     for i in range(1, len(method)):
                         parameters.append(method[i])
-                    print("Parameters:", parameters)
+                    # print("Parameters:", parameters)
                     
                     if data_dict: # if it is not None, which means this is not agent method
                         key_to_save = method[0].__name__
@@ -259,9 +259,10 @@ class CustomSimNetwork:
                                 "Value": method[0](*parameters)
                             })
                         else: # after simulation
-                            data_dict[key_to_save].append({
-                                "Value": method[0](*parameters)
-                            })
+                            data_dict[key_to_save] = method[0](*parameters)
+                            # data_dict[key_to_save].append({
+                            #     "Value": method[0](*parameters)
+                            # })
                     else: # just run the method
                         method[0](*parameters)
                 else:                    
@@ -275,9 +276,10 @@ class CustomSimNetwork:
                                 "Value":  method(self)
                             })
                         else: # after simulation
-                            data_dict[key_to_save].append({
-                                "Value": method(self)
-                            })
+                            data_dict[key_to_save] = method(self)
+                            # data_dict[key_to_save].append({
+                            #     "Value": method(self)
+                            # })
                     else:
                         if agent_id is not None:
                             method(self, agent_id)
@@ -298,7 +300,7 @@ class CustomSimNetwork:
     def execute_after_simulation(self, digress):
         data = {}
 
-        self.execute_methods(self, None, self.after_simulation_methods, data)
+        self.execute_methods(epoch = None, method_list=self.after_simulation_methods, data_dict=data, agent_id=None)
         digress.save(json.dumps(data), 'parameters/after_simulation.json')
 
     
