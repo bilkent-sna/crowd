@@ -1,5 +1,7 @@
 from collections import defaultdict
+import csv
 import json
+import os
 import random
 import networkx as nx
 from crowd.networkcreator import NetworkCreator
@@ -14,6 +16,7 @@ class CustomSimNetwork:
             network_creator = NetworkCreator(self.conf) 
             # print("PASS2")           
             self.G = network_creator.create_network(project_dir)
+            self.project_dir = project_dir
             # print("G-->")    
             # print(self.G)
 
@@ -35,6 +38,9 @@ class CustomSimNetwork:
 
             self.prev_type_nums = None
             self.curr_type_nums = self.count_node_types()
+
+            # User can write a method to early stop the simulation by changing this parameter
+            self.early_stop = False
 
 
     def add_network_level_params(self, conf_part):
@@ -80,13 +86,32 @@ class CustomSimNetwork:
                             #setting the categorical attribute randomly
                             #ndlib does not provide a method for this so we can add
                             #to conf file if user has any requirements
+                            if type(param_values) == str:
+                                    print("Param values before read_options:", param_values)
+                                    param_values = self.read_options_file(param_values)
+                                    print("Param values after setting as a list:", param_values)
                             attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                             nx.set_node_attributes(self.G, attr)
                     else:
                         for item in params:
                             for param_name, param_values in item.items():
+                                if type(param_values) == str: # we should read the options from the file
+                                    # param_values hold the name of the dataset
+                                    # read the values from the data file and return a list
+                                    # put this list into param_values
+                                    print("Param values before read_options:", param_values)
+                                    param_values = self.read_options_file(param_values)
+                                    print("Param values after setting as a list:", param_values)
                                 attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                                 nx.set_node_attributes(self.G, attr)
+
+    def read_options_file(self, path):
+        # Read the .csv file
+        path = os.path.join(self.project_dir, 'datasets', path)
+        with open(path, 'r') as file:
+            reader = csv.reader(file)
+            return [row[0] for row in reader if row]
+ 
 
     def add_edge_parameters(self, conf_part):
          #Setting edge attribute if given
@@ -180,8 +205,13 @@ class CustomSimNetwork:
             agility=1, # ratio of active nodes in the epoch, 1 means all nodes, 0 means single node
             digress=None
             ):
+        
         # Iteration data dictionary
         simulation_data = {}
+
+        # Holds how many epochs actually executed
+        # Is updated if early stopping occurs
+        actual_epochs = epochs
 
         for epoch in range(0, epochs): # for each epoch
 
@@ -223,6 +253,13 @@ class CustomSimNetwork:
                 else:
                     to_send = None
                     self.execute_after_iteration(epoch, to_send)
+
+            if self.early_stop:
+                # change epoch param and return it so it can be saved to simulation info
+                # Ex: early_stop : true
+                #     epoch: 20
+                actual_epochs = epoch
+                break
         
         # simulation is finished
         if visualizers is not None:
@@ -233,6 +270,8 @@ class CustomSimNetwork:
             digress.save_iteration_data(simulation_data)
         
         self.execute_after_simulation(digress)
+
+        return self.early_stop, actual_epochs
 
     # This method will be called for all 4 types of user-entered methods
     def execute_methods(self, epoch, method_list, data_dict = None, agent_id = None):

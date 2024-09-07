@@ -30,6 +30,7 @@ class NewProject:
             self.config_file = None
             self.methods_file = None
             self.results_dir = None
+            self.parent_simulation_dir = None
             self.visualizers = None
             self.digress = None
             self.tracked_params = []
@@ -89,6 +90,7 @@ class NewProject:
         self.conf_file = os.path.join(self.project_dir, 'conf.yaml')
         self.methods_file = os.path.join(self.project_dir, 'methods.py')
         self.results_dir = os.path.join(self.project_dir, 'results')
+        self.parent_simulation_dir = None
 
         if not os.path.exists(self.project_dir):
             raise FileNotFoundError("Project does not exist.")
@@ -140,16 +142,19 @@ class NewProject:
                     "name": "diffusion",
                     "nodetypes": {
                         "Susceptible": {
-                            "initial-weight": 0.9,
-                            "color": "blue"
+                            "random-with-weight": {
+                                "inital-weight": 0.9
+                            }
                         },
                         "Infected": {
-                            "initial-weight": 0.1,
-                            "color": "red"
+                            "random-with-weight": {
+                                "inital-weight": 0.1
+                            }
                         },
                         "Recovered": {
-                            "initial-weight": 0,
-                            "color": "green"
+                            "random-with-weight": {
+                                "inital-weight": 0
+                            }
                         }
                     },
                     "node-parameters": {
@@ -343,11 +348,10 @@ class NewProject:
         # watch_methods_save = {str(method.__name__): str(method.__code__) for method in self.netw.watch_methods}
         
         # Modify networks run method for new digress
-        self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
+        early_stop, actual_epochs = self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
         end_time = datetime.now()
 
         self.digress.save("]", os.path.join('parameters', 'status_delta.json'))
-        # Add this to Diffusion Network as well. If running diffusion network, comment this out for now
         self.digress.save("]", os.path.join('parameters', 'count_node_types.json'))
         
         if type(self.netw) == DiffusionNetwork: 
@@ -358,6 +362,8 @@ class NewProject:
                 "start_time": start_time.isoformat(sep=' '),
                 "end_time": end_time.isoformat(sep=' '),
                 "epoch_num": epochs,
+                "early_stop": early_stop,
+                "actual_epochs": actual_epochs,
                 "snapshot_period": snapshot_period,
                 "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
                 # "watch_methods": watch_methods_save
@@ -371,6 +377,8 @@ class NewProject:
                 "start_time": start_time.isoformat(sep=' '),
                 "end_time": end_time.isoformat(sep=' '),
                 "epoch_num": epochs,
+                "early_stop": early_stop,
+                "actual_epochs": actual_epochs,
                 "snapshot_period": snapshot_period,
                 "states": list(self.conf["definitions"]["nodetypes"].keys())
             }

@@ -1,4 +1,6 @@
+import csv
 import json
+import os
 import random
 from crowd import node as n
 from crowd import network as netw
@@ -13,6 +15,8 @@ class DiffusionNetwork(netw.Network):
 
     def __init__(self, conf_dict, project_dir):
         super().__init__(conf_dict, project_dir)
+
+        self.project_dir = project_dir
 
         #everything about configuration is stored at self.conf
 
@@ -62,9 +66,13 @@ class DiffusionNetwork(netw.Network):
         self.after_iteration_methods = None
         self.after_simulation_methods = None
 
+        # user can write a method to early stop the simulation by changing this parameter
+        self.early_stop = False
+
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
         self.ndlib_model.set_initial_status(self.ndlib_config)
+        actual_epochs = epochs
 
         # Iteration data dictionary
         simulation_data = {}
@@ -72,10 +80,10 @@ class DiffusionNetwork(netw.Network):
         for epoch in range(0, epochs): #for each epoch
 
             #execute before iteration methods
-
+            
 
             #execute one iteration with ndlib
-            self.G, self.status_delta = self.ndlib_model.iteration(node_status=True)
+            self.G, self, self.node_count, self.status_delta = self.ndlib_model.iteration(node_status=True)
 
             if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                 print("Epoch:", epoch)
@@ -85,6 +93,7 @@ class DiffusionNetwork(netw.Network):
 
                 if digress is not None:
                     digress.save_graph(str(epoch), self.G, 'graph.json')
+                    digress.save_statusdelta(epoch, self.node_count, 'count_node_types.json', self.ndlib_model.available_statuses)
                     digress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
                     
 
@@ -121,8 +130,14 @@ class DiffusionNetwork(netw.Network):
                     })
                 
                 
-                    
-            print(self.status_delta)
+            if self.early_stop:
+                # change actual_epoch param and return it so it can be saved to simulation info
+                # Ex: early_stop : true
+                #     epoch: 20
+                actual_epochs = epoch
+                break
+
+            # print(self.status_delta)
 
         if visualizers is not None:
             for visualizer in visualizers:
@@ -162,7 +177,7 @@ class DiffusionNetwork(netw.Network):
             
             digress.save(json.dumps(simulation_data), 'parameters/after_simulation.json')
         
-        
+        return self.early_stop, actual_epochs
         
         #trends = self.ndlib_model.build_trends(iterations)
                 
@@ -199,15 +214,31 @@ class DiffusionNetwork(netw.Network):
                             #setting the categorical attribute randomly
                             #ndlib does not provide a method for this so we can add
                             #to conf file if user has any requirements
+                            if type(param_values) == str:
+                                    print("Param values before read_options:", param_values)
+                                    param_values = self.read_options_file(param_values)
+                                    print("Param values after setting as a list:", param_values)
+                            
                             attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                             nx.set_node_attributes(self.G, attr)
                     else:
                         for item in params:
                             for param_name, param_values in item.items():
+                                if type(param_values) == str:
+                                    print("Param values before read_options:", param_values)
+                                    param_values = self.read_options_file(param_values)
+                                    print("Param values after setting as a list:", param_values)
+                            
                                 attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                                 nx.set_node_attributes(self.G, attr)
 
-
+    def read_options_file(self, path):
+        # Read the .csv file
+        path = os.path.join(self.project_dir, 'datasets', path)
+        with open(path, 'r') as file:
+            reader = csv.reader(file)
+            return [row[0] for row in reader if row]
+        
     def add_edge_parameters(self, pd_conf):
        #Setting edge attribute if given
         if("edge-parameters" in pd_conf):
