@@ -112,8 +112,10 @@ def ask_agent_stay_at_home(network, curr_node, model):
 def get_response_and_reasoning(network, curr_node, model):
     # Generate propmt accordingly and call the Generative AI model
 
+    name = network.G.nodes[curr_node]['name']
+
     question_prompt = f"""[INST]
-        You are {curr_node}. You are {network.G.nodes[curr_node]['age']} years old. 
+        You are {name}. You are {network.G.nodes[curr_node]['age']} years old. 
        
         Your traits are given below:
         {network.G.nodes[curr_node]['agreeableness']}
@@ -123,15 +125,15 @@ def get_response_and_reasoning(network, curr_node, model):
         {network.G.nodes[curr_node]['intellect']}
         
         Your basic bio is below:
-        {curr_node} lives in the town of Dewberry Hollow. {curr_node} likes the town and has friends who also live there. {curr_node} has a job and goes to the office for work everyday.
+        {name} lives in the town of Dewberry Hollow. {name} likes the town and has friends who also live there. {name} has a job and goes to the office for work everyday.
         
-        I will provide {curr_node}'s relevant memories here:
+        I will provide {name}'s relevant memories here:
         {get_health_string(network, curr_node)}
-        {curr_node} knows about the Catasat virus spreading across the country. It is an infectious disease that spreads from human to human contact via an airborne virus. The deadliness of the virus is unknown. Scientists are warning about a potential epidemic.
-        {curr_node} checks the newspaper and finds that {(day_infected_is_4(network)*100)/network.G.number_of_nodes(): .1f}% of Dewberry Hollow's population caught new infections of the Catasat virus yesterday.
-        {curr_node} goes to work to earn money to support {curr_node}'s self.
+        {name} knows about the Catasat virus spreading across the country. It is an infectious disease that spreads from human to human contact via an airborne virus. The deadliness of the virus is unknown. Scientists are warning about a potential epidemic.
+        {name} checks the newspaper and finds that {(day_infected_is_4(network)*100)/network.G.number_of_nodes(): .1f}% of Dewberry Hollow's population caught new infections of the Catasat virus yesterday.
+        {name} goes to work to earn money to support {name}'s self.
        
-        Based on the provided memories, should {curr_node} stay at home for the entire day? Please provide your reasoning.
+        Based on the provided memories, should {name} stay at home for the entire day? Please provide your reasoning.
 
         
         The format should be as follow:
@@ -140,7 +142,7 @@ def get_response_and_reasoning(network, curr_node, model):
 
         Example response format:
 
-        Reasoning: {curr_node} is tired.
+        Reasoning: {name} is tired.
         Response: Yes
 
         It is important to provide Response in a single word. Pick either Yes or No, both not accepted. 
@@ -148,9 +150,9 @@ def get_response_and_reasoning(network, curr_node, model):
         """
     
     try:
-        print("Prompt:" , question_prompt)
+        # print("Prompt:" , question_prompt)
         output = get_completion_from_messages(model, question_prompt, temperature=0)
-        print("Output for node", curr_node, ":", output)
+        # print("Output for node", curr_node, ":", output)
     except Exception as e:
         print(f"{e}\nProgram paused. Retrying after 10s...")
         time.sleep(10)
@@ -165,7 +167,7 @@ def get_response_and_reasoning(network, curr_node, model):
         # reasoning = reasoning.strip()
         # Split the string into parts using '\n' as the separator
         parts = output.split('\n')
-        print("parts:", parts)
+        # print("parts:", parts)
         # Initialize variables to store the extracted values
         reasoning = ""
         response = ""
@@ -175,7 +177,7 @@ def get_response_and_reasoning(network, curr_node, model):
             if part.startswith("Reasoning:"):
                 reasoning = part[len("Reasoning: "):].strip()
             elif part.strip().startswith("Response:"):
-                print("response part:", part)
+                # print("response part:", part)
                 response = part.strip()[len("Response: "):].strip()
                 # Remove the period at the end of response if it exists
                 if response.endswith('.'):
@@ -195,22 +197,29 @@ def get_response_and_reasoning(network, curr_node, model):
     return reasoning, response
 
 def save_current_agent_response(curr_node, question_prompt, output, reasoning, response):
-    print("Inside save 1")
+    # print("Inside save 1")
     # Iteration data dictionary
+    # simulation_data = {
+    #     "save_current_agent_response": {
+    #         "Node": curr_node,
+    #         "Prompt": question_prompt,
+    #         "Output": output,
+    #         "Reasoning": reasoning,
+    #         "Response": response
+    #     }
+    # }
     simulation_data = {
-        "save_current_agent_response": {
-            "Node": curr_node,
-            "Prompt": question_prompt,
-            "Output": output,
-            "Reasoning": reasoning,
-            "Response": response
-        }
+        "Node": curr_node,
+        "Prompt": question_prompt,
+        "Output": output,
+        "Reasoning": reasoning,
+        "Response": response
     }
-    print("Inside save2")
+    # print("Inside save2")
     if my_project.digress is not None:
-        print("Inside save not none")
+        # print("Inside save not none")
         try:
-            my_project.digress.save_iteration_data(simulation_data)
+            my_project.digress.save_statusdelta(None, simulation_data, 'individual_agents_response.json', None)
         except Exception as e:
             print("Error occured", e.with_traceback)
     else:
@@ -227,7 +236,7 @@ def get_completion_from_messages(model, user_prompt, max_tokens=200, temperature
             top_p=top_p,
             echo=echo,
         )
-        print("Model output generated.")
+        # print("Model output generated.")
         return model_output["choices"][0]["text"].strip()
     except Exception as e:
         print(f"Error generating text: {e}")
@@ -262,7 +271,7 @@ def day_infected_is_4(network):
 def early_stopping_check(network):
     # If there are no infected agents for two consecutive days, stop the simulation
     # Define the path to the JSON file containing node type counts
-    path = os.path.join(network.project_dir, 'parameters', 'count_node_types.json')
+    path = os.path.join(network.digress.artifact_path, 'parameters', 'count_node_types.json')
     
     # Read the JSON data
     with open(path, 'r') as file:
@@ -299,7 +308,7 @@ info = "GABM use case 2nd test"
 #OR load previous
 my_project.load_project(project_name)
 add_name_parameter(my_project.netw.G)
-print(my_project.netw.G.nodes[0])
+# print(my_project.netw.G.nodes[0])
 
 # 2. LLM PART
 
@@ -313,11 +322,11 @@ except Exception as e:
     print(f"Error loading model: {e}")
 
 before_iteration_methods = [[decide_location, mistral7b_model]]
-after_iteration_methods = [compute_num_at_home, compute_num_on_grid, early_stopping_check]
+after_iteration_methods = [compute_num_at_home, compute_num_on_grid, day_infected_is_4, early_stopping_check]
 after_simulation_methods = []
 
 # Test the early stopping
-my_project.lib_run_simulation(15, 1, 1, before_iteration_methods, after_iteration_methods, None, after_simulation_methods)
+my_project.lib_run_simulation(50, 1, 1, before_iteration_methods, after_iteration_methods, None, after_simulation_methods)
 
 # my_project.lib_run_simulation(3, 1, every_iteration_methods, after_methods)
 # my_project.lib_run_simulation(50, 4, every_iteration_methods, after_methods)

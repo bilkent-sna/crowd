@@ -1,9 +1,5 @@
-import csv
-import json
-import os
 import random
-from crowd import node as n
-from crowd import network as netw
+from crowd.networkcreator import NetworkCreator
 from .CustomSimNetwork import CustomSimNetwork
 import ndlib.models.ModelConfig as mc
 from crowd.models import BaseDiffusion as bd
@@ -11,63 +7,70 @@ import ndlib.models.compartments as cpm
 import networkx as nx
 from ndlib.models.compartments.enums.NumericalType import NumericalType
 
-class DiffusionNetwork(netw.Network):
+class DiffusionNetwork(CustomSimNetwork):
 
     def __init__(self, conf_dict, project_dir):
-        super().__init__(conf_dict, project_dir)
+        self.conf = conf_dict
+        # print("Got conf")
+        if self.conf is not None:
+            # print("PASS1")
+            network_creator = NetworkCreator(self.conf) 
+            # print("PASS2")           
+            self.G = network_creator.create_network(project_dir)
+            self.project_dir = project_dir
+            # print("G-->")    
+            # print(self.G)
 
-        self.project_dir = project_dir
+            #everything about configuration is stored at self.conf
 
-        #everything about configuration is stored at self.conf
+            #get model status from conf to an array
+            pd_conf = self.conf["definitions"]["pd-model"]
+            node_types = pd_conf["nodetypes"] #this is a dictionary
 
-        #get model status from conf to an array
-        pd_conf = self.conf["definitions"]["pd-model"]
-        node_types = pd_conf["nodetypes"] #this is a dictionary
+            #DEBUG: Print the configurations to verify their structure
+            print("Initial configuration:", pd_conf)
+            
+            self.add_node_parameters(pd_conf)
 
-         #DEBUG: Print the configurations to verify their structure
-        print("Initial configuration:", pd_conf)
-        
-        self.add_node_parameters(pd_conf)
+            self.add_edge_parameters(pd_conf)
 
-        self.add_edge_parameters(pd_conf)
+            #ndlib model
+            self.ndlib_model = bd.BaseDiffusion(self.G, self.conf)
+            
+            #for each item in array
+            for item in node_types.keys():
+                self.ndlib_model.add_status(item)
 
-        #ndlib model
-        self.ndlib_model = bd.BaseDiffusion(self.G, self.conf)
-        
-        #for each item in array
-        for item in node_types.keys():
-            self.ndlib_model.add_status(item)
+            print("Available Status For Custom Diffusion")
+            print(self.ndlib_model.available_statuses)
 
-        print("Available Status For Custom Diffusion")
-        print(self.ndlib_model.available_statuses)
+            #create compartments dictionary
+            compartments = self.add_compartments(pd_conf)
+                    
+            #create rules and add them to model
+            for rule in pd_conf["rules"].values():
+                print("Processing rule", rule[0])
+                self.ndlib_model.add_rule(rule[0], rule[1], compartments[rule[2]])          
 
-        #create compartments dictionary
-        compartments = self.add_compartments(pd_conf)
-                
-        #create rules and add them to model
-        for rule in pd_conf["rules"].values():
-            print("Processing rule", rule[0])
-            self.ndlib_model.add_rule(rule[0], rule[1], compartments[rule[2]])          
+    
+            #model initial status configuration
+            self.ndlib_config = mc.Configuration()
 
- 
-        #model initial status configuration
-        self.ndlib_config = mc.Configuration()
+            #Setting model parameters if given
+            if("model-parameters" in pd_conf):
+                for parameter, value in pd_conf["model-parameters"].items():
+                    print(parameter, value)
+                    self.ndlib_config.add_model_parameter(parameter, value)
 
-        #Setting model parameters if given
-        if("model-parameters" in pd_conf):
-            for parameter, value in pd_conf["model-parameters"].items():
-                print(parameter, value)
-                self.ndlib_config.add_model_parameter(parameter, value)
+            #initialize the watch methods to None
+            #this variable will hold a list of method names that will be called in every iteration of the simulation
+            #to record the values of user-requested parameters or do a certain calculation with them
+            self.before_iteration_methods = None
+            self.after_iteration_methods = None
+            self.after_simulation_methods = None
 
-        #initialize the watch methods to None
-        #this variable will hold a list of method names that will be called in every iteration of the simulation
-        #to record the values of user-requested parameters or do a certain calculation with them
-        self.before_iteration_methods = None
-        self.after_iteration_methods = None
-        self.after_simulation_methods = None
-
-        # user can write a method to early stop the simulation by changing this parameter
-        self.early_stop = False
+            # user can write a method to early stop the simulation by changing this parameter
+            self.early_stop = False
 
     def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
         # Simulation execution
@@ -80,10 +83,16 @@ class DiffusionNetwork(netw.Network):
         for epoch in range(0, epochs): #for each epoch
 
             #execute before iteration methods
-            
+            if epoch != 0:
+                # execute before iteration methods, which are to prepare for this iteration
+                # and if any results returned, save them in simulation data dict
+                if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
+                    simulation_data = self.execute_before_iteration(epoch, simulation_data)
+                else:
+                    self.execute_before_iteration(epoch, None)
 
             #execute one iteration with ndlib
-            self.G, self, self.node_count, self.status_delta = self.ndlib_model.iteration(node_status=True)
+            self.G, self.node_count, self.status_delta = self.ndlib_model.iteration(node_status=True)
 
             if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                 print("Epoch:", epoch)
@@ -96,44 +105,16 @@ class DiffusionNetwork(netw.Network):
                     digress.save_statusdelta(epoch, self.node_count, 'count_node_types.json', self.ndlib_model.available_statuses)
                     digress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
                     
-
             #save iteration data for parameters that user wants to track
-            #in this case, we say that user can't pass any parameters to these functions
-            for method in self.after_iteration_methods:
-                #if method in self.predefined_models:
-                #call each method
-                if isinstance(method, list): #then it is a method with parameters
-                    #first value in the list is the name of the function
-                    #following ones are parameters
-                    key_to_save = method[0].__name__ 
-                    parameters = [self]
-                    for i in range(1, len(method)):
-                        parameters.append(method[i])
-                    print("Parameters:", parameters)
-                    #too similar to mesa?
-                    if key_to_save not in simulation_data:
-                        simulation_data[key_to_save] = []
-                    simulation_data[key_to_save].append({
-                        "Iteration": epoch,
-                        "Value": method[0](*parameters)
-                    })
+            if epoch != 0:
+                # execute after iteration methods, which utilizes the new states of the agents
+                # if any results returned, save in simulation data dict
+                if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
+                    simulation_data = self.execute_after_iteration(epoch, simulation_data)
                 else:
-                    #next line of code is assumed to be running the following way:
-                    #simulation_data["percent_infected"][0] = percent_infected()
-                    #print(method.__name__, type(method))
-                    key_to_save = method.__name__ 
-                    if key_to_save not in simulation_data:
-                        simulation_data[key_to_save] = []
-                    simulation_data[key_to_save].append({
-                        "Iteration": epoch,
-                        "Value":  method(self)
-                    })
-                
+                    self.execute_after_iteration(epoch, None)
                 
             if self.early_stop:
-                # change actual_epoch param and return it so it can be saved to simulation info
-                # Ex: early_stop : true
-                #     epoch: 20
                 actual_epochs = epoch
                 break
 
@@ -143,40 +124,10 @@ class DiffusionNetwork(netw.Network):
             for visualizer in visualizers:
                 visualizer.animate()
 
-        if digress is not None and self.after_iteration_methods is not None:
+        if digress is not None and len(simulation_data) != 0:
             digress.save_iteration_data(simulation_data)
-
-        if digress is not None and self.after_simulation_methods is not None:
-            simulation_data = {}
-            for method in self.after_simulation_methods:
-                #if method in self.predefined_models:
-                #call each method
-                if isinstance(method, list): #then it is a method with parameters
-                    #first value in the list is the name of the function
-                    #following ones are parameters
-                    key_to_save = method[0].__name__ 
-                    parameters = [self]
-                    for i in range(1, len(method)):
-                        parameters.append(method[i])
-                    print("Parameters:", parameters)
-                    if key_to_save not in simulation_data:
-                        simulation_data[key_to_save] = []
-                    simulation_data[key_to_save].append({
-                        "Value": method[0](*parameters)
-                    })
-                else:
-                    #next line of code is assumed to be running the following way:
-                    #simulation_data["percent_infected"][0] = percent_infected()
-                    #print(method.__name__, type(method))
-                    key_to_save = method.__name__ 
-                    if key_to_save not in simulation_data:
-                        simulation_data[key_to_save] =  method(self) # was [] before
-                    # simulation_data[key_to_save].append({
-                    #     "Value":  method(self)
-                    # })
-            
-            digress.save(json.dumps(simulation_data), 'parameters/after_simulation.json')
         
+        self.execute_after_simulation(digress)
         return self.early_stop, actual_epochs
         
         #trends = self.ndlib_model.build_trends(iterations)
@@ -231,13 +182,6 @@ class DiffusionNetwork(netw.Network):
                             
                                 attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                                 nx.set_node_attributes(self.G, attr)
-
-    def read_options_file(self, path):
-        # Read the .csv file
-        path = os.path.join(self.project_dir, 'datasets', path)
-        with open(path, 'r') as file:
-            reader = csv.reader(file)
-            return [row[0] for row in reader if row]
         
     def add_edge_parameters(self, pd_conf):
        #Setting edge attribute if given
@@ -473,7 +417,7 @@ class DiffusionNetwork(netw.Network):
                 compartments[compartment_name] = cpm.ConditionalComposition(compartments[condition], compartments[first_branch], compartments[second_branch])
 
          #DEBUG: Print all compartments after processing
-        print("All compartments:", compartments)
+        # print("All compartments:", compartments)
         
         #all compartments added, return the dictionary        
         return compartments

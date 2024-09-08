@@ -20,7 +20,9 @@ class file_digress(d.digress):
       
 
     def save_statusdelta(self, epoch_num, data_dict, file_name, available_status):
-        new_dict = {"Iteration": epoch_num}
+        new_dict = {}
+        if epoch_num:
+            new_dict = {"Iteration": epoch_num}
 
         if available_status:
             index = 0
@@ -30,17 +32,39 @@ class file_digress(d.digress):
         else:
             new_dict.update(data_dict)
 
-        if(epoch_num != 0):
-            to_write = (",") + json.dumps(new_dict)
-        else:
-            to_write = json.dumps(new_dict)
-        #self.save(to_write, file_name)
+        # if(epoch_num != 0):
+        #     to_write = (",") + json.dumps(new_dict)
+        # else:
+        #     to_write = json.dumps(new_dict)
+        # #self.save(to_write, file_name)
         path = os.path.join(self.artifact_path, 'parameters', file_name)
-        f = open(path, "a")
-        f.write(to_write)
-        # f.write(str(to_write))
-        f.close()
+        # f = open(path, "a")
+        # f.write(to_write)
+        # # f.write(str(to_write))
+        # f.close()
+        # Step 1: Remove the trailing ']' from the file (if it exists)
+        if os.path.exists(path):
+            with open(path, 'r+') as f:
+                f.seek(0, os.SEEK_END)  # Move to the end of the file
+                f.seek(f.tell() - 1, os.SEEK_SET)  # Move one character back
+                last_char = f.read(1)
+                
+                if last_char == ']':  # Check if the last character is ']'
+                    f.seek(f.tell() - 1, os.SEEK_SET)  # Move back one character
+                    f.truncate()  # Remove the closing bracket
 
+                # Step 2: Write the new data
+                with open(path, 'a') as f:
+                    to_write = (",") + json.dumps(new_dict)
+                    f.write(to_write)
+
+            # Step 3: Add the closing bracket back
+            with open(path, 'a') as f:
+                f.write("]")  # Ensure the file always ends with ]
+        else:
+            with open(path, 'a') as f:
+                to_write = json.dumps(new_dict)
+                f.write("[\n" + to_write)
 
     def save_graph(self, epoch_num, current_graph, file_name):
         path = os.path.join(self.artifact_path, file_name)

@@ -251,8 +251,7 @@ class CustomSimNetwork:
                 if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                     simulation_data = self.execute_after_iteration(epoch, simulation_data)
                 else:
-                    to_send = None
-                    self.execute_after_iteration(epoch, to_send)
+                    self.execute_after_iteration(epoch, None)
 
             if self.early_stop:
                 # change epoch param and return it so it can be saved to simulation info

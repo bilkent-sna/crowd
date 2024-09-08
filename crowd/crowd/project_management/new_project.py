@@ -327,6 +327,7 @@ class NewProject:
             os.makedirs(parameters_dir)
 
         self.digress = fd.file_digress(simulation_dir)
+        # print("Artifact path:", self.digress.artifact_path)
         self.netw.digress = self.digress
         
         # Initialize empty dictionary in JSON files
@@ -351,8 +352,8 @@ class NewProject:
         early_stop, actual_epochs = self.netw.run(epochs, self.visualizers, snapshot_period, agility=1, digress=self.digress)
         end_time = datetime.now()
 
-        self.digress.save("]", os.path.join('parameters', 'status_delta.json'))
-        self.digress.save("]", os.path.join('parameters', 'count_node_types.json'))
+        # self.digress.save("]", os.path.join('parameters', 'status_delta.json'))
+        # self.digress.save("]", os.path.join('parameters', 'count_node_types.json'))
         
         if type(self.netw) == DiffusionNetwork: 
             simulation_params = {
