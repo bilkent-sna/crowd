@@ -268,8 +268,8 @@ def day_infected_is_4(network):
     # Total number of people who are infected at day 4 will be written to file
     return sum(is_day_4)
 
+# If there are no infected agents for two consecutive days, stop the simulation
 def early_stopping_check(network):
-    # If there are no infected agents for two consecutive days, stop the simulation
     # Define the path to the JSON file containing node type counts
     path = os.path.join(network.digress.artifact_path, 'parameters', 'count_node_types.json')
     
@@ -315,7 +315,7 @@ add_name_parameter(my_project.netw.G)
 my_model_path = "C:/Users/SERIF/Desktop/nese/dyn and soc netw/simulation tool/models/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
 CONTEXT_SIZE = 2048
 
-try:
+try:  
     mistral7b_model = Llama(model_path=my_model_path, n_ctx=CONTEXT_SIZE)
     print("Model loaded successfully.")
 except Exception as e:

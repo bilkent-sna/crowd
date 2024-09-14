@@ -332,8 +332,6 @@ class NewProject:
         
         # Initialize empty dictionary in JSON files
         self.digress.save("{}", 'graph.json')
-        self.digress.save("[", os.path.join('parameters', 'status_delta.json'))
-        self.digress.save("[", os.path.join('parameters', 'count_node_types.json'))
 
         # User gives the method a list of functions, which will be called every step of the simulation
         # These methods can be user-defined or predefined
