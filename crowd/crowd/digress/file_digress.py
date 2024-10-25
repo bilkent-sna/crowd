@@ -21,7 +21,7 @@ class file_digress(d.digress):
 
     def save_statusdelta(self, epoch_num, data_dict, file_name, available_status):
         new_dict = {}
-        if epoch_num:
+        if epoch_num is not None:
             new_dict = {"Iteration": epoch_num}
 
         if available_status:

@@ -232,7 +232,7 @@ class CustomSimNetwork:
                 self.curr_type_nums = self.count_node_types()
 
             if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
-                # print("Epoch:", epoch)
+                print("Epoch:", epoch)
                 if visualizers is not None:
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)

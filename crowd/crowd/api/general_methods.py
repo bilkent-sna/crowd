@@ -35,25 +35,45 @@ class GeneralMethods:
     """
         reads the current project directory and returns info about all simulations 
         {
-           UPDATE THESE
+            "date": "2024-08-22",
+            "name": "n-player-r-ut-1-2",
+            "simulation_duration": "0:00:23.896975",
+            "start_time": "2024-08-22 15:06:47.092203",
+            "end_time": "2024-08-22 15:07:10.989178",
+            "epoch_num": 5000,
+            "snapshot_period": 5000,
+            "states": ["I","T","U"]
         }
         for each simulation
     """
     def list_all_simulations(self, project_name):
         simulations = []
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
-       
+
         for dir_name in os.listdir(base_dir):
             try:
-                path = os.path.join(base_dir, dir_name, "1\simulation_info.json")
+                path = os.path.join(base_dir, dir_name, "1", "simulation_info.json")
                 with open(path, 'r') as f:
-                    simulations.append(json.load(f))
-            except: 
+                    sim_info = json.load(f)
+                    
+                # Count the number of sub-directories (child simulations) in this directory
+                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name)))
+
+                # Add the child_sim_count to the simulation info dictionary
+                sim_info['child_sim_count'] = child_sim_count
+
+                simulations.append(sim_info)
+
+            except Exception as e:
+                print(f"Error processing {dir_name}: {e}")
                 return "Cannot find simulation"
-            
-        # print(projects)        
-        return json.dumps(simulations)  
+
+        return json.dumps(simulations)
     
+    """
+        Lists the parent simulation file names and number of simulations within each
+        Returns dictionary of {simulation_name: count}
+    """
     def list_sim_and_count(self, project_name):
         simulations = {}
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
@@ -95,7 +115,7 @@ class GeneralMethods:
 
     """
         Given the project name and simulation directory name, 
-        returns the contents of the simulation_info file in JSON format
+        returns the contents of the first simulation's simulation_info file in JSON format
     """
     def load_simulation_info(self, project_name, simulation_directory):
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results'))
@@ -105,6 +125,28 @@ class GeneralMethods:
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
         except: 
+            return Exception("Cannot find simulation")
+        
+
+    """
+        Given the project name and simulation directory name, 
+        returns the contents of all child simulation's simulation_info file in JSON format
+    """
+    def get_subsimulations_info(self, project_name, simulation_directory):
+        simulations = {}
+        base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory))
+        child_sim_count = len(os.listdir(base_dir))
+        try:
+            for i in range(1, child_sim_count+1):
+                path = os.path.join(base_dir, str(i), "simulation_info.json")
+                # print(path)
+                with open(path, 'r') as f:
+                    simulations.update({i: json.load(f)})
+            
+            return json.dumps(simulations)
+        except Exception as e: 
+            # Print the exception details
+            print(f"Exception occurred: {e}")
             return "Cannot find simulation"
     
     """
@@ -227,7 +269,10 @@ class GeneralMethods:
             # Print the exception details
             print(f"Exception occurred: {e}")
             return json.dumps({'error': "Cannot find conf file"})
-        
+
+    """
+        Given the project name and file content, save the new content to project conf file
+    """    
     def save_conf(self, project_name, file_content):
         path = os.path.abspath(os.path.join(self.projects_dir, project_name, 'conf.yaml'))
         try:

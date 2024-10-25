@@ -1,7 +1,7 @@
 from crowd.project_management.new_project import NewProject
 
 # Step 1: Load project
-project_name = "test4"
+project_name = "test2"
 my_project = NewProject()
 my_project.load_project(project_name)
 

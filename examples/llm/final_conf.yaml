@@ -1,16 +1,11 @@
 definitions:
   pd-model:
     compartments:
-      c1:
-        treshold: 0.1
-        triggering_status: Infected
-        type: node-treshold
       c2:
         attribute: location
-        probability: 1
+        probability: 0.1
         type: node-categorical
         value: grid
-        composed: c1
       c3:
         type: count-down
         name: healing
@@ -41,7 +36,7 @@ definitions:
       categorical:
         location:
           - grid
-          - home
+          # - home
         agreeableness: "agreeableness_options.csv"
         conscientiousness: "conscientiousness_options.csv"
         surgency: "surgency_options.csv"

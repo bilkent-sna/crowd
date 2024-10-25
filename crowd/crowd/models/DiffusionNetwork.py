@@ -1,4 +1,6 @@
 import random
+import ast
+import time
 from crowd.networkcreator import NetworkCreator
 from .CustomSimNetwork import CustomSimNetwork
 import ndlib.models.ModelConfig as mc
@@ -6,6 +8,7 @@ from crowd.models import BaseDiffusion as bd
 import ndlib.models.compartments as cpm
 import networkx as nx
 from ndlib.models.compartments.enums.NumericalType import NumericalType
+from crowd.models.compartments.EdgeNumericalAttributeRandom import EdgeNumericalAttributeRandom
 
 class DiffusionNetwork(CustomSimNetwork):
 
@@ -80,45 +83,62 @@ class DiffusionNetwork(CustomSimNetwork):
         # Iteration data dictionary
         simulation_data = {}
 
-        for epoch in range(0, epochs): #for each epoch
+        for epoch in range(0, epochs):  # for each epoch
+            # Start timer for the entire iteration
+            # iteration_start_time = time.time()
 
-            #execute before iteration methods
+            # Execute before iteration methods
             if epoch != 0:
                 # execute before iteration methods, which are to prepare for this iteration
                 # and if any results returned, save them in simulation data dict
+                # before_iteration_start = time.time()
                 if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                     simulation_data = self.execute_before_iteration(epoch, simulation_data)
                 else:
                     self.execute_before_iteration(epoch, None)
+                # print(f"Before iteration time (epoch {epoch}): {time.time() - before_iteration_start:.2f} seconds")
 
-            #execute one iteration with ndlib
+            # Execute one iteration with ndlib
+            # iteration_exec_start = time.time()
             self.G, self.node_count, self.status_delta = self.ndlib_model.iteration(node_status=True)
+            # print(f"Iteration execution time (epoch {epoch}): {time.time() - iteration_exec_start:.2f} seconds")
 
-            if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
-                print("Epoch:", epoch)
+            if (epoch % snapshot_period) == 0 or (epoch == epochs - 1):
+                # print("Epoch:", epoch)
                 if visualizers is not None:
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
 
                 if digress is not None:
+                    # graph_save_start = time.time()
                     digress.save_graph(str(epoch), self.G, 'graph.json')
+                    # print(f"Graph file writing time (epoch {epoch}): {time.time() - graph_save_start:.2f} seconds")
+
+                    # count_node_types_save_start = time.time()
                     digress.save_statusdelta(epoch, self.node_count, 'count_node_types.json', self.ndlib_model.available_statuses)
+                    # print(f"Count node types file writing time (epoch {epoch}): {time.time() - count_node_types_save_start:.2f} seconds")
+
+                    # status_delta_save_start = time.time()
                     digress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
-                    
-            #save iteration data for parameters that user wants to track
+                    # print(f"Status delta file writing time (epoch {epoch}): {time.time() - status_delta_save_start:.2f} seconds")
+
+            # Save iteration data for parameters that user wants to track
             if epoch != 0:
                 # execute after iteration methods, which utilizes the new states of the agents
                 # if any results returned, save in simulation data dict
+                # after_iteration_start = time.time()
                 if (epoch % snapshot_period) == 0 or (epoch == epochs-1):
                     simulation_data = self.execute_after_iteration(epoch, simulation_data)
                 else:
                     self.execute_after_iteration(epoch, None)
-                
+                # print(f"After iteration time (epoch {epoch}): {time.time() - after_iteration_start:.2f} seconds")
+
             if self.early_stop:
                 actual_epochs = epoch
                 break
 
-            # print(self.status_delta)
+            # Print the total time for the iteration
+            # print(f"Total iteration time (epoch {epoch}): {time.time() - iteration_start_time:.2f} seconds")
 
         if visualizers is not None:
             for visualizer in visualizers:
@@ -126,10 +146,9 @@ class DiffusionNetwork(CustomSimNetwork):
 
         if digress is not None and len(simulation_data) != 0:
             digress.save_iteration_data(simulation_data)
-        
+            
         self.execute_after_simulation(digress)
         return self.early_stop, actual_epochs
-        
         #trends = self.ndlib_model.build_trends(iterations)
                 
     def add_node_parameters(self, pd_conf):
@@ -383,7 +402,6 @@ class DiffusionNetwork(CustomSimNetwork):
             #3. Edge Numerical
             elif(compartment_values["type"] == "edge-numerical"):
                 attribute = compartment_values["attribute"]
-                value = int(compartment_values["value"])
                 op = compartment_values["operator"]
                 if("probability" in compartment_values
                    and compartment_values["probability"] != ''):
@@ -398,7 +416,17 @@ class DiffusionNetwork(CustomSimNetwork):
                     triggering_status = compartment_values["triggering_status"]
                 else:
                     triggering_status = None
-                compartments[compartment_name] = cpm.EdgeNumericalAttribute(attribute=attribute, value=value, op=op, triggering_status = triggering_status, probability = probability, composed = composed)
+                # Check value and determine correct compartment type
+                value = str(compartment_values["value"])
+                comp_to_add = None
+                if value.startswith("random"):
+                    range = str.replace(value, "random", "").strip()
+                    range = ast.literal_eval(range)
+                    comp_to_add = EdgeNumericalAttributeRandom(attribute=attribute, range=range, op=op, triggering_status = triggering_status, probability = probability, composed = composed)
+                else:
+                    value = int(compartment_values["value"])
+                    comp_to_add = cpm.EdgeNumericalAttribute(attribute=attribute, value=value, op=op, triggering_status = triggering_status, probability = probability, composed = composed)
+                compartments[compartment_name] = comp_to_add
             #EDGE COMPARTMENTS COMPLETE
                 
             #TIME COMPARTMENTS
