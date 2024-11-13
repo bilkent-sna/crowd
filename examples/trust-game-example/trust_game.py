@@ -174,6 +174,6 @@ after_simulation = [r_UT, R_T_6]
 # print("Average degree of the graph: ", avg_degree)
 
 # my_project.run_lib_multiple_simulations(num_simulations=50, epochs=5000, snapshot_period=5000, before_iteration_methods=before_iteration, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
-my_project.run_lib_multiple_simulations(num_simulations=50, epochs=5000, snapshot_period=5000, before_iteration_methods=before_iteration, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
+my_project.run_lib_multiple_simulations(num_simulations=50, epochs=5000, snapshot_period=4999, before_iteration_methods=before_iteration, every_iteration_agent=every_iteration_agent, after_iteration_methods=after_iteration, after_simulation_methods=after_simulation)
 
 

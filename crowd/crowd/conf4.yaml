@@ -112,3 +112,5 @@ fields:
             required: false
   statfunctions:
     required: false
+  model-exploration:
+    required: false

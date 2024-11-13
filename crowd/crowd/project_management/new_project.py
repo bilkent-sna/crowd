@@ -2,18 +2,18 @@ from collections import defaultdict
 import importlib
 import os
 import json
-from crowd.models.CustomSimNetwork import CustomSimNetwork
-from crowd.models.EdgeSimNetwork import EdgeSimNetwork
 import yaml
 from datetime import datetime
-import shutil
 import networkx as nx
+from itertools import product
 
 from crowd.visualization import visualizer as v
 from crowd.visualization import basic as bv
 
 from crowd.confchecker import ConfChecker
 from crowd.network import Network
+from crowd.models.CustomSimNetwork import CustomSimNetwork
+from crowd.models.EdgeSimNetwork import EdgeSimNetwork
 from crowd.models.DiffusionNetwork import DiffusionNetwork
 from crowd.digress import file_digress as fd
 
@@ -307,7 +307,7 @@ class NewProject:
         start_time = datetime.now()
 
         if self.parent_simulation_dir is None:
-            parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
+            parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M-%S-%f')[:-3]}")
         else:
             parent_simulation_dir = self.parent_simulation_dir
 
@@ -315,6 +315,11 @@ class NewProject:
             # Create the parent directory
             if not os.path.exists(parent_simulation_dir):
                 os.makedirs(parent_simulation_dir)
+
+            # Save the current configuration as conf.yaml
+            conf_file_path = os.path.join(parent_simulation_dir, "conf.yaml")
+            with open(conf_file_path, 'w') as conf_file:
+                yaml.dump(self.conf, conf_file)
         
         # Create the directory for this simulation
         simulation_dir = os.path.join(parent_simulation_dir, str(curr_batch))
@@ -365,6 +370,7 @@ class NewProject:
                 "actual_epochs": actual_epochs,
                 "snapshot_period": snapshot_period,
                 "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
+                "simulation_no": str(curr_batch),
                 # "watch_methods": watch_methods_save
                 # Include other simulation params
             }
@@ -379,11 +385,18 @@ class NewProject:
                 "early_stop": early_stop,
                 "actual_epochs": actual_epochs,
                 "snapshot_period": snapshot_period,
-                "states": list(self.conf["definitions"]["nodetypes"].keys())
+                "states": list(self.conf["definitions"]["nodetypes"].keys()),
+                "simulation_no": str(curr_batch),
             }
 
         # Save simulation results to a JSON file
         sim_info_file = os.path.join(simulation_dir, "simulation_info.json")
+        # Read existing simulation info if file exists
+        if os.path.exists(sim_info_file):
+            with open(sim_info_file, "r") as f:
+                simulation_info = json.load(f)
+                simulation_params.update(simulation_info) #add the new settings    
+            
         with open(sim_info_file, 'w') as f:
             json.dump(simulation_params, f, indent=4)
     
@@ -413,30 +426,131 @@ class NewProject:
                                      every_iteration_agent = None,
                                      after_simulation_methods = None):
         
-        start_time = datetime.now()
-        self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M')}")
-
-        for curr_batch in range(1, num_simulations + 1):
-            self.lib_run_simulation(epochs, 
-                                    snapshot_period, 
-                                    curr_batch, 
+        # Check for model exploration
+        if "model-exploration" in self.conf:
+            # Run parameter exploration
+            self.explore_parameters(num_simulations, 
+                                    epochs, 
+                                    snapshot_period,
                                     before_iteration_methods, 
-                                    after_iteration_methods,
+                                    after_iteration_methods, 
                                     every_iteration_agent,
                                     after_simulation_methods)
-            # Reset the network object
-            if curr_batch == num_simulations:
-                continue
-            # else, we do the reset
-            if type(self.netw) == DiffusionNetwork:
-                self.netw = DiffusionNetwork(self.conf, self.project_dir)
-            elif type(self.netw) == CustomSimNetwork:
-                self.netw = CustomSimNetwork(self.conf, self.project_dir)
-            elif type(self.netw) == EdgeSimNetwork:
-                self.netw = EdgeSimNetwork(self.conf, self.project_dir)
+        else:
+            # Regular batch running
+            start_time = datetime.now()
+            self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M-%S-%f')[:-3]}")
+
+            for curr_batch in range(1, num_simulations + 1):
+                self.lib_run_simulation(epochs, 
+                                        snapshot_period, 
+                                        curr_batch, 
+                                        before_iteration_methods, 
+                                        after_iteration_methods,
+                                        every_iteration_agent,
+                                        after_simulation_methods)
+
+                # Reset the network for the next run
+                if curr_batch != num_simulations:
+                    self.reset_network()
+
+    def explore_parameters(self, 
+                           num_simulations, 
+                           epochs, 
+                           snapshot_period, 
+                           before_iteration_methods, 
+                           after_iteration_methods, 
+                           every_iteration_agent, 
+                           after_simulation_methods):
+
+        # Get parameters to explore from the configuration
+        # If "model-exploration" is not in conf, return empty dict
+        sweep_config = self.conf.get("model-exploration", {})
+    
+        # Get parameter's path and values to explore from conf's model exploration section
+        paths = [param["path"] for param in sweep_config.values()]
+        values = [param["values"] for param in sweep_config.values()]
+        
+        # Generate combinations
+        combinations = list(product(*values))
+        
+        # Update self.conf with current parameter values
+        for comb_index, combination in enumerate(combinations):
+            for i, path in enumerate(paths):
+                self.set_conf_in_sweep(path, combination[i])
+
+            # Create a parent directory for this parameter combination
+            start_time = datetime.now()
+            self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M-%S-%f')[:-3]}")
+            if not os.path.exists(self.parent_simulation_dir):
+                os.makedirs(self.parent_simulation_dir)
+
+            # Run num_simulations times for each parameter set
+            for curr_batch in range(1, num_simulations + 1):
+
+                # Create the directory for this simulation
+                simulation_dir = os.path.join(self.parent_simulation_dir, str(curr_batch))
+                if not os.path.exists(simulation_dir):
+                    os.makedirs(simulation_dir)
+
+                # Save the parameter set info in this simulation's directory
+                simulation_info = {
+                    "param_set_index": comb_index + 1,
+                    "parameters": {paths[i]: combination[i] for i in range(len(paths))}
+                }
+
+                sim_info_path = os.path.join(simulation_dir, "simulation_info.json")
+                with open(sim_info_path, "w") as f:
+                    json.dump(simulation_info, f, indent=4)
+                
+                # Run a simulation with these settings
+                self.lib_run_simulation(epochs, 
+                                        snapshot_period, 
+                                        curr_batch,
+                                        before_iteration_methods, 
+                                        after_iteration_methods,
+                                        every_iteration_agent,
+                                        after_simulation_methods)
+                
+                # Reset the network after each run
+                if curr_batch != num_simulations:
+                    self.reset_network()
+
+    # Set currently explored parameter's value with current combination
+    def set_conf_in_sweep(self, path, value):
+        """
+            In the file, we get a path from the user to access the right parameter. 
+            This prevents changing another parameter with the same name. 
+            Example format to write the path in the conf file (dot-seperated path definition):
+                path: definitions.pd-model.compartments.c1.ratio
+            In this method, we access the parameter in the given location, then change its value.
+        """
+        keys_in_path = path.split(".")
+        sub_dict = self.conf # Initially, we set sub dict as conf, then we iterate 
+
+        # Iteratively get to the final sub_dict, exclude the parameter's name, given as the last key (ex:ratio)
+        for key in keys_in_path[:-1]:
+            if key in sub_dict:
+                sub_dict = sub_dict[key]
             else:
-                self.netw = Network(self.conf, self.project_dir)
-            
+                print("Key ", key, " is not in the given path")
+                Exception("Conf key does not exist")
+        
+        # We reached the last sub dict, now we set the value with the key
+        sub_dict[keys_in_path[-1]] = value
+
+
+    # Resets the network object based on its type
+    def reset_network(self):
+        if type(self.netw) == DiffusionNetwork:
+            self.netw = DiffusionNetwork(self.conf, self.project_dir)
+        elif type(self.netw) == CustomSimNetwork:
+            self.netw = CustomSimNetwork(self.conf, self.project_dir)
+        elif type(self.netw) == EdgeSimNetwork:
+            self.netw = EdgeSimNetwork(self.conf, self.project_dir)
+        else:
+            self.netw = Network(self.conf, self.project_dir)
+
 
     # Saves the information passed by UI for project initialization
     def save_basic_info(self, name, date, info, nodeOrEdge):
@@ -681,9 +795,4 @@ class NewProject:
             json.dump(merged_data_list, output_file, indent=4)
 
 
-# pr = NewProject()
-# pr.load_project("customsimulation")
-# pr.change_network_type(False) #change network type to edge
-# pr.run_edge_simulation(2, 1)
-# print("Simulation completed")
 

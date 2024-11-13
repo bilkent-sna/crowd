@@ -31,7 +31,7 @@ class DiffusionNetwork(CustomSimNetwork):
             node_types = pd_conf["nodetypes"] #this is a dictionary
 
             #DEBUG: Print the configurations to verify their structure
-            print("Initial configuration:", pd_conf)
+            # print("Initial configuration:", pd_conf)
             
             self.add_node_parameters(pd_conf)
 
@@ -44,15 +44,15 @@ class DiffusionNetwork(CustomSimNetwork):
             for item in node_types.keys():
                 self.ndlib_model.add_status(item)
 
-            print("Available Status For Custom Diffusion")
-            print(self.ndlib_model.available_statuses)
+            # print("Available Status For Custom Diffusion")
+            # print(self.ndlib_model.available_statuses)
 
             #create compartments dictionary
             compartments = self.add_compartments(pd_conf)
                     
             #create rules and add them to model
             for rule in pd_conf["rules"].values():
-                print("Processing rule", rule[0])
+                # print("Processing rule", rule[0])
                 self.ndlib_model.add_rule(rule[0], rule[1], compartments[rule[2]])          
 
     
@@ -62,7 +62,7 @@ class DiffusionNetwork(CustomSimNetwork):
             #Setting model parameters if given
             if("model-parameters" in pd_conf):
                 for parameter, value in pd_conf["model-parameters"].items():
-                    print(parameter, value)
+                    # print(parameter, value)
                     self.ndlib_config.add_model_parameter(parameter, value)
 
             #initialize the watch methods to None
@@ -185,9 +185,9 @@ class DiffusionNetwork(CustomSimNetwork):
                             #ndlib does not provide a method for this so we can add
                             #to conf file if user has any requirements
                             if type(param_values) == str:
-                                    print("Param values before read_options:", param_values)
+                                    # print("Param values before read_options:", param_values)
                                     param_values = self.read_options_file(param_values)
-                                    print("Param values after setting as a list:", param_values)
+                                    # print("Param values after setting as a list:", param_values)
                             
                             attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                             nx.set_node_attributes(self.G, attr)
@@ -195,9 +195,9 @@ class DiffusionNetwork(CustomSimNetwork):
                         for item in params:
                             for param_name, param_values in item.items():
                                 if type(param_values) == str:
-                                    print("Param values before read_options:", param_values)
+                                    # print("Param values before read_options:", param_values)
                                     param_values = self.read_options_file(param_values)
-                                    print("Param values after setting as a list:", param_values)
+                                    # print("Param values after setting as a list:", param_values)
                             
                                 attr = {n: {param_name: random.choice(param_values)} for n in self.G.nodes()}
                                 nx.set_node_attributes(self.G, attr)
@@ -263,7 +263,7 @@ class DiffusionNetwork(CustomSimNetwork):
         for compartment_name, compartment_values in pd_conf["compartments"].items():
             
              #DEBUG: Print compartment details
-            print("Processing compartment:", compartment_name, compartment_values)
+            # print("Processing compartment:", compartment_name, compartment_values)
             
             #for all type of compartments, except ConditionalComposition,
             #check if there is cascading composition

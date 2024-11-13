@@ -44,11 +44,13 @@ class File(Structure):
                 # Read the network file
                 header = 0 if self.structure["header"] else 1
 
-                if file_extension == ".csv":
+                if file_extension == ".csv" or file_extension == '.txt':
                     #df = pd.read_csv(self.structure['path'], sep='\t', header=header)
-                    df = pd.read_csv(self.structure['path'], sep=',', header=header)
-                    # print("The dataframe:", df.head())
-
+                    if file_extension == ".csv":
+                        df = pd.read_csv(self.structure['path'], sep=',', header=header)
+                        # print("The dataframe:", df.head())
+                    else: 
+                        df = pd.read_csv(self.structure['path'], sep=' ', header=header)
                     #self.G = nx.read_edgelist(self.structure['path'], create_using = nx.Graph(), nodetype=int) 
                     if(header == 0):
                         headers = df.columns.tolist()
