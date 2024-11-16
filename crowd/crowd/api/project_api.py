@@ -342,15 +342,17 @@ class ProjectFunctions:
             print("Generate type:", generate_type)
             item_to_add = {
                 "structure": {
-                    generate_type: {
+                    "random": {
                         "degree": data_dict["dataSource"]["structure"]["fileOrRandom"]["degree"],
-                        "count": data_dict["dataSource"]["structure"]["fileOrRandom"]["count"]
+                        "count": data_dict["dataSource"]["structure"]["fileOrRandom"]["count"],
+                        "type": generate_type
                     }
                 }
             }
 
          # Directly set the structure key at the top level
         conf["structure"] = item_to_add["structure"]
+        conf["model-exploration"] = data_dict["model-exploration"]
 
         print('CONF BEFORE ADDING DEFINITIONS: PLS WORK --->', conf)
 

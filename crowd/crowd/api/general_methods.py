@@ -57,7 +57,7 @@ class GeneralMethods:
                     sim_info = json.load(f)
                     
                 # Count the number of sub-directories (child simulations) in this directory
-                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name)))
+                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name))) - 1 # minus one for conf file
 
                 # Add the child_sim_count to the simulation info dictionary
                 sim_info['child_sim_count'] = child_sim_count
@@ -80,7 +80,7 @@ class GeneralMethods:
        
         for dir_name in os.listdir(base_dir):
             try:
-                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name)))
+                child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name))) - 1 # minus one for conf
                 simulations.update({dir_name: child_sim_count})
             except: 
                 return "Cannot find simulation"
@@ -135,7 +135,7 @@ class GeneralMethods:
     def get_subsimulations_info(self, project_name, simulation_directory):
         simulations = {}
         base_dir = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory))
-        child_sim_count = len(os.listdir(base_dir))
+        child_sim_count = len(os.listdir(base_dir)) - 1 # minus one for conf.yaml
         try:
             for i in range(1, child_sim_count+1):
                 path = os.path.join(base_dir, str(i), "simulation_info.json")

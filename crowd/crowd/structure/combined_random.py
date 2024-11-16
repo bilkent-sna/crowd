@@ -14,13 +14,13 @@ class CombinedRandom(Structure):
     # REWRITE NEEDED
     def get_degree_count(self):
         try:
-            return self.conf["structure"]["random"]["degree"]
+            return int(self.conf["structure"]["random"]["degree"])
         except Exception as ex:
             return 4
             
     def create(self):
         print("Creating random structure")
-        count = self.conf["structure"]["random"]["count"]
+        count = int(self.conf["structure"]["random"]["count"])
         print("Count at random.create: ", count)
         print("conf at random", self.conf)
 
@@ -31,30 +31,30 @@ class CombinedRandom(Structure):
             
             if graph_type == 'random-regular':
                 print("Creating random regular graph")
-                degree = self.conf["structure"]["random"]["degree"]
+                degree = int(self.conf["structure"]["random"]["degree"])
                 self.G = nx.random_regular_graph(degree, count, seed=None)
             elif graph_type == 'erdos-renyi':
-                prob = self.conf["structure"]["random"]["p"] # probability for edge creation
+                prob = float(self.conf["structure"]["random"]["p"]) # probability for edge creation
                 self.G = nx.erdos_renyi_graph(count, prob, seed = None)
             elif graph_type == 'barabasi-albert':
-                m = self.conf["structure"]["random"]["m"] # number of edges to attach from a new node to existing nodes
+                m = int(self.conf["structure"]["random"]["m"]) # number of edges to attach from a new node to existing nodes
                 self.G = nx.barabasi_albert_graph(count, m, seed = None, initial_graph=None)
             elif graph_type == 'watts-strogatz':
-                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
-                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
+                k = int(self.conf["structure"]["random"]["k"]) # each node is joined with its k nearest neighbors in a ring topology
+                prob = float(self.conf["structure"]["random"]["p"]) # probability of rewiring each edge
                 self.G = nx.watts_strogatz_graph(count, k, prob, seed = None)
             elif graph_type == 'connected-watts-strogatz':
-                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
-                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
-                tries = self.conf["structure"]["random"]["tries"] # number of attempts to generate a connected graph
+                k = int(self.conf["structure"]["random"]["k"]) # each node is joined with its k nearest neighbors in a ring topology
+                prob = float(self.conf["structure"]["random"]["p"]) # probability of rewiring each edge
+                tries = int(self.conf["structure"]["random"]["tries"]) # number of attempts to generate a connected graph
                 self.G = nx.connected_watts_strogatz_graph(count, k, prob, tries, seed = None)
             elif graph_type == 'newman_watts_strogatz':
-                k = self.conf["structure"]["random"]["k"] # each node is joined with its k nearest neighbors in a ring topology
-                prob = self.conf["structure"]["random"]["p"] # probability of rewiring each edge
+                k = int(self.conf["structure"]["random"]["k"]) # each node is joined with its k nearest neighbors in a ring topology
+                prob = float(self.conf["structure"]["random"]["p"]) # probability of rewiring each edge
                 self.G = nx.newman_watts_strogatz_graph(count, k, prob, seed = None)
             elif graph_type == 'powerlaw-cluster-graph':
-                m = self.conf["structure"]["random"]["m"] # the number of random edges to add for each new node
-                prob = self.conf["structure"]["random"]["p"] # probability of adding a triangle after adding a random edge
+                m = int(self.conf["structure"]["random"]["m"]) # the number of random edges to add for each new node
+                prob = float(self.conf["structure"]["random"]["p"]) # probability of adding a triangle after adding a random edge
                 self.G = nx.powerlaw_cluster_graph(count, m, prob, seed = None)
 
 
