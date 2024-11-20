@@ -143,17 +143,17 @@ class NewProject:
                     "nodetypes": {
                         "Susceptible": {
                             "random-with-weight": {
-                                "inital-weight": 0.9
+                                "initial-weight": 0.9
                             }
                         },
                         "Infected": {
                             "random-with-weight": {
-                                "inital-weight": 0.1
+                                "initial-weight": 0.1
                             }
                         },
                         "Recovered": {
                             "random-with-weight": {
-                                "inital-weight": 0
+                                "initial-weight": 0
                             }
                         }
                     },
@@ -375,7 +375,7 @@ class NewProject:
                 "snapshot_period": snapshot_period,
                 "states": list(self.conf["definitions"]["pd-model"]["nodetypes"].keys()),
                 "simulation_no": str(curr_batch),
-                "directory_name":  os.path.basename(self.parent_simulation_dir)
+                "directory_name":  os.path.basename(parent_simulation_dir)
                 # "watch_methods": watch_methods_save
                 # Include other simulation params
             }
@@ -392,7 +392,7 @@ class NewProject:
                 "snapshot_period": snapshot_period,
                 "states": list(self.conf["definitions"]["nodetypes"].keys()),
                 "simulation_no": str(curr_batch),
-                "directory_name":   os.path.basename(self.parent_simulation_dir)
+                "directory_name":   os.path.basename(parent_simulation_dir)
             }
 
         # Save simulation results to a JSON file
