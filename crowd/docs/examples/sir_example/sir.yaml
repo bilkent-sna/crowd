@@ -1,0 +1,42 @@
+name: SIR-example
+structure:
+  random:
+    count: 100
+    degree: 4
+    type: random-regular
+definitions:
+  pd-model:
+    compartments:
+      c1:
+        ratio: 0.1
+        triggering_status: Infected
+        type: node-stochastic
+      c2:
+        iteration-count: 4
+        name: healing
+        type: count-down
+    name: diffusion
+    node-parameters:
+      numerical:
+        age:
+          - 0
+          - 100
+    nodetypes:
+      Infected:
+        random-with-weight:
+          initial-weight: 0.1
+      Recovered:
+        random-with-weight:
+          initial-weight: 0
+      Susceptible:
+        random-with-weight:
+          initial-weight: 0.9
+    rules:
+      r1:
+        - Susceptible
+        - Infected
+        - c1
+      r2:
+        - Infected
+        - Recovered
+        - c2
