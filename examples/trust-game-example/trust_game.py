@@ -1,6 +1,6 @@
 # Agent level methods
 import random
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 import os
 import networkx as nx
 
@@ -147,7 +147,7 @@ def set_network_params(network, my_project):
 
 project_name = "firstcustom"
 
-my_project = NewProject()
+my_project = Project()
 # creation_date = "11/08/2024"
 # info = "First test of CustomSimNetwork"
 

@@ -1,4 +1,4 @@
-class digress:
+class egress:
     def __init__(self, artifact_path):
         self.artifact_path = artifact_path
     

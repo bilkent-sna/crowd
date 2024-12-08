@@ -6,12 +6,12 @@ import sys
 import csv
 import pandas as pd
 from crowd import node as n
-from .visualization import visualizer as v
-from .visualization import basic as bv
+from ..visualization import visualizer as v
+from ..visualization import basic as bv
 
-from crowd.confchecker import ConfChecker
-from crowd.networkcreator import NetworkCreator
-from crowd.digress import file_digress as fd
+from crowd.models.network_creator.confchecker import ConfChecker
+from crowd.models.network_creator.networkcreator import NetworkCreator
+from crowd.egress import file_egress as fd
 
 class Network:
     
@@ -80,7 +80,7 @@ class Network:
             visualizers=None, #  
             snapshot_period=100, # no of epochs the snapshot will be taken
             agility=1, # ratio of active nodes in the epoch, 1 means all nodes, 0 means single node
-            digress=None
+            egress=None
             ):
         print(self.conf)
         count = self.conf["info"]["total_count"]
@@ -104,9 +104,9 @@ class Network:
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
 
-                if digress is not None:
+                if egress is not None:
                     #":" changed to "-" since windows does not allow : in file names
-                    digress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
+                    egress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
 
                 #for node, data in self.G.nodes.data():
                 #    print(node, type(data["node"]))

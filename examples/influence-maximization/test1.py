@@ -1,8 +1,8 @@
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 
 # Step 1: Load project
 project_name = "influencemax"
-my_project = NewProject()
+my_project = Project()
 my_project.load_project(project_name)
 
 # Step 2: Set the edge parameter using in degree of nodes

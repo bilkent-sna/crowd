@@ -1,9 +1,9 @@
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 
 
 project_name = "nodeparamstest"
 
-my_project = NewProject()
+my_project = Project()
 my_project.load_project(project_name)
 
 my_project.lib_run_simulation(3, 1, 1, [], [], [], [])

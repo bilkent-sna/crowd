@@ -1,4 +1,4 @@
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 import os
 
 from llama_cpp import Llama
@@ -165,14 +165,14 @@ def save_current_agent_response(curr_node, question_prompt, output, reasoning, r
         }
     }
     print("Inside save2")
-    if my_project.digress is not None:
+    if my_project.egress is not None:
         print("Inside save not none")
         try:
-            my_project.digress.save_iteration_data(simulation_data)
+            my_project.egress.save_iteration_data(simulation_data)
         except Exception as e:
             print("Error occured", e.with_traceback)
     else:
-        print("Digress is none, can't save current agent response.")
+        print("egress is none, can't save current agent response.")
 
 
 def get_completion_from_messages(model, user_prompt, max_tokens=200, temperature=0.1, top_p=0.5, echo=False):
@@ -220,7 +220,7 @@ def day_infected_is_4(network):
 # 1. PROJECT CREATION
 project_name = "llm1"
 
-my_project = NewProject()
+my_project = Project()
 # creation_date = "14/07/2024"
 # info = "LLM model as a use case"
 

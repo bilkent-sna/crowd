@@ -1,9 +1,9 @@
 import json
-from . import digress as d
+from . import egress as e
 import networkx as nx
 import os
 
-class file_digress(d.digress):
+class file_egress(e.egress):
     
     def save(self, input, file_name, append=True):
         # save

@@ -1,14 +1,14 @@
 import networkx as nx
 import importlib
 import random
-from .preprocessing import preprocessor as p
-from .preprocessing import communitydetection as com
-from .structure.file import File
-from .structure.random import Random
-from .structure.barabasi_albert import BarabasiAlbert
-from .structure.watts_strogatz import WattsStrogatz
-from .structure.combined_random import CombinedRandom
-from .structure.from_library import FromLibrary
+from ...preprocessing import preprocessor as p
+from ...preprocessing import communitydetection as com
+from ...structure.file import File
+from ...structure.random_generator import Random
+from ...structure.barabasi_albert import BarabasiAlbert
+from ...structure.watts_strogatz import WattsStrogatz
+from ...structure.combined_random import CombinedRandom
+from ...structure.from_library import FromLibrary
 
 
 class NetworkCreator:

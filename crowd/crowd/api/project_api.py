@@ -1,7 +1,7 @@
 import os
 import json
 from crowd.models.EdgeSimNetwork import EdgeSimNetwork
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 
 
 class ProjectFunctions:
@@ -15,7 +15,7 @@ class ProjectFunctions:
         """
         
         # Initialize the project object
-        new_project = NewProject()
+        new_project = Project()
 
         # Create a new project with the given parameters
         # A directory will be created for this object with the most basic files
@@ -33,7 +33,7 @@ class ProjectFunctions:
             print(f"Received data successfully")
            
             # Initialize the project object
-            new_project = NewProject()
+            new_project = Project()
 
             print("Before loading project")
             new_project.load_project(project_name)
@@ -66,7 +66,7 @@ class ProjectFunctions:
             print(f"Received data successfully")
            
             # Initialize the project object
-            new_project = NewProject()
+            new_project = Project()
 
             print("Before loading project")
             new_project.load_project(project_name)
@@ -99,7 +99,7 @@ class ProjectFunctions:
     def init_and_run_simulation(self, project_name, epochs, snapshot_period, num_simulations):
         try:
             # Initialize the project object
-            new_project = NewProject()
+            new_project = Project()
 
             print("Before loading project")
             new_project.load_project(project_name)
@@ -120,7 +120,7 @@ class ProjectFunctions:
     def edge_sim_run(self, project_name, epochs, snapshot_period):
         try:
             # Initialize the project object
-            new_project = NewProject()
+            new_project = Project()
 
             print("Before loading project")
             new_project.load_project(project_name)

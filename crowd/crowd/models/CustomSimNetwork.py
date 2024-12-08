@@ -203,7 +203,7 @@ class CustomSimNetwork:
             visualizers=None, #  
             snapshot_period=100, # no of epochs the snapshot will be taken
             agility=1, # ratio of active nodes in the epoch, 1 means all nodes, 0 means single node
-            digress=None
+            egress=None
             ):
         
         # Iteration data dictionary
@@ -236,14 +236,14 @@ class CustomSimNetwork:
                 if visualizers is not None:
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
-                if digress is not None:
-                    digress.save_graph(str(epoch), self.G, 'graph.json')
+                if egress is not None:
+                    egress.save_graph(str(epoch), self.G, 'graph.json')
 
                 #Add code here to store status delta to file
                 # Available status is sent as None, because we have the nodetypes stored as it is given,
                 # not 0, 1, 2... like NDLib uses. So, no need to convert in the save_statusdelta function.
-                digress.save_statusdelta(epoch, self.status_delta(), 'status_delta.json', None)
-                digress.save_statusdelta(epoch, self.curr_type_nums, 'count_node_types.json', None)
+                egress.save_statusdelta(epoch, self.status_delta(), 'status_delta.json', None)
+                egress.save_statusdelta(epoch, self.curr_type_nums, 'count_node_types.json', None)
             
             if epoch != 0:
                 # execute after iteration methods, which utilizes the new states of the agents
@@ -265,10 +265,10 @@ class CustomSimNetwork:
             for visualizer in visualizers:
                 visualizer.animate()
 
-        if digress is not None and len(simulation_data) != 0:
-            digress.save_iteration_data(simulation_data)
+        if egress is not None and len(simulation_data) != 0:
+            egress.save_iteration_data(simulation_data)
         
-        self.execute_after_simulation(digress)
+        self.execute_after_simulation(egress)
 
         return self.early_stop, actual_epochs
 
@@ -335,10 +335,10 @@ class CustomSimNetwork:
     def execute_after_iteration(self, epoch, simulation_data):
         return self.execute_methods(epoch, self.after_iteration_methods, simulation_data)
 
-    def execute_after_simulation(self, digress):
+    def execute_after_simulation(self, egress):
         data = {}
 
         self.execute_methods(epoch = None, method_list=self.after_simulation_methods, data_dict=data, agent_id=None)
-        digress.save(json.dumps(data), 'parameters/after_simulation.json')
+        egress.save(json.dumps(data), 'parameters/after_simulation.json')
 
     

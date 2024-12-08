@@ -1,4 +1,4 @@
-from crowd import network as n
+from crowd.models import network as n
 from crowd.visualization import basic as bv
 
 mysimplenetwork = n.Network("simple.yaml")

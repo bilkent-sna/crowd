@@ -75,7 +75,7 @@ class DiffusionNetwork(CustomSimNetwork):
             # user can write a method to early stop the simulation by changing this parameter
             self.early_stop = False
 
-    def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, digress=None):  
+    def run(self, epochs, visualizers=None, snapshot_period=100, agility=1, egress=None):  
         # Simulation execution
         self.ndlib_model.set_initial_status(self.ndlib_config)
         actual_epochs = epochs
@@ -109,17 +109,17 @@ class DiffusionNetwork(CustomSimNetwork):
                     for visualizer in visualizers:
                         visualizer.draw(self, epoch)
 
-                if digress is not None:
+                if egress is not None:
                     # graph_save_start = time.time()
-                    digress.save_graph(str(epoch), self.G, 'graph.json')
+                    egress.save_graph(str(epoch), self.G, 'graph.json')
                     # print(f"Graph file writing time (epoch {epoch}): {time.time() - graph_save_start:.2f} seconds")
 
                     # count_node_types_save_start = time.time()
-                    digress.save_statusdelta(epoch, self.node_count, 'count_node_types.json', self.ndlib_model.available_statuses)
+                    egress.save_statusdelta(epoch, self.node_count, 'count_node_types.json', self.ndlib_model.available_statuses)
                     # print(f"Count node types file writing time (epoch {epoch}): {time.time() - count_node_types_save_start:.2f} seconds")
 
                     # status_delta_save_start = time.time()
-                    digress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
+                    egress.save_statusdelta(epoch, self.status_delta, 'status_delta.json', self.ndlib_model.available_statuses)
                     # print(f"Status delta file writing time (epoch {epoch}): {time.time() - status_delta_save_start:.2f} seconds")
 
             # Save iteration data for parameters that user wants to track
@@ -144,10 +144,10 @@ class DiffusionNetwork(CustomSimNetwork):
             for visualizer in visualizers:
                 visualizer.animate()
 
-        if digress is not None and len(simulation_data) != 0:
-            digress.save_iteration_data(simulation_data)
+        if egress is not None and len(simulation_data) != 0:
+            egress.save_iteration_data(simulation_data)
             
-        self.execute_after_simulation(digress)
+        self.execute_after_simulation(egress)
         return self.early_stop, actual_epochs
         #trends = self.ndlib_model.build_trends(iterations)
                 

@@ -1,11 +1,11 @@
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 
 # 1. Project creation
 project_name = "simplediffusion"
 creation_date = "19/10/2024"
 info = "Diffusion of a virus on a random network"
 
-my_project = NewProject()
+my_project = Project()
 #my_project.create_project(project_name, creation_date, info, "node")
 
 # OR load previous project 

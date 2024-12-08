@@ -1,7 +1,7 @@
 import json
 import os
 import random
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 import time
 from names_dataset import NameDataset
 import networkx as nx
@@ -216,14 +216,14 @@ def save_current_agent_response(curr_node, question_prompt, output, reasoning, r
         "Response": response
     }
     # print("Inside save2")
-    if my_project.digress is not None:
+    if my_project.egress is not None:
         # print("Inside save not none")
         try:
-            my_project.digress.save_statusdelta(None, simulation_data, 'individual_agents_response.json', None)
+            my_project.egress.save_statusdelta(None, simulation_data, 'individual_agents_response.json', None)
         except Exception as e:
             print("Error occured", e.with_traceback)
     else:
-        print("Digress is none, can't save current agent response.")
+        print("egress is none, can't save current agent response.")
 
 
 def get_completion_from_messages(model, user_prompt, max_tokens=200, temperature=0.1, top_p=0.5, echo=False):
@@ -271,7 +271,7 @@ def day_infected_is_4(network):
 # If there are no infected agents for two consecutive days, stop the simulation
 def early_stopping_check(network):
     # Define the path to the JSON file containing node type counts
-    path = os.path.join(network.digress.artifact_path, 'parameters', 'count_node_types.json')
+    path = os.path.join(network.egress.artifact_path, 'parameters', 'count_node_types.json')
     
     # Read the JSON data
     with open(path, 'r') as file:
@@ -298,7 +298,7 @@ def early_stopping_check(network):
 # 1. PROJECT CREATION
 project_name = "llm2"
 
-my_project = NewProject()
+my_project = Project()
 creation_date = "07/09/2024"
 info = "GABM use case 2nd test"
 

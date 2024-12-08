@@ -1,6 +1,9 @@
 import networkx as nx
+import igraph as ig
 import importlib
 import random
+
+import pandas as pd
 from .structure import Structure
 from ..preprocessing import communitydetection as com
 import math
@@ -19,10 +22,17 @@ class CombinedRandom(Structure):
             return 4
             
     def create(self):
-        print("Creating random structure")
-        count = int(self.conf["structure"]["random"]["count"])
-        print("Count at random.create: ", count)
-        print("conf at random", self.conf)
+        # print("Creating random structure")
+
+        if "count" in self.conf["structure"]["random"]:
+            count = int(self.conf["structure"]["random"]["count"])
+        else:
+            # not all models require node count, so we set it to 0 initially
+            # then update after generating the network.
+            count = 0  
+
+        # print("Count at random.create: ", count)
+        # print("conf at random", self.conf)
 
         graph_type = self.conf["structure"]["random"]["type"]
 
@@ -56,6 +66,81 @@ class CombinedRandom(Structure):
                 m = int(self.conf["structure"]["random"]["m"]) # the number of random edges to add for each new node
                 prob = float(self.conf["structure"]["random"]["p"]) # probability of adding a triangle after adding a random edge
                 self.G = nx.powerlaw_cluster_graph(count, m, prob, seed = None)
+            elif graph_type == 'forest-fire':
+                fw_prob = float(self.conf["structure"]["random"]["fw-prob"]) # forward burning probability
+                bw_fact = float(self.conf["structure"]["random"]["bw-factor"]) # backward burning ratio
+                forest_fire_graph = ig.Graph.Forest_Fire(fw_prob = fw_prob, bw_factor = bw_fact, n = count, directed = False)
+                self.G = forest_fire_graph.to_networkx()
+            elif graph_type == 'stochastic-block': # Also exists in networkX, but we chose igraph as it is faster
+                matrix = self.conf["structure"]["random"]["p-matrix"]
+                blocks = self.conf["structure"]["random"]["block-sizes"]
+                if "include-loops" in self.conf["structure"]["random"]:
+                    include_loops = bool(self.conf["structure"]["random"]["include-loops"])
+                else:
+                    include_loops = False
+                stochastic_block_graph = ig.Graph.SBM(n = count, pref_matrix = matrix, block_sizes = blocks, directed = False, loops = include_loops)
+                self.G = stochastic_block_graph.to_networkx()
+            elif graph_type == 'LFR-benchmark':
+                settings = self.conf["structure"]["random"]
+                tau1 = float(settings["tau1"])
+                tau2 = float(settings["tau2"])
+                mu = float(settings["mu"])
+                if "avg-degree" in settings:
+                    avg_degree = float(settings["avg-degree"])
+                else:
+                    avg_degree = None
+                if "min-degree" in settings:
+                    min_degree = int(settings["min-degree"])
+                else:
+                    min_degree = None
+                if "max-degree" in settings:
+                    max_degree = int(settings["max-degree"])
+                else:
+                    max_degree = None
+                if "min-community" in settings:
+                    min_comm = int(settings["min-community"])
+                else:
+                    min_comm = None
+                if "max-comunity" in settings:
+                    max_comm = int(settings["max-community"])
+                else: 
+                    max_comm = None
+                if "tolerance" in settings:
+                    tol = float(settings["tolerance"])
+                else:
+                    tol = 1e-07
+                if "max-iterations" in settings:
+                    max_iters = int(settings["max-iterations"])
+                else:
+                    max_iters = 500
+                self.G = nx.LFR_benchmark_graph(count, tau1, tau2, mu, avg_degree, min_degree, max_degree, min_comm, max_comm, tol, max_iters)
+            elif graph_type == 'geometric-random':
+                radius = float(self.conf["structure"]["random"]["radius"])
+                self.G = ig.Graph.GRG(count, radius).to_networkx()
+            elif graph_type == 'configuration':
+                file_path = self.conf["structure"]["random"]["degrees-path"]
+                degrees_list = pd.read_csv(file_path, header=None).iloc[:, 0].tolist()
+                if "method" in self.conf["structure"]["random"]:
+                    method = self.conf["structure"]["random"]["method"]
+                else:
+                    method = 'configuration'
+                self.G = ig.Graph.DegreeSequence(out = degrees_list, method = method).to_networkx()
+                count = self.G.number_of_nodes()
+            elif graph_type == 'static-fitness':
+                m = int(self.conf["structure"]["random"]["m"]) # number of edges
+                if "include-loops" in self.conf["structure"]["random"]:
+                    include_loops = bool(self.conf["structure"]["random"]["include-loops"])
+                else:
+                    include_loops = False
+                fitness_path = self.conf["structure"]["random"]["fitness-path"]
+                fitness_list = pd.read_csv(fitness_path, header=None).iloc[:, 0].tolist()
+                self.G = ig.Graph.Static_Fitness(
+                    m = m,
+                    fitness_out = fitness_list,
+                    loops = include_loops,
+                    multiple = False
+                ).to_networkx()
+                count = self.G.number_of_nodes()
 
 
             #else still needs to be changed bc we changed the conf file 
@@ -132,3 +217,5 @@ class CombinedRandom(Structure):
                         cd.process(self, preprocessing[op])
         print("Returning G-->", self.G)    
         return self.G
+    
+        

@@ -1,7 +1,7 @@
 from crowd.models import DiffusionNetwork as n
 from crowd.visualization import basic as bv
 import os
-from crowd.project_management.new_project import NewProject
+from crowd.project_management.project import Project
 
 #old version for reference
 '''
@@ -26,7 +26,7 @@ my_project.run_simulation(10, 2)
 '''
 # Load an existing project
 existing_project_name = "simplediffusion"
-my_project = NewProject(existing_project_name)
+my_project = Project(existing_project_name)
 #print("All result dates:\n", my_project.get_all_result_dates())
 
 #print("\n\n\nGet result by date:\n", my_project.get_result_by_date("2024-04-13=23-06"))
