@@ -16,7 +16,7 @@ my_project.load_project(project_name)
 # returns the percentage of infected nodes in every snapshot
 def get_percentage_infected(network):
     print(network.node_count)
-    return network.node_count[1] /network.G.number_of_nodes()
+    return (network.node_count[1] /network.G.number_of_nodes()) * 100
 
 # 3. Run the simulation
 my_project.lib_run_simulation(epochs=50,

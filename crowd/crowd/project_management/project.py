@@ -307,17 +307,17 @@ class Project:
         start_time = datetime.now()
 
         if self.parent_simulation_dir is None:
-            parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M-%S-%f')[:-3]}")
+            self.parent_simulation_dir = os.path.join(self.results_dir, f"{start_time.strftime('%Y-%m-%d=%H-%M-%S-%f')[:-3]}")
         else:
-            parent_simulation_dir = self.parent_simulation_dir
+            self.parent_simulation_dir = self.parent_simulation_dir
 
         if curr_batch == 1:
             # Create the parent directory
-            if not os.path.exists(parent_simulation_dir):
-                os.makedirs(parent_simulation_dir)
+            if not os.path.exists(self.parent_simulation_dir):
+                os.makedirs(self.parent_simulation_dir)
 
             # Save the current configuration as conf.yaml
-            conf_file_path = os.path.join(parent_simulation_dir, "conf.yaml")
+            conf_file_path = os.path.join(self.parent_simulation_dir, "conf.yaml")
 
             # Modify SafeDumper to ignore aliases
             yaml.SafeDumper.ignore_aliases = lambda *args: True
@@ -326,7 +326,7 @@ class Project:
                 yaml.dump(self.conf, conf_file, default_flow_style=False, Dumper=yaml.SafeDumper)
         
         # Create the directory for this simulation
-        simulation_dir = os.path.join(parent_simulation_dir, str(curr_batch))
+        simulation_dir = os.path.join(self.parent_simulation_dir, str(curr_batch))
         if not os.path.exists(simulation_dir):
             os.makedirs(simulation_dir)
 

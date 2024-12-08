@@ -3,7 +3,7 @@ import imageio
 import networkx as nx
 import os
 from . import visualizer as v
-from .. import node as n
+from ..models.network_creator.node import Node as n
 
 class Basic(v.Visualizer):
 

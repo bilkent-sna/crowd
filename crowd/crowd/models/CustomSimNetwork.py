@@ -4,7 +4,7 @@ import json
 import os
 import random
 import networkx as nx
-from crowd.networkcreator import NetworkCreator
+from .network_creator.networkcreator import NetworkCreator
 
 class CustomSimNetwork:
 
@@ -225,8 +225,10 @@ class CustomSimNetwork:
                 else:
                     self.execute_before_iteration(epoch, None)
                 
-
-                for node_id in self.G.nodes:
+                # Shuffle the order of nodes before iterating for random scheduling
+                node_ids = list(self.G.nodes) 
+                random.shuffle(node_ids)
+                for node_id in node_ids:
                     self.execute_every_iteration_agent(epoch, node_id)
 
                 self.curr_type_nums = self.count_node_types()

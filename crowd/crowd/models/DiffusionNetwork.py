@@ -1,7 +1,7 @@
 import random
 import ast
 import time
-from crowd.networkcreator import NetworkCreator
+from .network_creator.networkcreator import NetworkCreator
 from .CustomSimNetwork import CustomSimNetwork
 import ndlib.models.ModelConfig as mc
 from crowd.models import BaseDiffusion as bd

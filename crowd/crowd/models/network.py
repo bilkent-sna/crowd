@@ -5,7 +5,7 @@ import random
 import sys
 import csv
 import pandas as pd
-from crowd import node as n
+from .network_creator.node import Node as n
 from ..visualization import visualizer as v
 from ..visualization import basic as bv
 
