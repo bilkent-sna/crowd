@@ -20,6 +20,13 @@ crowd/models/EdgeSimNetwork.py
 crowd/models/SIR.py
 crowd/models/__init__.py
 crowd/models/network.py
+crowd/models/compartments/EdgeNumericalAttributeRandom.py
+crowd/models/compartments/__init__.py
+crowd/models/network_creator/__init__.py
+crowd/models/network_creator/confchecker.py
+crowd/models/network_creator/networkcreator.py
+crowd/models/network_creator/node.py
+crowd/models/network_creator/nodetype.py
 crowd/preprocessing/__init__.py
 crowd/preprocessing/communitydetection.py
 crowd/preprocessing/preprocessor.py
