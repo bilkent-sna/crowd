@@ -1,3 +1,4 @@
+MANIFEST.in
 setup.py
 crowd/__init__.py
 crowd.egg-info/PKG-INFO
@@ -23,6 +24,10 @@ crowd/models/network.py
 crowd/models/compartments/EdgeNumericalAttributeRandom.py
 crowd/models/compartments/__init__.py
 crowd/models/network_creator/__init__.py
+crowd/models/network_creator/conf.yaml
+crowd/models/network_creator/conf2.yaml
+crowd/models/network_creator/conf3.yaml
+crowd/models/network_creator/conf4.yaml
 crowd/models/network_creator/confchecker.py
 crowd/models/network_creator/networkcreator.py
 crowd/models/network_creator/node.py
@@ -45,3 +50,12 @@ crowd/visualization/basic.py
 crowd/visualization/bubblemapvisualizer.py
 crowd/visualization/statsvisualizer.py
 crowd/visualization/visualizer.py
+crowd/visualization/__pycache__/__init__.cpython-312.pyc
+crowd/visualization/__pycache__/__init__.cpython-39.pyc
+crowd/visualization/__pycache__/basic.cpython-312.pyc
+crowd/visualization/__pycache__/basic.cpython-39.pyc
+crowd/visualization/__pycache__/visualizer.cpython-312.pyc
+crowd/visualization/__pycache__/visualizer.cpython-39.pyc
+crowd/visualization/d3/playertemplate.html
+crowd/visualization/d3/template.html
+crowd/visualization/d3/world.geojson

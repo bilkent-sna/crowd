@@ -1,0 +1,30 @@
+fields:
+  required:
+    - name
+    - nodetypes
+    - structure:
+        required:
+          mutex:
+            - file:
+              required:
+                regular:
+                  - path
+                  - type:
+                    - nodes-only
+                    - nodes-edges
+              
+            - random
+            - twitter
+            - facebook
+                     
+  optional:
+    - definitions:
+      - optional:
+        - node_actions
+        - functions
+        - statfunctions
+    - info
+    - preprocessing
+    
+
+    

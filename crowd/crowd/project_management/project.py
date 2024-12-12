@@ -48,6 +48,9 @@ class Project:
         # Holds the path of methods file
         self.methods_file = os.path.join(self.project_dir, 'methods.py')
 
+        # Path of method_settings file
+        self.method_settings_file = os.path.join(self.project_dir, 'method_settings.json')
+
         # A directory will be created for the results within the project folder
         self.results_dir = os.path.join(self.project_dir, 'results')
 
@@ -68,7 +71,7 @@ class Project:
 
         # Initialize configuration and basic info files 
         self.conf = self.init_conf()
-        self.methods = self.init_methods()
+        self.methods = self.init_methods() #also inits method_settings
         self.save_basic_info(project_name, creation_date, project_info, nodeOrEdge)
 
         # Initialize network for simulations
@@ -87,6 +90,7 @@ class Project:
         # If does not exist, print error message
         self.project_name = project_name
         self.project_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'projects', project_name)
+        print("This is the project dir:", self.project_dir)
         self.conf_file = os.path.join(self.project_dir, 'conf.yaml')
         self.methods_file = os.path.join(self.project_dir, 'methods.py')
         self.results_dir = os.path.join(self.project_dir, 'results')
@@ -98,12 +102,14 @@ class Project:
         if not os.path.exists(self.conf_file):
             raise FileNotFoundError("Conf file does not exist.")
 
+        print("Before getting conf. The conf path:", self.conf_file)
         self.conf = self.get_conf()
+        print("After getting conf")
 
         # Initialize network for simulations
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
-                # print("PD model in load project")                
+                print("PD model in load project")                
                 self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
                 # print("Custom model in load project")
@@ -126,6 +132,9 @@ class Project:
             with open(self.methods_file, 'w') as file:
                 file.write(toWrite)
             print(f"Methods initialized")
+            with open(self.method_settings_file, 'w') as file:
+                file.write(json.dumps({}))
+            print(f"Method settings initialized")
         except Exception as e:
             print(f"Error saving file: {e}")
 

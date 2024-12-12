@@ -7,7 +7,8 @@ setup(
     version="0.9.0",
     packages=find_packages(),
     include_package_data=True,
-    package_data={'': ['*.txt']},
+    # package_data={'': ['*.txt']},
+    package_data= {'': ['*.txt'], "network_creator": ['*.yaml'], "visualization":['*.html', '*.geojson']},
     install_requires=[
         "pandas",
         "networkx",

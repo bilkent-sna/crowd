@@ -1,0 +1,5 @@
+# Include all YAML files from the "network_creator" directory
+recursive-include crowd/models/network_creator *.yaml
+
+# Include all files in the "visualization" directory
+graft crowd/visualization
