@@ -4,7 +4,7 @@ from setuptools.command.install import install
 
 setup(
     name="crowd",
-    version="0.9",
+    version="0.9.0",
     packages=find_packages(),
     include_package_data=True,
     package_data={'': ['*.txt']},
