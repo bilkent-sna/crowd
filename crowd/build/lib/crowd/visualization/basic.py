@@ -3,7 +3,7 @@ import imageio
 import networkx as nx
 import os
 from . import visualizer as v
-from .. import node as n
+from ..models.network_creator.node import Node as n
 
 class Basic(v.Visualizer):
 
@@ -28,8 +28,11 @@ class Basic(v.Visualizer):
     color_map = []
     
     for _,data in network.G.nodes(data=True):
-      color_map.append(network.conf["definitions"]["nodetypes"][type(data["node"]).__name__]["color"])
-
+      if("pd-model" in network.conf["definitions"]): #if it is a predefined model
+        color_map.append(network.conf["definitions"]["pd-model"]["nodetypes"][data["node"]]["color"])
+      else: #if it is a user defined model
+        color_map.append(network.conf["definitions"]["nodetypes"][type(data["node"]).__name__]["color"])
+    
     self.fig = plt.figure()
     img = nx.draw_networkx(network.G, pos = self.layout, node_color = color_map, edge_color = 'gray', with_labels = False, node_size = 20, width=0.5)
     imagename = super().generate_artifact_path("basic", epoch)

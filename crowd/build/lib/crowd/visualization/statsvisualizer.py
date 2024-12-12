@@ -51,6 +51,6 @@ class StatsVisualizer(v.Visualizer):
     plt.savefig(imagename)
     plt.close()
 
-    if self.digress is not None:
-      self.digress.save(self.data)
+    if self.egress is not None:
+      self.egress.save(self.data)
 

@@ -5,9 +5,9 @@ import random
 import sys
 import csv
 import pandas as pd
-from crowd import node as n
-from .visualization import visualizer as v
-from .visualization import basic as bv
+from .network_creator.node import Node as n
+from ..visualization import visualizer as v
+from ..visualization import basic as bv
 
 from crowd.models.network_creator.confchecker import ConfChecker
 from crowd.models.network_creator.networkcreator import NetworkCreator
@@ -15,13 +15,14 @@ from crowd.egress import file_egress as fd
 
 class Network:
     
-    def __init__(self, network_file):
-        conf_checker = ConfChecker(network_file)
-        self.conf = conf_checker.get_conf()
+    def __init__(self, conf, project_dir):
+        self.conf = conf
         print("Got conf")
         if self.conf is not None:
-            network_creator = NetworkCreator(self.conf)            
-            self.G = network_creator.create_network()
+            print("PASS1")
+            network_creator = NetworkCreator(self.conf) 
+            print("PASS2")           
+            self.G = network_creator.create_network(project_dir)
             print("G-->")    
             print(self.G)
     """
@@ -104,7 +105,8 @@ class Network:
                         visualizer.draw(self, epoch)
 
                 if egress is not None:
-                    egress.save(str(epoch) +":"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
+                    #":" changed to "-" since windows does not allow : in file names
+                    egress.save(str(epoch) +"-"+str(self.run_function(self.conf["definitions"]["statfunctions"][0])))
 
                 #for node, data in self.G.nodes.data():
                 #    print(node, type(data["node"]))

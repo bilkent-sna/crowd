@@ -1,9 +1,9 @@
 Metadata-Version: 2.1
 Name: crowd
-Version: 0.1
+Version: 0.9
 Summary: Crowd:a social network simulation framework
-Home-page: 
-Author: Tolga Yilmaz
+Home-page: https://github.com/Bilkent-Social-Systems-Research-Group/crowd/
+Author: Tolga Yilmaz, Nese Rende
 Keywords: social networks,network,simulation
 Requires-Dist: pandas
 Requires-Dist: networkx
