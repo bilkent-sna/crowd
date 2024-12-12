@@ -143,17 +143,17 @@ class Project:
                     "nodetypes": {
                         "Susceptible": {
                             "random-with-weight": {
-                                "inital-weight": 0.9
+                                "initial-weight": 0.9
                             }
                         },
                         "Infected": {
                             "random-with-weight": {
-                                "inital-weight": 0.1
+                                "initial-weight": 0.1
                             }
                         },
                         "Recovered": {
                             "random-with-weight": {
-                                "inital-weight": 0
+                                "initial-weight": 0
                             }
                         }
                     },

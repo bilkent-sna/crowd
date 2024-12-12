@@ -1,15 +1,15 @@
 from crowd.project_management.project import Project
 
 # 1. Project creation
-project_name = "simplediffusion"
+project_name = "simplediffusion2"
 creation_date = "19/10/2024"
 info = "Diffusion of a virus on a random network"
 
 my_project = Project()
-#my_project.create_project(project_name, creation_date, info, "node")
+my_project.create_project(project_name, creation_date, info, "node")
 
 # OR load previous project 
-my_project.load_project(project_name)
+# my_project.load_project(project_name)
 
 # 2. Define the custom methods you wish to run
 

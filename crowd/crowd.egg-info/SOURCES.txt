@@ -31,7 +31,6 @@ crowd/preprocessing/__init__.py
 crowd/preprocessing/communitydetection.py
 crowd/preprocessing/preprocessor.py
 crowd/project_management/__init__.py
-crowd/project_management/new_project.py
 crowd/project_management/project.py
 crowd/structure/__init__.py
 crowd/structure/barabasi_albert.py
