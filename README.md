@@ -1,53 +1,29 @@
 # Steps to Set Up
 
-- Clone the repository
+#### Option 1: Using Prebuilt Wheel:
 
-```
-git clone URL_OF_THIS_REPOSITORY.git
-```
+1. Download the wheel file:
 
-- (Optional) Create a virtual environment
+- Go to releases page of this repository and download the latest .whl file.
 
-```
-python -m venv crowdenv
-```
+2. Go to the directory where .whl file is located
+3. Run the following command:
+   pip install name_of_wheel_file.whl
+   which for this release is:
+   pip install crowd-0.9.0-py3-none-any.whl
+4. Crowd now can be imported as a library or called from GUI.
 
-You can activate the virtual environment later.
+#### Option 2: Installing with setup.py:
 
-```
-source crowdenv/bin/activate
-```
+1. Clone or download the repository:
 
-Once in the virtual environment, you can deactivate using the following:
+- git clone https://github.com/Bilkent-Social-Systems-Research-Group/crowd
+- Or download the code as a zip file, then extract it.
 
-```
-deactivate
-```
+2. Run the following commands:
 
-- To install the library and use it directly cd into it :
-
-```
-cd crowd
-python setup.py install
-```
-
-- Or, use it in the development mode
-
-```
-cd crowd
-python setup.py develop
-```
-
-- After installing, to run a test
-
-```
-cd examples/simpletest
-python simpletest.py
-```
-
-- To use crowd (June 2024 version) as a library:
-
-```
-cd examples/crowd-library-test1
-python lib_test.py
-```
+- Go to the folder where setup.py is placed:
+  - cd crowd
+- Run setup.py
+  - python setup.py install
+    Or for development: - python setup.py develop
