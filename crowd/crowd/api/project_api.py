@@ -22,61 +22,61 @@ class ProjectFunctions:
         try:
             new_project.create_project(name, date, info, nodeOrEdge)
         except Exception as e:
-            print(f"An error occurred: {e.with_traceback}")
+            return json.dumps(f"An error occurred: {e.with_traceback}")
 
-        print(f"Creating project: {name} with info: {info}")
+        return json.dumps(f"Creating project: {name} with info: {info}")
 
     
     def get_conf_and_run(self, data, project_name, epochs, snapshot_period, num_simulations):
         try:
             data_dict = json.loads(data)
-            print(f"Received data successfully")
+            # print(f"Received data successfully")
            
             # Initialize the project object
             new_project = Project()
 
-            print("Before loading project")
+            # print("Before loading project")
             new_project.load_project(project_name)
-            print("After loading project")
+            # print("After loading project")
             
             conf = self.parseConf(data_dict, new_project.project_dir)
 
-            print("Before updating conf")
+            # print("Before updating conf")
             new_project.update_conf(conf)
-            print("After updating conf")
+            # print("After updating conf")
 
             new_project.run_multiple_simulations(num_simulations, epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
-            print("Simulation directory:", simulation_directory)                                                                                                      
+            # print("Simulation directory:", simulation_directory)                                                                                                      
       
             return json.dumps(simulation_directory)
         
             # Process the data as needed
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            return json.dumps(f"Error decoding JSON: {e}")
         except TypeError as e:
-            print(f"Type error: {e}")
+            return json.dumps(f"Type error: {e}")
         except KeyError as e:
-            print(f"Key error: {e}")
+            return json.dumps(f"Key error: {e}")
     
     def edge_conf_run(self, data, project_name, epochs, snapshot_period):
         try:
             data_dict = json.loads(data)
-            print(f"Received data successfully")
+            # print(f"Received data successfully")
            
             # Initialize the project object
             new_project = Project()
 
-            print("Before loading project")
+            # print("Before loading project")
             new_project.load_project(project_name)
-            print("After loading project")
+            # print("After loading project")
             
             conf = self.parse_custom_sim_conf(data_dict, new_project.project_dir)
 
-            print("Before updating conf")
+            #print("Before updating conf")
             new_project.update_conf(conf)
-            print("After updating conf")
+            #print("After updating conf")
 
             if type(new_project.netw) != EdgeSimNetwork:
                 new_project.change_network_type(False)
@@ -84,47 +84,47 @@ class ProjectFunctions:
             new_project.run_edge_simulation(epochs, snapshot_period)
             
             simulation_directory = max(os.listdir(new_project.results_dir))
-            print("Simulation directory:", simulation_directory)                                                                                                      
+            #print("Simulation directory:", simulation_directory)                                                                                                      
       
             return json.dumps(simulation_directory)
         
             # Process the data as needed
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
+            return json.dumps(f"Error decoding JSON: {e}")
         except TypeError as e:
-            print(f"Type error: {e}")
+            return json.dumps(f"Type error: {e}")
         except KeyError as e:
-            print(f"Key error: {e}")
+            return json.dumps(f"Key error: {e}")
 
     def init_and_run_simulation(self, project_name, epochs, snapshot_period, num_simulations):
         try:
             # Initialize the project object
             new_project = Project()
 
-            print("Before loading project")
+            #print("Before loading project")
             new_project.load_project(project_name)
-            print("After loading project")
+            #print("After loading project")
 
             new_project.run_multiple_simulations(num_simulations, epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
-            print("Simulation directory:", simulation_directory)                                                                                                      
+            #print("Simulation directory:", simulation_directory)                                                                                                      
       
             return json.dumps(simulation_directory) #will this return the parent directory or the last one
 
         except TypeError as e:
-            print(f"Type error: {e}")
+            return json.dumps(f"Type error: {e}")
         except KeyError as e:
-            print(f"Key error: {e}")
+            return json.dumps(f"Key error: {e}")
 
     def edge_sim_run(self, project_name, epochs, snapshot_period):
         try:
             # Initialize the project object
             new_project = Project()
 
-            print("Before loading project")
+            #print("Before loading project")
             new_project.load_project(project_name)
-            print("After loading project")
+            #print("After loading project")
 
             if type(new_project.netw) != EdgeSimNetwork:
                 new_project.change_network_type(False)
@@ -132,14 +132,14 @@ class ProjectFunctions:
             new_project.run_edge_simulation(epochs, snapshot_period)
 
             simulation_directory = max(os.listdir(new_project.results_dir))
-            print("Simulation directory:", simulation_directory)                                                                                                      
+            #print("Simulation directory:", simulation_directory)                                                                                                      
       
             return json.dumps(simulation_directory)
 
         except TypeError as e:
-            print(f"Type error: {e}")
+            return json.dumps(f"Type error: {e}")
         except KeyError as e:
-            print(f"Key error: {e}")
+            return json.dumps(f"Key error: {e}")
 
     def parse_custom_sim_conf(self, data_dict, project_dir):
         conf = {
@@ -159,7 +159,7 @@ class ProjectFunctions:
         
         else:
             generate_type = data_dict["dataSource"]["structure"]["fileOrRandom"]["generateType"]
-            print("Generate type:", generate_type)
+            #print("Generate type:", generate_type)
             item_to_add = {
                 "structure": {
                     generate_type: {
@@ -172,7 +172,7 @@ class ProjectFunctions:
          # Directly set the structure key at the top level
         conf["structure"] = item_to_add["structure"]
 
-        print('CONF --->', conf)
+        #print('CONF --->', conf)
 
         return conf
 
@@ -339,7 +339,7 @@ class ProjectFunctions:
         
         else:
             generate_type = data_dict["dataSource"]["structure"]["fileOrRandom"]["generateType"]
-            print("Generate type:", generate_type)
+            #print("Generate type:", generate_type)
             item_to_add = {
                 "structure": {
                     "random": {
@@ -354,13 +354,13 @@ class ProjectFunctions:
         conf["structure"] = item_to_add["structure"]
         conf["model-exploration"] = data_dict["model-exploration"]
 
-        print('CONF BEFORE ADDING DEFINITIONS: PLS WORK --->', conf)
+        #print('CONF BEFORE ADDING DEFINITIONS: PLS WORK --->', conf)
 
         conf["definitions"] = definitions["definitions"]
        
 
-        print("HELLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOO WE ARE HERE")
-        print('LATEST CONF', conf)
+        #print("HELLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOO WE ARE HERE")
+        #print('LATEST CONF', conf)
 
         return conf
     

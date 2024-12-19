@@ -90,7 +90,7 @@ class Project:
         # If does not exist, print error message
         self.project_name = project_name
         self.project_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'projects', project_name)
-        print("This is the project dir:", self.project_dir)
+        #print("This is the project dir:", self.project_dir)
         self.conf_file = os.path.join(self.project_dir, 'conf.yaml')
         self.methods_file = os.path.join(self.project_dir, 'methods.py')
         self.results_dir = os.path.join(self.project_dir, 'results')
@@ -102,14 +102,14 @@ class Project:
         if not os.path.exists(self.conf_file):
             raise FileNotFoundError("Conf file does not exist.")
 
-        print("Before getting conf. The conf path:", self.conf_file)
+        #print("Before getting conf. The conf path:", self.conf_file)
         self.conf = self.get_conf()
-        print("After getting conf")
+        #print("After getting conf")
 
         # Initialize network for simulations
         if "definitions" in self.conf:
             if "pd-model" in self.conf["definitions"]:
-                print("PD model in load project")                
+                #print("PD model in load project")                
                 self.netw = DiffusionNetwork(self.conf, self.project_dir)
             else:
                 # print("Custom model in load project")
@@ -131,10 +131,10 @@ class Project:
         try:
             with open(self.methods_file, 'w') as file:
                 file.write(toWrite)
-            print(f"Methods initialized")
+            #print(f"Methods initialized")
             with open(self.method_settings_file, 'w') as file:
                 file.write(json.dumps({}))
-            print(f"Method settings initialized")
+            #print(f"Method settings initialized")
         except Exception as e:
             print(f"Error saving file: {e}")
 
@@ -209,7 +209,7 @@ class Project:
         with open(self.conf_file, "w") as file:
             yaml.dump(config, file, default_flow_style=False)
 
-        print(f"YAML configuration file created at {self.conf_file}")
+        #print(f"YAML configuration file created at {self.conf_file}")
             
         return config
     
@@ -217,7 +217,7 @@ class Project:
     def get_conf(self):
         conf_checker = ConfChecker(self.conf_file)
         return conf_checker.get_conf()
-        #print("Got conf")
+        ###print("Got conf")
 
     # Update configuration with new parameters
     def update_conf(self, new_conf):
@@ -345,7 +345,7 @@ class Project:
             os.makedirs(parameters_dir)
 
         self.egress = fd.file_egress(simulation_dir)
-        # print("Artifact path:", self.egress.artifact_path)
+        # #print("Artifact path:", self.egress.artifact_path)
         self.netw.egress = self.egress
         
         # Initialize empty dictionary in JSON files
@@ -567,7 +567,7 @@ class Project:
             if key in sub_dict:
                 sub_dict = sub_dict[key]
             else:
-                print("Key ", key, " is not in the given path")
+                #print("Key ", key, " is not in the given path")
                 Exception("Conf key does not exist")
         
         # We reached the last sub dict, now we set the value with the key
@@ -616,7 +616,7 @@ class Project:
             
             return agent_methods
         except:
-            print("Method settings file not found. Returning empty array.")
+            #print("Method settings file not found. Returning empty array.")
             return []
         
     def get_before_iteration_methods(self):
@@ -635,7 +635,7 @@ class Project:
             
             return before_iteration_methods
         except:
-            print("Method settings file not found. Returning empty array.")
+            #print("Method settings file not found. Returning empty array.")
             return []
         
     def get_after_iteration_methods(self):
@@ -654,7 +654,7 @@ class Project:
             
             return after_iteration_methods
         except:
-            print("Method settings file not found. Returning empty array.")
+            #print("Method settings file not found. Returning empty array.")
             return []
     
     def get_after_simulation_methods(self):
@@ -672,7 +672,7 @@ class Project:
                 
                 return after_simulation_methods
         except:
-            print("Method settings file not found. Returning empty array.")
+            #print("Method settings file not found. Returning empty array.")
             return []
         
         
