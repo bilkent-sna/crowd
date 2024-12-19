@@ -15,7 +15,7 @@ Crowd: A Social Network Simulation Framework
    :caption: Contents:
 
    getting_started
-   examples
+   .. examples
 
 **Crowd** is a social network simulation framework which simplifies and fastens the process of developing agent-based models and simulations on networks. 
 - **Getting Started**: Learn the basics.
