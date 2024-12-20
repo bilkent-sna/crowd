@@ -714,6 +714,8 @@ class Project:
             # Merge data based on the specified method
             if merge_method == "mean":
                 merged_data = self.merge_same_sim_mean(data_to_merge)
+            elif merge_method == "sum":
+                merged_data = self.merge_same_sim_sum(data_to_merge)
             else:
                 raise ValueError(f"Unknown merge method: {merge_method}")
             # Save the merged data to a new file
@@ -742,14 +744,18 @@ class Project:
             
             for key in keys:
                 values = [entry[key] for entry in entries]
-                merged_entry[key] = round(sum(values) / len(values), 3)
+                if merge_method == "mean":
+                    merged_entry[key] = round(sum(values) / len(values), 3)
+                elif merge_method == "sum":
+                    merged_entry[key] = round(sum(values), 3)
+                else:
+                    raise ValueError(f"Unknown merge method: {merge_method}")
+                
              # Save the merged data to a new file
             output_file = os.path.join(curr_sim_directory, 'parameters', f"{json_file_name.split('.')[0]}_{merge_method}.json")
             with open(output_file, 'w') as f:
                 json.dump(merged_entry, f, indent=4)
                 
-
-
     def merge_same_sim_mean(self, data_to_merge):
         merged_data = []
         
@@ -761,6 +767,25 @@ class Project:
                 if key != "Iteration":
                     values = [entry[key] for entry in entries]
                     merged_entry[key] = round(sum(values) / len(values), 3)
+            
+            merged_data.append(merged_entry)
+        
+        # Sort by iteration
+        merged_data.sort(key=lambda x: x["Iteration"])
+        
+        return merged_data
+    
+    def merge_same_sim_sum(self, data_to_merge):
+        merged_data = []
+        
+        for iteration, entries in data_to_merge.items():
+            merged_entry = {"Iteration": iteration}
+            keys = entries[0].keys()
+            
+            for key in keys:
+                if key != "Iteration":
+                    values = [entry[key] for entry in entries]
+                    merged_entry[key] = round(sum(values), 3)
             
             merged_data.append(merged_entry)
         

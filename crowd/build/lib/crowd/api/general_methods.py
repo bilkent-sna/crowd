@@ -1,7 +1,8 @@
 import json
 import time
 import os
- 
+from crowd.egress.file_egress import file_egress as fe
+
 # This class provides methods which does not require creation of a Project object 
 class GeneralMethods:
 
@@ -282,3 +283,17 @@ class GeneralMethods:
         except Exception as e:
             print(f"Error saving file: {e}")
     
+    
+    """
+        Given the project name, simulation directory, iteration number and file format, save the graph without the need to re-run the simulation
+    """
+    def save_network_after_simulation(self, project_name, simulation_directory, iteration_num, save_format):
+        # Create file egress object
+        path = os.path.abspath(os.path.join(self.projects_dir, project_name, 'results', simulation_directory))
+        saver = fe(path)
+        # Call file egress' save network after simulation method        
+        try:
+            saver.save_network_after_simulation(iteration_num, save_format)
+            print(f"Network file saved successfully")
+        except Exception as e:
+            print(f"Error saving file: {e}")
