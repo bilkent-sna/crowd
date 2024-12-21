@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import time
 import os
 from crowd.egress.file_egress import file_egress as fe
@@ -7,7 +8,8 @@ from crowd.egress.file_egress import file_egress as fe
 class GeneralMethods:
 
     def __init__(self):
-        self.projects_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..','projects'))
+        user_home_dir = Path.home()
+        self.projects_dir = os.path.abspath(os.path.join(user_home_dir, 'crowd_projects'))
 
     """
         reads projects directory and returns 
