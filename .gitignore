@@ -1,3 +1,4 @@
 projects
 .venv
 .vscode
+crowd/docs/_build/html
