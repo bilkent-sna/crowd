@@ -25,11 +25,12 @@ Crowd: A Social Network Simulation Framework
 **How Crowd operates:**
 
 .. image:: sim_dev_steps.png
-   :alt: Alternative text
+   :alt: Simulation steps
    :width: 400px
    :align: center
 
 |
+
 **Navigate to:**
 
 - :doc:`Getting Started <getting_started/index>`
@@ -51,3 +52,5 @@ Rende, A. N. N., Yilmaz, T., & Ulusoy, Ö., "Crowd: A Social Network Simulation 
    introduction/index
    examples_docs/index
    contact/index
+
+

@@ -3,17 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Introduction
-===================
+Introduction to Crowd
+=====================
 .. Add your content using ``reStructuredText`` syntax. See the
 .. `reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
 .. documentation for details.
 
 
-**Crowd** is a social network simulation framework which simplifies and fastens the process of developing agent-based models and simulations on networks. 
+In this introductory tutorial, we walk through the steps of developing a basic simulation with Crowd, using an SIR (Susceptible-Infected-Recovered) model, commonly utilized as a base model in epidemiological studies.
 
-Notable Features:
-- Feature 1
-- Feature 2
-- Feature 3
+We list how to do each step in two sections, explaining the details for library and app (user interface) versions.
 
+**Next:** Step 1: Create or load project
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+
+   create_project
+   modify_config/index
+   custom_methods
+   run_simulation
+   network_viz
+   data_merge
+   generate_charts
