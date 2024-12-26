@@ -3,7 +3,7 @@ Step 3: Define custom methods
 
 To describe additional simulation logic or data collection functions, we can define methods and pass them to simulation. These methods will be called at the simulation stage determined by the modeler.
 
-DiffusionNetwork simulations in Crowd can execute custom methods at 3 intervals:
+**DiffusionNetwork simulations in Crowd can execute custom methods at 3 intervals:**
 
 - Simulation execution begins
 - In each epoch:
@@ -13,6 +13,16 @@ DiffusionNetwork simulations in Crowd can execute custom methods at 3 intervals:
 - After running all epochs:
     - After simulation methods are executed (interval 3)
 
+CustomSimNetwork simulations can execute custom methods at 4 intervals:
+    - Simulation execution begins
+    - In each epoch:
+        - Before iteration methods are executed (interval 1)
+        - Every iteration agent methods are called for each agent in random order (interval 2)
+        - After iteration methods are executed (interval 3)
+    - After running all epochs:
+        - After simulation methods are executed (interval 4)
+
+(See Networked Trust Game example for the use of every-iteration-agent methods.)
 
 Despite the execution time, all methods are required to follow two rules:
 
@@ -60,7 +70,7 @@ NDLib converts the nodetypes to numbers in the order we defined them. Therefore,
 
 where {0: Susceptible, 1: Infected, 2: Recovered} nodes.
 
-In this method, we want to save the percentage of infected nodes. Hence, we access *node_count[1]* and divide it to total number of nodes. network.G is the NetworkX object which stores all network information. Numerous functions provided by NetworkX can be reached through this object.
+In this method, we want to save the percentage of infected nodes. Hence, we access *node_count[1]* and divide it to total number of nodes. *network.G* is the NetworkX object which stores all network information. Numerous functions provided by NetworkX can be reached through this object.
 
 Finally, we return the computed number to be saved to "get_percentage_infected.json" in the following format:
 
@@ -75,7 +85,7 @@ Finally, we return the computed number to be saved to "get_percentage_infected.j
 
 Alternatively, we can use the Method Lab of GUI:
 
-.. figure:: SIR_example_images/methodlab.png
+.. figure:: SIR_example_images/methodlab1.png
    :alt: Method Lab Crowd GUI
    :width: 95%
    :align: center

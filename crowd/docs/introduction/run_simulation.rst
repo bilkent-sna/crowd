@@ -23,4 +23,6 @@ In this introductory example, we use the first method, lib_run_simulation. We ru
    
 **App**
 
+After selecting the configuration using selectors and saving these settings, simulation can be run by clicking the provided button as explained in step 2. 
+
 **Next:** Step 5: Inspect results with network visualization

@@ -28,8 +28,10 @@ class GeneralMethods:
         
                 with open(path, 'r') as f:
                     projects.append(json.load(f))
-            except: 
-                return "Cannot find project"
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f"Cannot find project in {path}") from e
+            except Exception as e:
+                raise Exception(f"An error occurred while listing projects: {str(e)}") from e
             
         # print(projects)        
         return json.dumps(projects)

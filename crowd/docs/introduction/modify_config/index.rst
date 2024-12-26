@@ -5,9 +5,9 @@ Crowd employs a configuration file approach to define the simulation settings. T
 
 **Library/App's Settings Page**
 
-We will first go over how to construct the YAML file. After the creation of a project, conf.yaml file is added automatically on the Project folder. In the Settings page of the app, we can directly modify this file and save its contents. 
+We will first go over how to construct the YAML file. After the creation of a project, conf.yaml file is added automatically on the Project folder. In the Settings page of the app, we can make changes on this file and save its contents. 
 
-Alternatively, conf.yaml file itself can be modified, or contents of another file can be copied while using the library. We have sir.yaml file located in the same directory with the main file, which we will copy its contents, using the following code:   
+Alternatively, conf.yaml file itself can directly be modified, or contents of another file can be copied while using the library. For this example, we have sir.yaml file located in the same directory with the Python file we write our code in, which we will copy its contents, using the following code:   
 
 .. code-block:: python
     
@@ -24,9 +24,9 @@ Now, we inspect the contents of the configuration file:
     name: SIR-example
     structure:
         random:
+            type: random-regular
             count: 100
             degree: 4
-            type: random-regular
     definitions:
         pd-model:
             name: diffusion
@@ -47,13 +47,13 @@ Now, we inspect the contents of the configuration file:
                     - 100
             compartments:
                 c1:
-                    ratio: 0.1
-                    triggering_status: Infected
                     type: node-stochastic
+                    ratio: 0.1
+                    triggering_status: Infected                    
                 c2:
+                    type: count-down
                     iteration-count: 4
                     name: healing
-                    type: count-down
             rules:
                 r1:
                     - Susceptible
@@ -81,7 +81,7 @@ Explanation of each property:
 
  - **node-parameters**: Can be numerical or categorical. We define each parameter by giving a name. For numerical parameters, Crowd assigns each node a value between [lower-bound, upper-bound] provided. For categorical parameters, a list of possible categories should be given. Alternatively, users can specify a file path to read the values from.
 
- - **compartments**: Rule-bits that we use to specify the conditions of a node state change. This feature is based on Network Diffusion Library (NDLib) and is integrated into only DiffusionNetwork model. More information about each compartment type can be found on the given link.
+ - **compartments**: Rule-bits that we use to specify the conditions of a node state change. This feature is based on `Network Diffusion Library (NDLib) <https://ndlib.readthedocs.io/en/latest/custom/custom.html>`_ and is integrated into only DiffusionNetwork model. More information about each compartment type can be found on the given link.
 
  - **rules**: Consists of: (a) current state of the node, (b) state to move, (c) compartment to use.
 
@@ -93,6 +93,8 @@ Explanation of this simulation's rules:
 
 **App's Project Page**
 
+To configure simulations, Crowd provides simple selectors in its Project page. In this section, we will present the settings chosen for this example: 
+
 .. figure:: ../SIR_example_images/simulation-settings.png
    :alt: Simulation settings in the Project page of Crowd GUI
    :width: 50%
@@ -100,12 +102,28 @@ Explanation of this simulation's rules:
 
    Simulation settings in the Project page
 
+.. figure:: ../SIR_example_images/simulation_basics.png
+   :alt: Simulation basics in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Simulation basics in the Project page
+
+Note: Starting from this section, after completing selection for a subsection, "Save" button must be clicked. After this operation, when we leave this subsection and come back, the previous selections will not be visible. However, they are not lost. Any additions will be added on top.
+
 .. figure:: ../SIR_example_images/data-source.png
    :alt: Data source in the Project page of Crowd GUI
    :width: 50%
    :align: center
 
    Data source selection in the Project page
+
+.. figure:: ../SIR_example_images/simulation-type.png
+   :alt: Selecting simulation type in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Selecting simulation type in the Project page
 
 .. figure:: ../SIR_example_images/add-nodetype.png
    :alt: Adding node types in the Project page of Crowd GUI
@@ -121,6 +139,52 @@ Explanation of this simulation's rules:
 
    List of added node types in the Project page
 
+.. figure:: ../SIR_example_images/add-node-param.png
+   :alt: Adding node parameters in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Adding node parameters in the Project page
+
+.. figure:: ../SIR_example_images/node-compartment-list.png
+   :alt: Possible list of compartments in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Compartment selection options in the Project page
+
+.. figure:: ../SIR_example_images/add-compartment.png
+   :alt: Adding compartments in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Adding compartments in the Project page
+
+.. figure:: ../SIR_example_images/compartments-list.png
+   :alt: Compartments list in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Added compartment list in the Project page
+
+The saved nodetypes and compartments will be displayed as options. If no options are visible, go back to that subsection, re-enter the settings and save. 
+
+.. figure:: ../SIR_example_images/add-rule.png
+   :alt: Adding rules in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Adding rules in the Project page
+
+.. figure:: ../SIR_example_images/rules-list.png
+   :alt: Added rules list in the Project page of Crowd GUI
+   :width: 50%
+   :align: center
+
+   Added rules list in the Project page
+
+After the selection of these settings, clicking "Run simulation" will convert these selections and write them to the YAML configuration file. The configuration file will be loaded into Python library, simulation will be executed and we will then be directed to the Network page to explore the results.
+
 In the next two pages, we list all the network generators integrated into Crowd for available use in the configuration file and the network models provided by Crowd. 
 While they are not needed to understand this example, they serve as a reference for model development.
 
@@ -131,4 +195,6 @@ While they are not needed to understand this example, they serve as a reference 
     :maxdepth: 1
         
     network_generators
+    network_from_file
+    nodetype_init
     crowd_models
