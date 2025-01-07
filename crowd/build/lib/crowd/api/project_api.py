@@ -22,7 +22,7 @@ class ProjectFunctions:
         try:
             new_project.create_project(name, date, info, nodeOrEdge)
         except Exception as e:
-            return json.dumps(f"An error occurred: {e.with_traceback}")
+                raise Exception(f"An error occurred while creating the project {name}: {str(e)}") from e
 
         return json.dumps(f"Creating project: {name} with info: {info}")
 
@@ -41,9 +41,9 @@ class ProjectFunctions:
             
             conf = self.parseConf(data_dict, new_project.project_dir)
 
-            # print("Before updating conf")
+            print("Before updating conf")
             new_project.update_conf(conf)
-            # print("After updating conf")
+            print("After updating conf")
 
             new_project.run_multiple_simulations(num_simulations, epochs, snapshot_period)
 
@@ -51,14 +51,15 @@ class ProjectFunctions:
             # print("Simulation directory:", simulation_directory)                                                                                                      
       
             return json.dumps(simulation_directory)
-        
-            # Process the data as needed
+       
         except json.JSONDecodeError as e:
-            return json.dumps(f"Error decoding JSON: {e}")
+            return json.JSONDecodeError(f"Error decoding JSON in get conf and run: {e}")
         except TypeError as e:
-            return json.dumps(f"Type error: {e}")
+            return TypeError(f"Type error in get conf and run: {e}")
         except KeyError as e:
-            return json.dumps(f"Key error: {e}")
+            return json.dumps(f"Key error in get conf and run: {e}")
+        except Exception as e:
+                raise Exception(f"An error occurred in get conf and run method of API: {str(e)}") from e
     
     def edge_conf_run(self, data, project_name, epochs, snapshot_period):
         try:
@@ -88,13 +89,14 @@ class ProjectFunctions:
       
             return json.dumps(simulation_directory)
         
-            # Process the data as needed
         except json.JSONDecodeError as e:
-            return json.dumps(f"Error decoding JSON: {e}")
+            return json.JSONDecodeError(f"Error decoding JSON in edge conf run: {e}")
         except TypeError as e:
-            return json.dumps(f"Type error: {e}")
+            return TypeError(f"Type error in edge conf run: {e}")
         except KeyError as e:
-            return json.dumps(f"Key error: {e}")
+            return json.dumps(f"Key error in edge conf run: {e}")
+        except Exception as e:
+                raise Exception(f"An error occurred in edge conf run method of API: {str(e)}") from e
 
     def init_and_run_simulation(self, project_name, epochs, snapshot_period, num_simulations):
         try:
@@ -113,9 +115,11 @@ class ProjectFunctions:
             return json.dumps(simulation_directory) #will this return the parent directory or the last one
 
         except TypeError as e:
-            return json.dumps(f"Type error: {e}")
+            return TypeError(f"Type error in init and run simulation: {e}")
         except KeyError as e:
-            return json.dumps(f"Key error: {e}")
+            return json.dumps(f"Key error in init and run simulation: {e}")
+        except Exception as e:
+                raise Exception(f"An error occurred in init and run simulation method of API: {str(e)}") from e
 
     def edge_sim_run(self, project_name, epochs, snapshot_period):
         try:
@@ -137,9 +141,11 @@ class ProjectFunctions:
             return json.dumps(simulation_directory)
 
         except TypeError as e:
-            return json.dumps(f"Type error: {e}")
+            return TypeError(f"Type error in edge sim run: {e}")
         except KeyError as e:
-            return json.dumps(f"Key error: {e}")
+            return json.dumps(f"Key error in edge sim run: {e}")
+        except Exception as e:
+                raise Exception(f"An error occurred in edge sim run method of API: {str(e)}") from e
 
     def parse_custom_sim_conf(self, data_dict, project_dir):
         conf = {
@@ -178,6 +184,9 @@ class ProjectFunctions:
 
 
     def parseConf(self, data_dict, project_dir):
+
+        print("Before parsing conf data dict:", data_dict)
+        print("=============================")
 
         conf = {
                 "name": data_dict["name"]
@@ -292,6 +301,13 @@ class ProjectFunctions:
             }
             definitions["definitions"]["pd-model"].update(item_to_add)
 
+        # network parameters
+        if "networkParameters" in data_dict:
+            item_to_add = {
+                "network-parameters": data_dict["networkParameters"]
+            }
+            definitions["definitions"]["pd-model"].update(item_to_add)
+
         #compartments 
         compartments_dict = data_dict["compartments"]
         temp = {}
@@ -360,7 +376,8 @@ class ProjectFunctions:
        
 
         #print("HELLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOO WE ARE HERE")
-        #print('LATEST CONF', conf)
+        print("==================")
+        print('LATEST CONF', conf)
 
         return conf
     

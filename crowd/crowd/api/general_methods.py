@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-import time
+# import time
 import os
 from crowd.egress.file_egress import file_egress as fe
 
@@ -10,6 +10,10 @@ class GeneralMethods:
     def __init__(self):
         user_home_dir = Path.home()
         self.projects_dir = os.path.abspath(os.path.join(user_home_dir, 'crowd_projects'))
+
+        # Create project directory if not exists
+        if not os.path.exists(self.projects_dir):
+            os.makedirs(self.projects_dir)
 
     """
         reads projects directory and returns 
@@ -69,9 +73,10 @@ class GeneralMethods:
 
                 simulations.append(sim_info)
 
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f"Cannot find the required simulation file in {path}") from e
             except Exception as e:
-                print(f"Error processing {dir_name}: {e}")
-                return "Cannot find simulation"
+                raise Exception(f"An error occurred while listing simulations: {str(e)}") from e
 
         return json.dumps(simulations)
     
@@ -87,8 +92,10 @@ class GeneralMethods:
             try:
                 child_sim_count = len(os.listdir(os.path.join(base_dir, dir_name))) - 1 # minus one for conf
                 simulations.update({dir_name: child_sim_count})
-            except: 
-                return "Cannot find simulation"
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f"Cannot find the simulation directory in {dir_name}") from e
+            except Exception as e:
+                raise Exception(f"An error occurred while listing simulations and their sub-simulation counts: {str(e)}") from e
             
         print("List sim and count print:", simulations)      
         return json.dumps(simulations)  
@@ -103,7 +110,7 @@ class GeneralMethods:
             files = os.listdir(base_dir)
             return json.dumps(files)
         except Exception as e:
-            return json.dumps("No datasets uploaded yet.")
+            raise Exception(f"An error occurred while listing datasets: {str(e)}") from e
         
     """
        given the current project name, uploaded file name and its content, saves the file into project's dataset collection
@@ -116,7 +123,7 @@ class GeneralMethods:
                 file.write(bytes(file_content))
             print(f"File {file_name} saved successfully")
         except Exception as e:
-            print(f"Error saving file: {e}")
+            raise Exception(f"Error saving file: {e}")
 
     """
         Given the project name and simulation directory name, 
@@ -129,8 +136,10 @@ class GeneralMethods:
             path = os.path.join(base_dir, simulation_directory, "1\simulation_info.json")
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
-        except: 
-            return Exception("Cannot find simulation")
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the simulation info in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading simulation info: {str(e)}") from e
         
 
     """
@@ -149,10 +158,10 @@ class GeneralMethods:
                     simulations.update({i: json.load(f)})
             
             return json.dumps(simulations)
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return "Cannot find simulation"
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the sub-simulation info in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading sub-simulation info: {str(e)}") from e
     
     """
         Given the project name and simulation directory name, 
@@ -167,10 +176,10 @@ class GeneralMethods:
             # return json.dumps(path)
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return "Cannot find simulation"
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the simulation graph in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading the simulation graph: {str(e)}") from e
         
     """
         Given the project name and simulation directory name, 
@@ -185,10 +194,10 @@ class GeneralMethods:
             # return json.dumps(path)
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return "Cannot find simulation"
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the added edges file in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading the added edges: {str(e)}") from e
 
     """
         reads the current parameters directory and returns a list of the names of all files in there
@@ -200,7 +209,7 @@ class GeneralMethods:
             files = os.listdir(base_dir)
             return json.dumps(files)
         except Exception as e:
-            return json.dumps("No parameters saved yet.")
+            raise Exception(f"An error occurred while listing all parameters: {str(e)}") from e
         
     """
         Given the project name, simulation directory and requested file name,
@@ -214,10 +223,10 @@ class GeneralMethods:
             # return json.dumps(path)
             with open(path, 'r') as f:
                 return json.dumps(json.load(f))
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return "Cannot find parameter file"
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the parameter file in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading the parameter file: {str(e)}") from e
         
     """
         Given the project name, returns the methods file
@@ -230,10 +239,10 @@ class GeneralMethods:
             with open(path, 'r') as f:
                 file_content = f.read()
                 return json.dumps({'content': file_content})
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return json.dumps({'error': "Cannot find methods file"})
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the methods file in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading the methods file: {str(e)}") from e
 
     """
         Saves the given methods to a python file, which will be used for the simulation
@@ -245,7 +254,7 @@ class GeneralMethods:
                 file.write(file_content)
             print(f"Methods saved successfully")
         except Exception as e:
-            print(f"Error saving file: {e}")
+            raise Exception(f"Error saving methods file: {e}")
     
 
     def save_methods_list_view(self, project_name, file_content):
@@ -255,7 +264,7 @@ class GeneralMethods:
                 file.write(file_content)
             print(f"Methods settings saved successfully")
         except Exception as e:
-            print(f"Error saving file: {e}")
+            raise Exception(f"Error saving the method settings file: {e}")
             
 
         
@@ -270,10 +279,10 @@ class GeneralMethods:
             with open(path, 'r') as f:
                 file_content = f.read()
                 return json.dumps(file_content)
-        except Exception as e: 
-            # Print the exception details
-            print(f"Exception occurred: {e}")
-            return json.dumps({'error': "Cannot find conf file"})
+        except FileNotFoundError as e:
+            raise FileNotFoundError(f"Cannot find the configuration file in {path}") from e
+        except Exception as e:
+            raise Exception(f"An error occurred while loading the configuration file: {str(e)}") from e
 
     """
         Given the project name and file content, save the new content to project conf file
@@ -285,7 +294,7 @@ class GeneralMethods:
                 file.write(file_content)
             print(f"Conf saved successfully")
         except Exception as e:
-            print(f"Error saving file: {e}")
+            raise Exception(f"Error saving the configuration file: {e}")
     
     
     """
@@ -300,4 +309,4 @@ class GeneralMethods:
             saver.save_network_after_simulation(iteration_num, save_format)
             print(f"Network file saved successfully")
         except Exception as e:
-            print(f"Error saving file: {e}")
+            raise Exception(f"Error saving network file after simulation: {e}")
