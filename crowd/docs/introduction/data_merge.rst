@@ -50,7 +50,11 @@ and write the results to current simulation's folder (named as count_node_types_
             - json_file_name: "count_node_types.json"
             - merge_method: "mean"
     """
-    mrg.merge_in_parent_sim("firstcustom", "2024-08-22=10-35", "1", "count_node_types.json", "mean")
+    mrg.merge_in_parent_sim("firstcustom", 
+                            "2024-08-22=10-35", 
+                            "1", 
+                            "count_node_types.json", 
+                            "mean")
 
 *2. Merge with other simulation*: In this example, we merge the data from *after_simulation_mean.json* file of 3 simulations. 
 The results will be saved in a file named: *after_simulation_mean_merged_{date}.json*.
@@ -66,12 +70,14 @@ The results will be saved in a file named: *after_simulation_mean_merged_{date}.
             - json_file_name: "after_simulation_mean.json"
             - merge_dir_list: [...]
     """
-    mrg.merge_with_other_sim("firstcustom", "2024-08-22=10-35", "1", 'after_simulation_mean.json', 
-                        [
-                            '2024-08-22=11-05/1',
-                            "2024-08-22=11-33/1",
-                            "2024-08-22=12-01/1"
-                        ])
+    mrg.merge_with_other_sim("firstcustom", 
+                             "2024-08-22=10-35", 
+                             "1", 
+                             "after_simulation_mean.json", 
+                             [
+                                "2024-08-22=11-05/1",
+                                "2024-08-22=11-33/1"
+                             ])
 
 In the following block, we provide the resulting JSON: Contents of "after_simulation_mean" from each simulation is placed on the same file. 
 
@@ -117,5 +123,34 @@ This data can later be used to draw the following charts:
 
 **App**
 
+Merge operations are conducted in the Results tab of the GUI. By selecting the "Merge data" option, we can open the merge menu. 
+
+.. image:: SIR_example_images/resultsNew.png
+    :alt: Results screen of Crowd's GUI
+    :width: 400px
+    :align: center
+
+
+The first option, merge within parent simulation, requires selecting the merge method (mean or sum), and the file that holds the data. 
+
+.. image:: merge_images/merge_within_parent_dir.png
+    :alt: Merge within parent simulation option from Crowd's GUI
+    :width: 400px
+    :align: center
+
+The second option, merge with other simulation, requires selecting:
+    1. Data file
+    2. Parent simulation directory
+    3. Sub simulation number
+
+All simulations to be merged must be added together in this fashion. The currently viewed simulation is added by default and the results will be saved in the current simulation.
+The results will be saved in a file named: *after_simulation_merged_{date}.json*.
+
+.. image:: merge_images/merge_with_other.png
+    :alt: Merge with other simulation option from Crowd's GUI
+    :width: 400px
+    :align: center
+
+Following these operations, the new data can be used to draw charts in the same page.
 
 **Next:** Step 7: Generate charts 
