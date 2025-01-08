@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 4: Run Simulation &mdash; crowd 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Step 5: Inspect results with network visualization" href="network_viz.html" />
+    <link rel="prev" title="Step 3: Define custom methods" href="custom_methods.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            crowd
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Introduction to Crowd</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="create_project.html">Step 1: Create or load a project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="modify_config/index.html">Step 2: Modify Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_methods.html">Step 3: Define custom methods</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Step 4: Run Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="network_viz.html">Step 5: Inspect results with network visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_merge.html">Step 6: Data Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generate_charts.html">Step 7: Generate Charts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples_docs/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact/index.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowd</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Introduction to Crowd</a></li>
+      <li class="breadcrumb-item active">Step 4: Run Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/introduction/run_simulation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="step-4-run-simulation">
+<h1>Step 4: Run Simulation<a class="headerlink" href="#step-4-run-simulation" title="Link to this heading"></a></h1>
+<p><strong>Library</strong></p>
+<p>Project class provides 2 methods to execute a simulation within Python code:</p>
+<ol class="arabic simple">
+<li><p><strong>lib_run_simulation</strong>: This function runs the simulation only 1 time</p></li>
+<li><p><strong>lib_run_multiple_simulations</strong>: This function allows batch running and model exploration.</p></li>
+</ol>
+<p><strong>batch run</strong>: Running the simulation with the same settings multiple times, determined by the modeler. This helps reducing the impact of stochasticity on the results.</p>
+<p><strong>model exploration</strong>: Running the simulation with different settings to observe the impact of independent variables on dependent variables. In Crowd, model exploration constructs a grid of parameter combinations and only one value differs in each combination. It is not possible to explore different node type initializations as it would require the change of other types of nodes for the total to be 100 nodes again.</p>
+<p>In this introductory example, we use the first method, lib_run_simulation. We run the simulation for 50 iterations (epochs), save the graph and data collectors every 5 iterations (snapshot period), for one time (curr batch number).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_project</span><span class="o">.</span><span class="n">lib_run_simulation</span><span class="p">(</span><span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                              <span class="n">snapshot_period</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                              <span class="n">curr_batch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                              <span class="n">after_iteration_methods</span><span class="o">=</span><span class="p">[</span><span class="n">get_percentage_infected</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Running multiple simulations:</strong></p>
+<p>Using the method <strong>lib_run_multiple_simulations</strong>, by setting <em>num_simulations</em> as 10, we can run the simulation with the same settings 10 times.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_project</span><span class="o">.</span><span class="n">lib_run_simulation</span><span class="p">(</span><span class="n">num_simulations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                              <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                              <span class="n">snapshot_period</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                              <span class="n">after_iteration_methods</span><span class="o">=</span><span class="p">[</span><span class="n">get_percentage_infected</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>If model exploration section exists in the configuration file, the simulation will be ran (num_simulations * num_of_possible_settings) times. Each setting will be saved in a different parent simulation directory, while the simulations with the same settings will be saved in the same parent simulation directory.</p>
+<p>Later, these results can be aggregated by the merge methods provided by Crowd, as explained in a following section.</p>
+<p><strong>App</strong></p>
+<p>After selecting the configuration using selectors and saving these settings, simulation can be run by clicking the provided button as explained in step 2.</p>
+<p>Running simulations from the app will call <em>run_simulation</em> and <em>run_multiple_simulations</em> methods of Project class.</p>
+<p><strong>Where can I find the simulation files on my computer?</strong></p>
+<p>Following the completion of a simulation execution, network and other result files (including node type counts and custom method results) will be saved at the <strong>results</strong> directory of the current project.</p>
+<p><strong>Reminder</strong>: All projects are saved in the <strong>crowd_projects</strong> folder under the user directory.</p>
+<p>An example directory path in Windows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="s1">&#39;C:\Users\user_name\crowd_projects&#39;</span>
+</pre></div>
+</div>
+<p>After clicking on the current project, we can see the following files and folders created by default:</p>
+<a class="reference internal image-reference" href="../_images/project_files_1.png"><img alt="Contents of a project folder" class="align-center" src="../_images/project_files_1.png" style="width: 400px;" />
+</a>
+<p>The data files uploaded from the app are all saved in the <em>datasets</em> directory. The simulation results are saved in <em>results</em>.
+In the following image, we take a look at the results folder of our <em>simplediffusion</em> project.</p>
+<a class="reference internal image-reference" href="../_images/project_files_2.png"><img alt="Contents of the results folder" class="align-center" src="../_images/project_files_2.png" style="width: 400px;" />
+</a>
+<p>These folders are mentioned as <em>parent simulation directories</em> in Crowd documentation, named with their creation time.</p>
+<p>As seen on the following image, each parent simulation directory holds its configuration file, while the configuration file on the project directory holds the most recent settings.</p>
+<p>In this parent simulation directory, only 1 <em>sub-simulation</em> directory exists, as we have set the number of simulations to 1. When multiple simulations are executed with the same settings,
+they will all be listed under the same parent simulation directory.</p>
+<a class="reference internal image-reference" href="../_images/project_files_3.png"><img alt="Contents of a parent simulation directory" class="align-center" src="../_images/project_files_3.png" style="width: 400px;" />
+</a>
+<p>Inside a sub-simulation folder, we have simulation_info and graph files. The graph file holds the graph information saved in each iteration.</p>
+<p><em>Parameters</em> folder holds the results of user defined methods, as well as the node type counts.</p>
+<a class="reference internal image-reference" href="../_images/project_files_4.png"><img alt="Contents of a sub simulation file" class="align-center" src="../_images/project_files_4.png" style="width: 400px;" />
+</a>
+<p>In the following image, we can see the results of our after iteration method, “get_percentage_infected” is saved in a JSON file with the name of the function.
+<em>after_simulation</em> file is empty as we did not pass any after simulation methods.</p>
+<a class="reference internal image-reference" href="../_images/project_files_5.png"><img alt="Contents of parameters folder" class="align-center" src="../_images/project_files_5.png" style="width: 400px;" />
+</a>
+<p><em>count_node_types</em> contains the number of nodes for each node type defined, while <em>status_delta</em> keeps track of the changes in these numbers.</p>
+<p>Example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Iteration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Susceptible&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Infected&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-8</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Recovered&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This data shows that in iteration 5, the number of Susceptible and Infected nodes have decreased by 2 and 8 respectively, while Recovered nodes have increased by 10.</p>
+<p><strong>Next:</strong> Step 5: Inspect results with network visualization</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="custom_methods.html" class="btn btn-neutral float-left" title="Step 3: Define custom methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="network_viz.html" class="btn btn-neutral float-right" title="Step 5: Inspect results with network visualization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, A. N. Nese Rende.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

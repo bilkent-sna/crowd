@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installing Crowd &mdash; crowd 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Introduction to Crowd" href="../introduction/index.html" />
+    <link rel="prev" title="Getting Started" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            crowd
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Getting Started</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Installing Crowd</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-library">Python library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#desktop-app">Desktop app</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction to Crowd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples_docs/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contact/index.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">crowd</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Getting Started</a></li>
+      <li class="breadcrumb-item active">Installing Crowd</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/getting_started/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installing-crowd">
+<h1>Installing Crowd<a class="headerlink" href="#installing-crowd" title="Link to this heading"></a></h1>
+<p><strong>Prerequisites</strong></p>
+<p>Python 3.12 must be installed on your system. If not, follow these steps to install it:</p>
+<ul class="simple">
+<li><p>Visit the official <a class="reference external" href="https://www.python.org/downloads/">Python downloads page</a>.</p></li>
+<li><p>Download the installer for Python 3.12 suitable for your operating system.</p></li>
+<li><p>Run the installer and ensure you select the option Add Python to PATH during installation.</p></li>
+</ul>
+<section id="python-library">
+<h2>Python library<a class="headerlink" href="#python-library" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Navigate to the <a class="reference external" href="https://github.com/Bilkent-Social-Systems-Research-Group/crowd/">Crowd GitHub repository</a>.</p></li>
+</ol>
+<p><strong>Option 1: Using Prebuilt Wheel</strong></p>
+<ol class="arabic simple" start="2">
+<li><p>Go to releases page of the repository and download the latest .whl file.</p></li>
+<li><p>On your computer, go to the directory where .whl file is located</p></li>
+<li><p>Run the following command:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>name_of_wheel_file.whl
+</pre></div>
+</div>
+<p>which for this release is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>crowd-0.9.0-py3-none-any.whl
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li><p>Crowd now can be imported as a library or called from GUI.</p></li>
+</ol>
+<p><strong>Option 2: Installing with setup.py</strong></p>
+<ol class="arabic simple" start="2">
+<li><p>Clone or download the repository:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Bilkent-Social-Systems-Research-Group/crowd
+</pre></div>
+</div>
+<p>Or download the code as a zip file, then extract it.</p>
+<ol class="arabic simple" start="3">
+<li><p>Run the following commands:</p></li>
+</ol>
+<ul class="simple">
+<li><p>Go to the folder where setup.py is placed:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>crowd
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Run setup.py</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>install
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Or for development:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>setup.py<span class="w"> </span>develop
+</pre></div>
+</div>
+<p>Note: For the users who prefer only using the Python library, desktop app is not required to be installed.</p>
+</section>
+<section id="desktop-app">
+<h2>Desktop app<a class="headerlink" href="#desktop-app" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Navigate to the releases page of the <a class="reference external" href="https://github.com/Bilkent-Social-Systems-Research-Group/crowd-ui/releases/">Crowd UI repository</a>.</p></li>
+<li><p>Locate the latest release (v0.9.0) and download the installer.</p></li>
+<li><p>Run the installer and follow the on-screen instructions to complete the installation.</p></li>
+<li><p>Once the installation is complete, you can start using Crowd’s GUI to configure and run simulations:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Launch the Crowd app from your desktop or application menu.</p></li>
+<li><p>Create your first project, configure simulation settings and run simulations.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>For detailed usage and features, refer to the introduction section.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../introduction/index.html" class="btn btn-neutral float-right" title="Introduction to Crowd" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, A. N. Nese Rende.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

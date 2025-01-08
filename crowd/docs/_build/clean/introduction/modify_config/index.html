@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Step 2: Modify Configuration &mdash; crowd 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Network Generators" href="network_generators.html" />
+    <link rel="prev" title="Step 1: Create or load a project" href="../create_project.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            crowd
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Introduction to Crowd</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../create_project.html">Step 1: Create or load a project</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Step 2: Modify Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="network_generators.html">Network Generators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network_from_file.html">Reading Network Info From Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nodetype_init.html">Initializing Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowd_models.html">Crowd’s Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_methods.html">Step 3: Define custom methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run_simulation.html">Step 4: Run Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_viz.html">Step 5: Inspect results with network visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_merge.html">Step 6: Data Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generate_charts.html">Step 7: Generate Charts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples_docs/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact/index.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">crowd</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Introduction to Crowd</a></li>
+      <li class="breadcrumb-item active">Step 2: Modify Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/introduction/modify_config/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="step-2-modify-configuration">
+<h1>Step 2: Modify Configuration<a class="headerlink" href="#step-2-modify-configuration" title="Link to this heading"></a></h1>
+<p>Crowd employs a configuration file approach to define the simulation settings. This can be done by either modifying the YAML file directly, or using the buttons and selectors in the GUI.</p>
+<p><strong>Library/App’s Settings Page</strong></p>
+<p>We will first go over how to construct the YAML file. After the creation of a project, conf.yaml file is added automatically on the Project folder. In the Settings page of the app, we can make changes on this file and save its contents.</p>
+<p>Alternatively, conf.yaml file itself can directly be modified, or contents of another file can be copied while using the library. For this example, we have sir.yaml file located in the same directory with the Python file we write our code in, which we will copy its contents, using the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">conf_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;sir.yaml&#39;</span><span class="p">)</span>
+<span class="n">my_project</span><span class="o">.</span><span class="n">update_conf_with_path</span><span class="p">(</span><span class="n">conf_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, we inspect the contents of the configuration file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SIR-example</span>
+<span class="nt">structure</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">random</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">random-regular</span>
+<span class="w">        </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">        </span><span class="nt">degree</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">definitions</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">pd-model</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">diffusion</span>
+<span class="w">        </span><span class="nt">nodetypes</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">Susceptible</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">random-with-weight</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">initial-weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.9</span>
+<span class="w">            </span><span class="nt">Infected</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">random-with-weight</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">initial-weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">            </span><span class="nt">Recovered</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">random-with-weight</span><span class="p">:</span>
+<span class="w">                    </span><span class="nt">initial-weight</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">        </span><span class="nt">node-parameters</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">numerical</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">age</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">        </span><span class="nt">compartments</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">c1</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">node-stochastic</span>
+<span class="w">                </span><span class="nt">ratio</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">                </span><span class="nt">triggering_status</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Infected</span>
+<span class="w">            </span><span class="nt">c2</span><span class="p">:</span>
+<span class="w">                </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">count-down</span>
+<span class="w">                </span><span class="nt">iteration-count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">                </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">healing</span>
+<span class="w">        </span><span class="nt">rules</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">r1</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Susceptible</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Infected</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">c1</span>
+<span class="w">            </span><span class="nt">r2</span><span class="p">:</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Infected</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Recovered</span>
+<span class="w">                </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">c2</span>
+</pre></div>
+</div>
+<p>Explanation of each property:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>name</strong>: This name can later be used in GUI to search for this simulation, so it is useful to pick a meaningful name.</p></li>
+<li><p><strong>structure</strong>: Describes how the network will be initialized. Crowd supports reading networks from csv and edgelist files, while providing various network generators from NetworkX and igraph-python libraries. In this example, we choose to generate a random regular network (type), with 100 nodes (count) and each node having a constant degree of 4 (degree).</p></li>
+<li><p><strong>definitions</strong>: Holds properties for the network initialization and (optionally) the simulation logic (compartments and rules).</p></li>
+<li><p><strong>pd-model</strong>: Means we want to use a predefined model in our simulation. We do not include this keyword for custom simulations.</p></li>
+<li><p><strong>name: diffusion</strong>: Specifying that we want to use DiffusionNetwork model of Crowd.</p></li>
+<li><p><strong>nodetypes</strong>: Defining each node type for our model and their initialization methods. For this example, we choose (0.9 * node_count) nodes as Susceptible initially.</p></li>
+<li><p><strong>node-parameters</strong>: Can be numerical or categorical. We define each parameter by giving a name. For numerical parameters, Crowd assigns each node a value between [lower-bound, upper-bound] provided. For categorical parameters, a list of possible categories should be given. Alternatively, users can specify a file path to read the values from.</p></li>
+<li><p><strong>compartments</strong>: Rule-bits that we use to specify the conditions of a node state change. This feature is based on <a class="reference external" href="https://ndlib.readthedocs.io/en/latest/custom/custom.html">Network Diffusion Library (NDLib)</a> and is integrated into only DiffusionNetwork model. More information about each compartment type can be found on the given link.</p></li>
+<li><p><strong>rules</strong>: Consists of: (a) current state of the node, (b) state to move, (c) compartment to use.</p></li>
+</ul>
+</div></blockquote>
+<p>Explanation of this simulation’s rules:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>r1</strong>: If a node is susceptible, execute c1. If this node has any Infected neighbors (triggering status), with a probability of 0.1 (ratio), the node switches from Susceptible to Infected state.</p></li>
+<li><p><strong>r2</strong>: describes the Infected to Recovered sequence, which is described with a countdown compartment. This means that after 4 iterations, the node will switch states.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>App’s Project Page</strong></p>
+<p>To configure simulations, Crowd provides simple selectors in its Project page. In this section, we will present the settings chosen for this example:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../../_images/simulation-settings.png"><img alt="Simulation settings in the Project page of Crowd GUI" src="../../_images/simulation-settings.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Simulation settings in the Project page</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../../_images/simulation_basics.png"><img alt="Simulation basics in the Project page of Crowd GUI" src="../../_images/simulation_basics.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Simulation basics in the Project page</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Note: Starting from this section, after completing selection for a subsection, “Save” button must be clicked. After this operation, when we leave this subsection and come back, the previous selections will not be visible. However, they are not lost. Any additions will be added on top.</p>
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="../../_images/data-source.png"><img alt="Data source in the Project page of Crowd GUI" src="../../_images/data-source.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Data source selection in the Project page</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../../_images/simulation-type.png"><img alt="Selecting simulation type in the Project page of Crowd GUI" src="../../_images/simulation-type.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Selecting simulation type in the Project page</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id5">
+<a class="reference internal image-reference" href="../../_images/add-nodetype.png"><img alt="Adding node types in the Project page of Crowd GUI" src="../../_images/add-nodetype.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Adding node types in the Project page</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id6">
+<a class="reference internal image-reference" href="../../_images/nodetype-list.png"><img alt="List of node types in the Project page of Crowd GUI" src="../../_images/nodetype-list.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">List of added node types in the Project page</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id7">
+<a class="reference internal image-reference" href="../../_images/add-node-param.png"><img alt="Adding node parameters in the Project page of Crowd GUI" src="../../_images/add-node-param.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Adding node parameters in the Project page</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id8">
+<a class="reference internal image-reference" href="../../_images/node-compartment-list.png"><img alt="Possible list of compartments in the Project page of Crowd GUI" src="../../_images/node-compartment-list.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Compartment selection options in the Project page</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id9">
+<a class="reference internal image-reference" href="../../_images/add-compartment.png"><img alt="Adding compartments in the Project page of Crowd GUI" src="../../_images/add-compartment.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Adding compartments in the Project page</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id10">
+<a class="reference internal image-reference" href="../../_images/compartments-list.png"><img alt="Compartments list in the Project page of Crowd GUI" src="../../_images/compartments-list.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Added compartment list in the Project page</span><a class="headerlink" href="#id10" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The saved nodetypes and compartments will be displayed as options. If no options are visible, go back to that subsection, re-enter the settings and save.</p>
+<figure class="align-center" id="id11">
+<a class="reference internal image-reference" href="../../_images/add-rule.png"><img alt="Adding rules in the Project page of Crowd GUI" src="../../_images/add-rule.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Adding rules in the Project page</span><a class="headerlink" href="#id11" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id12">
+<a class="reference internal image-reference" href="../../_images/rules-list.png"><img alt="Added rules list in the Project page of Crowd GUI" src="../../_images/rules-list.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Added rules list in the Project page</span><a class="headerlink" href="#id12" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>After the selection of these settings, clicking “Run simulation” will convert these selections and write them to the YAML configuration file. The configuration file will be loaded into Python library, simulation will be executed and we will then be directed to the Network page to explore the results.</p>
+<p>In the next two pages, we list all the network generators integrated into Crowd for available use in the configuration file and the network models provided by Crowd.
+While they are not needed to understand this example, they serve as a reference for model development.</p>
+<p><strong>Next:</strong> (Optional) Network generators</p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../create_project.html" class="btn btn-neutral float-left" title="Step 1: Create or load a project" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="network_generators.html" class="btn btn-neutral float-right" title="Network Generators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, A. N. Nese Rende.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Network Generators &mdash; crowd 0.9.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=39bb1c6d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reading Network Info From Files" href="network_from_file.html" />
+    <link rel="prev" title="Step 2: Modify Configuration" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            crowd
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Introduction to Crowd</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../create_project.html">Step 1: Create or load a project</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Step 2: Modify Configuration</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Network Generators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="network_from_file.html">Reading Network Info From Files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nodetype_init.html">Initializing Node Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="crowd_models.html">Crowd’s Models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../custom_methods.html">Step 3: Define custom methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../run_simulation.html">Step 4: Run Simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../network_viz.html">Step 5: Inspect results with network visualization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data_merge.html">Step 6: Data Merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../generate_charts.html">Step 7: Generate Charts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples_docs/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contact/index.html">Contact</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">crowd</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Introduction to Crowd</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Step 2: Modify Configuration</a></li>
+      <li class="breadcrumb-item active">Network Generators</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/introduction/modify_config/network_generators.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="network-generators">
+<h1>Network Generators<a class="headerlink" href="#network-generators" title="Link to this heading"></a></h1>
+<p>The following network generators can be utilized in the configuration in the following format:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">structure</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">random</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;conf-file-notation&#39;</span>
+<span class="w">        </span><span class="nt">parameter1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">        </span><span class="nt">parameter2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Conf. File Notation</strong></p></th>
+<th class="head"><p><strong>Parameters</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Random Regular Graph (NetworkX)</p></td>
+<td><p><cite>random-regular</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>degree</strong> (int): The degree of each node.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Erdős-Rényi Graph (NetworkX)</p></td>
+<td><p><cite>erdos-renyi</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>p</strong> (float): Probability for edge creation.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Barabási-Albert Graph (NetworkX)</p></td>
+<td><p><cite>barabasi-albert</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>m</strong> (int): Number of edges to attach from a new node to existing nodes.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Watts-Strogatz Graph (NetworkX)</p></td>
+<td><p><cite>watts-strogatz</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>k</strong> (int): Number of nearest neighbors to be joined with for each node.</p></li>
+<li><p><strong>p</strong> (float): Rewiring probability.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Connected Watts-Strogatz Graph (NetworkX)</p></td>
+<td><p><cite>connected-watts-strogatz</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>k</strong> (int): Number of nearest neighbors to be joined with for each node.</p></li>
+<li><p><strong>p</strong> (float): Rewiring probability.</p></li>
+<li><p><strong>tries</strong> (int): Number of attempts to generate a connected graph.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Newman-Watts-Strogatz Graph (NetworkX)</p></td>
+<td><p><cite>newman-watts-strogatz</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>k</strong> (int): Number of nearest neighbors to be joined with for each node.</p></li>
+<li><p><strong>p</strong> (float): Rewiring probability.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Powerlaw Cluster Graph (NetworkX)</p></td>
+<td><p><cite>powerlaw-cluster-graph</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>m</strong> (int): Number of edges to add for each new node.</p></li>
+<li><p><strong>p</strong> (float): Probability of adding a triangle after adding a random edge.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Forest Fire Graph (iGraph)</p></td>
+<td><p><cite>forest-fire</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>fw-prob</strong> (float): Forward burning probability.</p></li>
+<li><p><strong>bw-factor</strong> (float): Backward burning ratio.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Stochastic Block Model (iGraph)</p></td>
+<td><p><cite>stochastic-block</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>p-matrix</strong> (list of lists): Preference matrix.</p></li>
+<li><p><strong>block-sizes</strong> (list of ints): Sizes of the blocks.</p></li>
+<li><p><strong>include-loops</strong> (bool): Whether loops are included (optional, defaults to <cite>False</cite>).</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>LFR Benchmark Graph (NetworkX)</p></td>
+<td><p><cite>LFR-benchmark</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>tau1</strong> (float): Power-law exponent for degree distribution.</p></li>
+<li><p><strong>tau2</strong> (float): Power-law exponent for community size distribution.</p></li>
+<li><p><strong>mu</strong> (float): Mixing parameter.</p></li>
+<li><p><strong>avg-degree</strong> (float): Average degree (optional).</p></li>
+<li><p><strong>min-degree</strong> (int): Minimum degree (optional).</p></li>
+<li><p><strong>max-degree</strong> (int): Maximum degree (optional).</p></li>
+<li><p><strong>min-community</strong> (int): Minimum community size (optional).</p></li>
+<li><p><strong>max-community</strong> (int): Maximum community size (optional).</p></li>
+<li><p><strong>tolerance</strong> (float): Tolerance for the community size (optional, defaults to <cite>1e-07</cite>).</p></li>
+<li><p><strong>max-iterations</strong> (int): Maximum iterations (optional, defaults to <cite>500</cite>).</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Geometric Random Graph (iGraph)</p></td>
+<td><p><cite>geometric-random</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>radius</strong> (float): Distance threshold value.</p></li>
+<li><p><strong>count</strong> (int): The number of nodes in the graph.</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Configuration Model (iGraph)</p></td>
+<td><p><cite>configuration</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>degrees-path</strong> (str): Path to file containing degree sequence.</p></li>
+<li><p><strong>method</strong> (str): Graph generation method (<cite>configuration</cite> or others, optional, defaults to <cite>configuration</cite>).</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Static Fitness Model (iGraph)</p></td>
+<td><p><cite>static-fitness</cite></p></td>
+<td><ul class="simple">
+<li><p><strong>m</strong> (int): Number of edges.</p></li>
+<li><p><strong>fitness-path</strong> (str): Path to file containing fitness values.</p></li>
+<li><p><strong>include-loops</strong> (bool): Whether loops are included (optional, defaults to <cite>False</cite>).</p></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following networks can be utilized in the configuration in the following format:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">structure</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">from-library</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;conf-file-notation&#39;</span>
+<span class="w">        </span><span class="nt">if-parameter-exists</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">        </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><strong>Name</strong></p></th>
+<th class="head"><p><strong>Conf. File Notation</strong></p></th>
+<th class="head"><p><strong>Information</strong></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Complete Graph (NetworkX)</p></td>
+<td><p><cite>complete-graph</cite></p></td>
+<td><p>Parameter <strong>count</strong> (int): The number of nodes in the graph.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zachary’s Karate Club Graph (NetworkX)</p></td>
+<td><p><cite>karate-club-graph</cite></p></td>
+<td><p>A social network of friendships between 34 members of a karate club.</p></td>
+</tr>
+<tr class="row-even"><td><p>Les Miserables Graph (NetworkX)</p></td>
+<td><p><cite>les-miserables</cite></p></td>
+<td><p>A coappearance network of characters in the novel Les Miserables.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Next:</strong> (Optional) Reading networks from file</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Step 2: Modify Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="network_from_file.html" class="btn btn-neutral float-right" title="Reading Network Info From Files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, A. N. Nese Rende.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
