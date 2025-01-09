@@ -1,0 +1,40 @@
+definitions:
+  pd-model:
+    compartments:
+      c1:
+        type: edge-numerical
+        attribute: "activation_prob"
+        value: "random [0, 1]"
+        operator: ">="
+        triggering_status: "Active_Spreader"
+      c2:
+        type: count-down
+        name: spreader
+        iteration-count: 1
+    name: diffusion
+    nodetypes:
+      Active_Spreader:
+        choose-with-metric:
+          metric: pagerank
+          count: 100
+      Active:
+        random-with-count:
+          count: 0
+      Inactive:
+        random-with-count:
+          count: 3939
+    rules:
+      r1:
+        - Inactive
+        - Active_Spreader
+        - c1
+      r2:
+        - Active_Spreader
+        - Active
+        - c2
+name: facebook4k
+structure:
+  file:
+    header: "false"
+    path: "path_to_dataset"
+    type: nodes_edges

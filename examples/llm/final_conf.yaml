@@ -10,7 +10,6 @@ definitions:
         type: count-down
         name: healing
         iteration-count: 6
-        # iteration-count: 1
     name: diffusion
     rules:
       r1:
@@ -25,7 +24,6 @@ definitions:
       Susceptible:
         random-with-count:
           count: "98"
-          # count: "8"
       Infected:
         random-with-count:
           count: "2"

@@ -1,4 +1,5 @@
 projects
+examples
 .venv
 .vscode
 crowd/docs/_build/html

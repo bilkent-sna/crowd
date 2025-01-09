@@ -1,0 +1,55 @@
+definitions:
+  pd-model:
+    compartments:
+      c2:
+        attribute: location
+        probability: 0.1
+        type: node-categorical
+        value: grid
+      c3:
+        type: count-down
+        name: healing
+        iteration-count: 6
+    name: diffusion
+    rules:
+      r1:
+        - Susceptible
+        - Infected
+        - c2
+      r2:
+        - Infected
+        - Recovered
+        - c3
+    nodetypes:
+      Susceptible:
+        random-with-count:
+          count: "98"
+      Infected:
+        random-with-count:
+          count: "2"
+      Recovered:
+        random-with-count:
+          count: "0"
+    node-parameters:
+      categorical:
+        location:
+          - grid
+          # - home
+        agreeableness: "agreeableness_options.csv"
+        conscientiousness: "conscientiousness_options.csv"
+        surgency: "surgency_options.csv"
+        emotional-stability: "emotional_stability_options.csv"
+        intellect: "intellect_options.csv"
+      numerical:
+        age:
+          - 18
+          - 65
+
+info:
+  total_count: 100
+name: gabm-epidemic-case
+structure:
+  random:
+    count: 100
+    degree: 5
+    type: random-regular

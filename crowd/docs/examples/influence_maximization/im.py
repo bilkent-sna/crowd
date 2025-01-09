@@ -1,8 +1,19 @@
 from crowd.project_management.project import Project
 
-# Step 1: Load project
+# Step 1: Create or load project
+
 project_name = "influencemax"
+
 my_project = Project()
+#creation_date = "07/09/2024"
+#info = "Influence maximization with Crowd"
+
+# Create new project
+# my_project.create_project(project_name, creation_date, info, "node")
+# conf_path = os.path.join(os.path.dirname(__file__), 'im_conf.yaml')
+# my_project.update_conf_with_path(conf_path)
+
+# Or load the project
 my_project.load_project(project_name)
 
 # Step 2: Set the edge parameter using in degree of nodes

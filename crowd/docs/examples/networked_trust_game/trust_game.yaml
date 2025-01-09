@@ -1,0 +1,36 @@
+definitions:
+  name: custom
+  nodetypes:
+    I:
+      random-with-weight:
+        initial-weight: 0.3
+    T:
+      random-with-weight:
+        initial-weight: 0.25
+    U:
+      random-with-weight:
+        initial-weight: 0.45
+  node-parameters:
+    categorical:
+      prev_strategy:
+        - "undefined_strategy"
+    numerical:
+      "current_payoff":
+        - -100
+        - -99
+      "previous_payoff":
+        - -100
+        - -99
+  network-parameters:
+    R_T: 6 #multiplier of what is recieved by T from I
+    r_UT: 1 #temptation to defect ratio (0,1). Formula: (R_U - R_T) / R_T where R_U is what is recieved by U from I
+    min_payoff: -1
+    max_payoff: -1 #will change this after network is created
+info:
+  total_count: 100
+name: n-player-r-ut-1
+structure:
+  file:
+    header: "false"
+    path: "full_path_to_m3.edgelist"
+    type: nodes_edges
