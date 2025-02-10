@@ -43,3 +43,17 @@ git clone https://github.com/Bilkent-Social-Systems-Research-Group/crowd
   ```
   Or for development:
   `python setup.py develop`
+
+# Citation
+Please cite the following paper if you use Crowd:
+  ```
+  @misc{rende2024crowdsocialnetworksimulation,
+        title={Crowd: A Social Network Simulation Framework}, 
+        author={Ann Nedime Nese Rende and Tolga Yilmaz and Özgür Ulusoy},
+        year={2024},
+        eprint={2412.10781},
+        archivePrefix={arXiv},
+        primaryClass={cs.SI},
+        url={https://arxiv.org/abs/2412.10781}, 
+  }
+  ```
