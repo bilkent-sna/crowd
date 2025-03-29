@@ -58,6 +58,7 @@ Please cite the following paper if you use Crowd:
   }
   ```
 
-##### Related Repositories:
-[Crowd GUI:](https://github.com/bilkent-sna/crowd-ui/tree/main)
-[Case studies Mesa implementations:](https://github.com/neserende/mesa-case-studies)
+### Related Repositories:
+[Crowd GUI](https://github.com/bilkent-sna/crowd-ui/tree/main)
+
+[Case studies Mesa implementations](https://github.com/neserende/mesa-case-studies)
