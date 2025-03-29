@@ -26,7 +26,7 @@ which for this release is:
 1. Clone or download the repository:
 
 ```
-git clone https://github.com/Bilkent-Social-Systems-Research-Group/crowd
+git clone https://github.com/bilkent-sna/crowd
 ```
 
 - Or download the code as a zip file, then extract it.
@@ -57,3 +57,7 @@ Please cite the following paper if you use Crowd:
         url={https://arxiv.org/abs/2412.10781}, 
   }
   ```
+
+##### Related Repositories:
+[Crowd GUI:](https://github.com/bilkent-sna/crowd-ui/tree/main)
+[Case studies Mesa implementations:](https://github.com/neserende/mesa-case-studies)
