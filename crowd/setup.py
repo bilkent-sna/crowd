@@ -18,7 +18,6 @@ setup(
         "matplotlib",
         "ndlib"
     ],
-    	
     author="Tolga Yilmaz, Nese Rende",
     description="Crowd:a social network simulation framework",
     keywords="social networks, network, simulation",

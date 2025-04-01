@@ -37,12 +37,14 @@ class Project:
             self.egress = None
             self.tracked_params = []
 
-    def create_project(self, project_name, creation_date, project_info, nodeOrEdge):
+    def create_project(self, project_name, creation_date, project_info, nodeOrEdge, selected_path = None):
         
         self.project_name = project_name
 
         # Get the user's home directory
         user_home_dir = Path.home()
+        if selected_path:
+            user_home_dir = selected_path
 
         # A directory will be created for the project with the given project name
         self.project_dir = os.path.join(user_home_dir, 'crowd_projects', project_name)
@@ -89,12 +91,14 @@ class Project:
             #default
             self.netw = CustomSimNetwork(self.conf, self.project_dir)
 
-    def load_project(self, project_name):
+    def load_project(self, project_name, selected_path = None):
 
         # Using the project name provided, load the project
         # If does not exist, print error message
         self.project_name = project_name
         user_home_dir = Path.home()
+        if selected_path:
+            user_home_dir = selected_path
         self.project_dir = os.path.join(user_home_dir, 'crowd_projects', project_name)
         #print("This is the project dir:", self.project_dir)
         self.conf_file = os.path.join(self.project_dir, 'conf.yaml')

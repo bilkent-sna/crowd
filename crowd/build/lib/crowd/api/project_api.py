@@ -185,8 +185,8 @@ class ProjectFunctions:
 
     def parseConf(self, data_dict, project_dir):
 
-        print("Before parsing conf data dict:", data_dict)
-        print("=============================")
+        # print("Before parsing conf data dict:", data_dict)
+        # print("=============================")
 
         conf = {
                 "name": data_dict["name"]
@@ -376,8 +376,8 @@ class ProjectFunctions:
        
 
         #print("HELLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOO WE ARE HERE")
-        print("==================")
-        print('LATEST CONF', conf)
+        # print("==================")
+        # print('LATEST CONF', conf)
 
         return conf
     

@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'crowd'
-copyright = '2024, A. N. Nese Rende'
+copyright = '2025, A. N. Nese Rende'
 author = 'A. N. Nese Rende'
 release = '0.9.0'
 

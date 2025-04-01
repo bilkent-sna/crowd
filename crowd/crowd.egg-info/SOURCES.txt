@@ -51,11 +51,8 @@ crowd/visualization/bubblemapvisualizer.py
 crowd/visualization/statsvisualizer.py
 crowd/visualization/visualizer.py
 crowd/visualization/__pycache__/__init__.cpython-312.pyc
-crowd/visualization/__pycache__/__init__.cpython-39.pyc
 crowd/visualization/__pycache__/basic.cpython-312.pyc
-crowd/visualization/__pycache__/basic.cpython-39.pyc
 crowd/visualization/__pycache__/visualizer.cpython-312.pyc
-crowd/visualization/__pycache__/visualizer.cpython-39.pyc
 crowd/visualization/d3/playertemplate.html
 crowd/visualization/d3/template.html
 crowd/visualization/d3/world.geojson
