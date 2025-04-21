@@ -96,7 +96,7 @@ Important: The file should only include the integers representing node IDs. Each
     nodetypes:
         Active:
             from-file:
-                path: 'name-of-file'
+                path: 'name_of_file.csv'
         Inactive:
             random-with-count:
             count: 90
