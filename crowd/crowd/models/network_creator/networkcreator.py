@@ -39,7 +39,7 @@ class NetworkCreator:
                 structure_creator = File(structure[key], self.conf, project_dir)
             elif key == "random":
                 structure_creator = CombinedRandom(structure[key], self.conf, project_dir)
-            elif key == "from-library-dataset":
+            elif key == "from-library":
                 structure_creator = FromLibrary(structure[key], self.conf, project_dir)
 
         return structure_creator.create()        

@@ -36,6 +36,7 @@ class FromLibrary(Structure):
             elif graph_type == 'les-miserables':
                 self.G = nx.les_miserables_graph()
 
+            count = self.G.number_of_nodes()
             #else still needs to be changed bc we changed the conf file 
             if("definitions" in self.conf):
                 if "pd-model" in self.conf["definitions"]: #if it is a predefined model
