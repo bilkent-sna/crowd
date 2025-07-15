@@ -1,4 +1,4 @@
-# Crowd:
+# Crowd
 
 Crowd is a social network simulation framework which simplifies and fastens the process of developing agent-based models and simulations on networks. It is developed as a Python library, which also provides more advanced visualization through its graphical user interface. In this repository, you can find the source code of the Python library version of Crowd and prebuilt wheel file for simpler installation. 
 
