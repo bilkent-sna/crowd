@@ -1,4 +1,10 @@
-# Steps to Set Up
+# Crowd:
+
+Crowd is a social network simulation framework which simplifies and fastens the process of developing agent-based models and simulations on networks. It is developed as a Python library, which also provides more advanced visualization through its graphical user interface. In this repository, you can find the source code of the Python library version of Crowd and prebuilt wheel file for simpler installation. 
+
+Check out [Crowd's documentation](https://crowd.readthedocs.io/en/latest/) for more detailed explanations for installation, simulation setup, execution, and examples. 
+
+## Steps to Set Up
 
 #### Option 1: Using Prebuilt Wheel:
 
@@ -44,17 +50,16 @@ git clone https://github.com/bilkent-sna/crowd
   Or for development:
   `python setup.py develop`
 
-# Citation
+## Citation
 Please cite the following paper if you use Crowd:
   ```
-  @misc{rende2024crowdsocialnetworksimulation,
-        title={Crowd: A Social Network Simulation Framework}, 
-        author={Ann Nedime Nese Rende and Tolga Yilmaz and Özgür Ulusoy},
-        year={2024},
-        eprint={2412.10781},
-        archivePrefix={arXiv},
-        primaryClass={cs.SI},
-        url={https://arxiv.org/abs/2412.10781}, 
+  @article{rende2025crowd,
+     title={Crowd: A Social Network Simulation Framework},
+     author={Rende, Ann Nedime Nese and Yilmaz, Tolga and Ulusoy, Ozgur},
+     journal={IEEE Transactions on Computational Social Systems},
+     year={2025},
+     publisher={IEEE},
+     doi={10.1109/TCSS.2025.3565377}
   }
   ```
 
